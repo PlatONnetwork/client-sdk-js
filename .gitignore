@@ -20,4 +20,3 @@ npm-debug.log
 /bower
 .npm/
 packages/
-package-lock.json
