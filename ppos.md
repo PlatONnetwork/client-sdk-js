@@ -183,7 +183,7 @@ getCandidateList params array reply:  {
 ### API 调用详细说明
 
 #### `updateSetting(setting)`
-更新 ppos 对象的的配置参数。如果你只需要发送call调用，那么只需要传入 provider 即可。如果你在实例化 web3 的时候以及传入了 provider。那么会ppos的provider默认就是你实例化web3传进来的provider。当然你也可以随时更新provider。
+更新 ppos 对象的的配置参数。如果你只需要发送call调用，那么只需要传入 provider 即可。如果你在实例化 web3 的时候已经传入了 provider。那么会ppos的provider默认就是你实例化web3传进来的provider。当然你也可以随时更新provider。
 
 如果你要发送send交易，那么除了provider，还必须要传入发送交易所需要的私钥以及链id。当然，发送交易需要设置的gas, gasPrice, retry, interval这四个参数详细请见`async send(params, [other])`说明。
 
@@ -240,7 +240,7 @@ let setting = ppos.getSetting();
 ***
 
 #### `async rpc(method, [params])`
-发起 rpc 请求。一个辅助函数，因为在调用ppos发送交易的过程中，有些参数需要通过rpc来获取，所以特意封装了一个rpc供调用。注意此接口为async函数，需要加await返回调用结果，否在返回一个Promise对象。
+发起 rpc 请求。一个辅助函数，因为在调用ppos发送交易的过程中，有些参数需要通过rpc来获取，所以特意封装了一个rpc供调用。注意此接口为async函数，需要加await返回调用结果，否则返回一个Promise对象。
 
 入参说明：
 * method String 方法名
@@ -264,7 +264,7 @@ let reply = await ppos.rpc('platon_getBalance', ["0x714de266a0effa39fcaca1442b92
 ***
 
 #### `bigNumBuf(intStr)`
-将一个字符串的十进制大整数的转为一个RLP编码能接受的buffer对象。一个辅助函数。因为JavaScript的正数范围只能最大表示为2^53，为了RLP能对大整数进行编码，需要将字符串的十进制大整数转换为相应的Buffer。注意，此接口暂时只能对十进制的大整数转为Buffer，如果是十六进制的字符串，您需要先将他转为十进制的字符串。
+将一个字符串的十进制大整数转为一个RLP编码能接受的buffer对象。一个辅助函数。因为JavaScript的正数范围只能最大表示为2^53，为了RLP能对大整数进行编码，需要将字符串的十进制大整数转换为相应的Buffer。注意，此接口暂时只能对十进制的大整数转为Buffer，如果是十六进制的字符串，您需要先将他转为十进制的字符串。
 
 入参说明：
 * intStr String 字符串十进制大整数。
@@ -280,7 +280,7 @@ let buffer = ppos.bigNumBuf('1000000000000000000000000000000000000000000');
 ***
 
 #### `hexStrBuf(hexStr)`
-将一个十六进制的字符串转为一个RLP编码能接受的buffer对象。一个辅助函数。在ppos发送交易的过程中，我们很多参数需要传送的比如 `nodeId 64bytes 被质押的节点Id(也叫候选人的节点Id)`。而写代码时候的nodeId只能以字符串的形式表现。需要将他转为一个 64bytes 的 Buffer。
+将一个十六进制的字符串转为一个RLP编码能接受的buffer对象。一个辅助函数。在ppos发送交易的过程中，我们很多参数需要作为bytes传送而不是string，比如 `nodeId 64bytes 被质押的节点Id(也叫候选人的节点Id)`。而写代码时候的nodeId只能以字符串的形式表现。需要将他转为一个 64 bytes 的 Buffer。
 
 入参说明：
 * hexStr String 一个十六进制的字符串。
@@ -301,15 +301,15 @@ let buffer = ppos.hexStrBuf(nodeId);
 
 如果你选择以数组作为入参，那么你**必须严格按照入参的顺序依次将参数放到数组里面**。注意，对一些字符串大整数以及需要传入的bytes，请选择上面提供的接口`bigNumBuf(intStr)`跟`hexStrBuf(hexStr)`自行进行转换再传入。
 
-注意此接口为async函数，需要加await返回调用结果，否在返回一个Promise对象。
+注意此接口为async函数，需要加await返回调用结果，否则返回一个Promise对象。
 
 入参说明：
-* params Object|Array 调用参数。
+* params Object | Array 调用参数。
   
 出参
 * reply Object call调用的返回的结果。注意，我已将将返回的结果转为了Object对象。
   * Code Number 调用返回码，0表示调用结果正常。
-  * Data Array|Object|String|Number... 根据调用结果返回相应类型
+  * Data Array | Object | String | Number... 根据调用结果返回相应类型
   * ErrMsg String 调用提示信息。
 
 以调用 `1103. getRelatedListByDelAddr(): 查询当前账户地址所委托的节点的NodeID和质押Id`这个接口，入参顺序从上到下，入参如下所示：
@@ -338,11 +338,11 @@ reply = await ppos.call(params);
 ***
 
 #### `async send(params, [other])`
-发送一个 ppos 的send发送交易调用。上链。所以你需要自行区分是否是查询或者是发送交易。入参可以选择对象或者数组。传入规则请看上述`call(params)`调用。
+发送一个 ppos 的send发送交易调用。上链。所以你需要自行区分是否是查询或者是发送交易。入参可以选择对象或者数组。传入规则请看上述`async call(params)`调用。
 
-由于是一个交易，将会涉及到调用交易需要的一些参数，比如gas，gasPrice。当交易发送出去之后，为了确认交易是否上链，需要不断的通过交易哈希去轮询链上的结果。这就有个轮询次数与每次轮询之间的间隔。如果默认参数不符合需求，传入other对象来更新默认的值。
+由于是一个交易，将会涉及到调用交易需要的一些参数，比如gas，gasPrice。当交易发送出去之后，为了确认交易是否上链，需要不断的通过交易哈希去轮询链上的结果。这就有个轮询次数 retry 与每次轮询之间的间隔 interval。
 
-对于 gas, gasPrice, retry, interval 这四个参数，如果other入参有指定，则使用other指定的。如果other入参未指定，则使用调用函数时候`updateSetting(setting)`指定的参数，否则使用默认的数值。
+对于上面提到的 gas, gasPrice, retry, interval 这四个参数，如果other入参有指定，则使用other指定的。如果other入参未指定，则使用调用函数时候`updateSetting(setting)`指定的参数，否则使用默认的数值。
 
 注意此接口为async函数，需要加await返回调用结果，否则返回一个Promise对象。
 
