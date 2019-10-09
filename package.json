@@ -1,7 +1,7 @@
 {
   "name": "web3",
   "namespace": "ethereum",
-  "version": "0.20.6",
+  "version": "0.1.0",
   "description": "Ethereum JavaScript API, middleware to talk to a ethereum node over RPC",
   "main": "./index.js",
   "directories": {
@@ -24,7 +24,7 @@
     "coveralls": "^2.11.2",
     "del": ">=2.0.2",
     "exorcist": "^0.4.0",
-    "gulp": ">=3.9.0",
+    "gulp": "3.9.0",
     "gulp-jshint": ">=1.5.0",
     "gulp-rename": ">=1.2.0",
     "gulp-replace": "^0.5.3",
@@ -84,6 +84,5 @@
       "url": "https://github.com/obscuren"
     }
   ],
-
   "license": "LGPL-3.0"
 }
