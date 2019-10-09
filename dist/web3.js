@@ -1,4 +1,4 @@
-require=(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports=[
   {
     "constant": true,
@@ -1746,33 +1746,33 @@ if (typeof XMLHttpRequest === 'undefined') {
 var BigNumber = require('bignumber.js');
 
 var ETH_UNITS = [
-    'wei',
-    'kwei',
-    'Mwei',
-    'Gwei',
+    'von',
+    'kvon',
+    'Mvon',
+    'Gvon',
     'szabo',
     'finney',
-    'femtoether',
-    'picoether',
-    'nanoether',
-    'microether',
-    'milliether',
+    'femtolat',
+    'picolat',
+    'nanolat',
+    'microlat',
+    'millilat',
     'nano',
     'micro',
     'milli',
-    'ether',
+    'lat',
     'grand',
-    'Mether',
-    'Gether',
-    'Tether',
-    'Pether',
-    'Eether',
-    'Zether',
-    'Yether',
-    'Nether',
-    'Dether',
-    'Vether',
-    'Uether'
+    'Mlat',
+    'Glat',
+    'Tlat',
+    'Plat',
+    'Elat',
+    'Zlat',
+    'Ylat',
+    'Nlat',
+    'Dlat',
+    'Vlat',
+    'Ulat'
 ];
 
 module.exports = {
@@ -1826,7 +1826,7 @@ module.exports = function (value, options) {
 };
 
 
-},{"crypto-js":58,"crypto-js/sha3":79}],20:[function(require,module,exports){
+},{"crypto-js":56,"crypto-js/sha3":77}],20:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -1868,33 +1868,33 @@ var sha3 = require('./sha3.js');
 var utf8 = require('utf8');
 
 var unitMap = {
-    'noether':      '0',
-    'wei':          '1',
-    'kwei':         '1000',
-    'Kwei':         '1000',
+    'nolat':      '0',
+    'von':          '1',
+    'kvon':         '1000',
+    'Kvon':         '1000',
     'babbage':      '1000',
-    'femtoether':   '1000',
-    'mwei':         '1000000',
-    'Mwei':         '1000000',
+    'femtolat':   '1000',
+    'mvon':         '1000000',
+    'Mvon':         '1000000',
     'lovelace':     '1000000',
-    'picoether':    '1000000',
-    'gwei':         '1000000000',
-    'Gwei':         '1000000000',
+    'picolat':    '1000000',
+    'gvon':         '1000000000',
+    'Gvon':         '1000000000',
     'shannon':      '1000000000',
-    'nanoether':    '1000000000',
+    'nanolat':    '1000000000',
     'nano':         '1000000000',
     'szabo':        '1000000000000',
-    'microether':   '1000000000000',
+    'microlat':   '1000000000000',
     'micro':        '1000000000000',
     'finney':       '1000000000000000',
-    'milliether':   '1000000000000000',
+    'millilat':   '1000000000000000',
     'milli':        '1000000000000000',
-    'ether':        '1000000000000000000',
-    'kether':       '1000000000000000000000',
+    'lat':        '1000000000000000000',
+    'klat':       '1000000000000000000000',
     'grand':        '1000000000000000000000',
-    'mether':       '1000000000000000000000000',
-    'gether':       '1000000000000000000000000000',
-    'tether':       '1000000000000000000000000000000'
+    'mlat':       '1000000000000000000000000',
+    'glat':       '1000000000000000000000000000',
+    'tlat':       '1000000000000000000000000000000'
 };
 
 /**
@@ -2118,15 +2118,15 @@ var toHex = function (val) {
 };
 
 /**
- * Returns value of unit in Wei
+ * Returns value of unit in von
  *
  * @method getValueOfUnit
- * @param {String} unit the unit to convert to, default ether
- * @returns {BigNumber} value of the unit (in Wei)
+ * @param {String} unit the unit to convert to, default lat
+ * @returns {BigNumber} value of the unit (in von)
  * @throws error if the unit is not correct:w
  */
 var getValueOfUnit = function (unit) {
-    unit = unit ? unit.toLowerCase() : 'ether';
+    unit = unit ? unit.toLowerCase() : 'lat';
     var unitValue = unitMap[unit];
     if (unitValue === undefined) {
         throw new Error('This unit doesn\'t exists, please use the one of the following units' + JSON.stringify(unitMap, null, 2));
@@ -2135,54 +2135,54 @@ var getValueOfUnit = function (unit) {
 };
 
 /**
- * Takes a number of wei and converts it to any other ether unit.
+ * Takes a number of von and converts it to any other lat unit.
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     babbage
- * - mwei       picoether      lovelace
- * - gwei       nanoether      shannon      nano
- * - --         microether     szabo        micro
- * - --         milliether     finney       milli
- * - ether      --             --
- * - kether                    --           grand
- * - mether
- * - gether
- * - tether
+ * - kvon       femtolat     babbage
+ * - mvon       picolat      lovelace
+ * - gvon       nanolat      shannon      nano
+ * - --         microlat     szabo        micro
+ * - --         millilat     finney       milli
+ * - lat      --             --
+ * - klat                    --           grand
+ * - mlat
+ * - glat
+ * - tlat
  *
- * @method fromWei
+ * @method fromVon
  * @param {Number|String} number can be a number, number string or a HEX of a decimal
- * @param {String} unit the unit to convert to, default ether
+ * @param {String} unit the unit to convert to, default lat
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
 */
-var fromWei = function(number, unit) {
+var fromVon = function(number, unit) {
     var returnValue = toBigNumber(number).dividedBy(getValueOfUnit(unit));
 
     return isBigNumber(number) ? returnValue : returnValue.toString(10);
 };
 
 /**
- * Takes a number of a unit and converts it to wei.
+ * Takes a number of a unit and converts it to von.
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     babbage
- * - mwei       picoether      lovelace
- * - gwei       nanoether      shannon      nano
- * - --         microether     szabo        micro
- * - --         milliether     finney       milli
- * - ether      --             --
- * - kether                    --           grand
- * - mether
- * - gether
- * - tether
+ * - kvon       femtolat     babbage
+ * - mvon       picolat      lovelace
+ * - gvon       nanolat      shannon      nano
+ * - --         microlat     szabo        micro
+ * - --         millilat     finney       milli
+ * - lat      --             --
+ * - klat                    --           grand
+ * - mlat
+ * - glat
+ * - tlat
  *
- * @method toWei
+ * @method toVon
  * @param {Number|String|BigNumber} number can be a number, number string or a HEX of a decimal
- * @param {String} unit the unit to convert from, default ether
+ * @param {String} unit the unit to convert from, default lat
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
 */
-var toWei = function(number, unit) {
+var toVon = function(number, unit) {
     var returnValue = toBigNumber(number).times(getValueOfUnit(unit));
 
     return isBigNumber(number) ? returnValue : returnValue.toString(10);
@@ -2449,8 +2449,8 @@ module.exports = {
     transformToFullName: transformToFullName,
     extractDisplayName: extractDisplayName,
     extractTypeName: extractTypeName,
-    toWei: toWei,
-    fromWei: fromWei,
+    toVon: toVon,
+    fromVon: fromVon,
     toBigNumber: toBigNumber,
     toTwosComplement: toTwosComplement,
     toAddress: toAddress,
@@ -2469,9 +2469,9 @@ module.exports = {
     isTopic: isTopic,
 };
 
-},{"./sha3.js":19,"bignumber.js":"bignumber.js","utf8":84}],21:[function(require,module,exports){
+},{"./sha3.js":19,"bignumber.js":"bignumber.js","utf8":82}],21:[function(require,module,exports){
 module.exports={
-    "version": "0.20.6"
+    "version": "0.1.0"
 }
 
 },{}],22:[function(require,module,exports){
@@ -2506,11 +2506,10 @@ var RequestManager = require('./web3/requestmanager');
 var Iban = require('./web3/iban');
 var Eth = require('./web3/methods/eth');
 var DB = require('./web3/methods/db');
-var Shh = require('./web3/methods/shh');
+// var Shh = require('./web3/methods/shh');
 var Net = require('./web3/methods/net');
 var Personal = require('./web3/methods/personal');
-var Swarm = require('./web3/methods/swarm');
-var Settings = require('./web3/settings');
+// var Swarm = require('./web3/methods/swarm');
 var version = require('./version.json');
 var utils = require('./utils/utils');
 var sha3 = require('./utils/sha3');
@@ -2521,18 +2520,15 @@ var HttpProvider = require('./web3/httpprovider');
 var IpcProvider = require('./web3/ipcprovider');
 var BigNumber = require('bignumber.js');
 
-
-
 function Web3 (provider) {
     this._requestManager = new RequestManager(provider);
     this.currentProvider = provider;
-    this.eth = new Eth(this);
+    this.platon = new Eth(this);
     this.db = new DB(this);
-    this.shh = new Shh(this);
+    // this.shh = new Shh(this);
     this.net = new Net(this);
     this.personal = new Personal(this);
-    this.bzz = new Swarm(this);
-    this.settings = new Settings();
+    // this.bzz = new Swarm(this);
     this.version = {
         api: version.version
     };
@@ -2571,8 +2567,8 @@ Web3.prototype.fromUtf8 = utils.fromUtf8;
 Web3.prototype.toDecimal = utils.toDecimal;
 Web3.prototype.fromDecimal = utils.fromDecimal;
 Web3.prototype.toBigNumber = utils.toBigNumber;
-Web3.prototype.toWei = utils.toWei;
-Web3.prototype.fromWei = utils.fromWei;
+Web3.prototype.toVon = utils.toVon;
+Web3.prototype.fromVon = utils.fromVon;
 Web3.prototype.isAddress = utils.isAddress;
 Web3.prototype.isChecksumAddress = utils.isChecksumAddress;
 Web3.prototype.toChecksumAddress = utils.toChecksumAddress;
@@ -2605,15 +2601,15 @@ var properties = function () {
             inputFormatter: utils.toDecimal
         }),
         new Property({
-            name: 'version.ethereum',
-            getter: 'eth_protocolVersion',
-            inputFormatter: utils.toDecimal
-        }),
-        new Property({
-            name: 'version.whisper',
-            getter: 'shh_version',
+            name: 'version.platon',
+            getter: 'platon_protocolVersion',
             inputFormatter: utils.toDecimal
         })
+        // new Property({
+        //     name: 'version.whisper',
+        //     getter: 'shh_version',
+        //     inputFormatter: utils.toDecimal
+        // })
     ];
 };
 
@@ -2628,7 +2624,7 @@ Web3.prototype.createBatch = function () {
 module.exports = Web3;
 
 
-},{"./utils/sha3":19,"./utils/utils":20,"./version.json":21,"./web3/batch":24,"./web3/extend":28,"./web3/httpprovider":32,"./web3/iban":33,"./web3/ipcprovider":34,"./web3/methods/db":37,"./web3/methods/eth":38,"./web3/methods/net":39,"./web3/methods/personal":40,"./web3/methods/shh":41,"./web3/methods/swarm":42,"./web3/property":45,"./web3/requestmanager":46,"./web3/settings":47,"bignumber.js":"bignumber.js"}],23:[function(require,module,exports){
+},{"./utils/sha3":19,"./utils/utils":20,"./version.json":21,"./web3/batch":24,"./web3/extend":28,"./web3/httpprovider":32,"./web3/iban":33,"./web3/ipcprovider":34,"./web3/methods/db":37,"./web3/methods/eth":38,"./web3/methods/net":39,"./web3/methods/personal":40,"./web3/property":43,"./web3/requestmanager":44,"bignumber.js":"bignumber.js"}],23:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -2717,7 +2713,7 @@ AllSolidityEvents.prototype.attachToContract = function (contract) {
 module.exports = AllSolidityEvents;
 
 
-},{"../utils/sha3":19,"../utils/utils":20,"./event":27,"./filter":29,"./formatters":30,"./methods/watches":43}],24:[function(require,module,exports){
+},{"../utils/sha3":19,"../utils/utils":20,"./event":27,"./filter":29,"./formatters":30,"./methods/watches":41}],24:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -3353,7 +3349,7 @@ SolidityEvent.prototype.attachToContract = function (contract) {
 module.exports = SolidityEvent;
 
 
-},{"../solidity/coder":7,"../utils/sha3":19,"../utils/utils":20,"./filter":29,"./formatters":30,"./methods/watches":43}],28:[function(require,module,exports){
+},{"../solidity/coder":7,"../utils/sha3":19,"../utils/utils":20,"./filter":29,"./formatters":30,"./methods/watches":41}],28:[function(require,module,exports){
 var formatters = require('./formatters');
 var utils = require('./../utils/utils');
 var Method = require('./method');
@@ -3403,7 +3399,7 @@ var extend = function (web3) {
 module.exports = extend;
 
 
-},{"./../utils/utils":20,"./formatters":30,"./method":36,"./property":45}],29:[function(require,module,exports){
+},{"./../utils/utils":20,"./formatters":30,"./method":36,"./property":43}],29:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -4200,7 +4196,7 @@ SolidityFunction.prototype.request = function () {
     var format = this.unpackOutput.bind(this);
 
     return {
-        method: this._constant ? 'eth_call' : 'eth_sendTransaction',
+        method: this._constant ? 'platon_call' : 'platon_sendTransaction',
         callback: callback,
         params: [payload],
         format: format
@@ -4411,7 +4407,7 @@ HttpProvider.prototype.isConnected = function () {
 
 module.exports = HttpProvider;
 
-},{"./errors":26,"xhr2":85,"xmlhttprequest":17}],33:[function(require,module,exports){
+},{"./errors":26,"xhr2":83,"xmlhttprequest":17}],33:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -5210,23 +5206,23 @@ var Iban = require('../iban');
 var transfer = require('../transfer');
 
 var blockCall = function (args) {
-    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? "eth_getBlockByHash" : "eth_getBlockByNumber";
+    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? "platon_getBlockByHash" : "platon_getBlockByNumber";
 };
 
 var transactionFromBlockCall = function (args) {
-    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getTransactionByBlockHashAndIndex' : 'eth_getTransactionByBlockNumberAndIndex';
+    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getTransactionByBlockHashAndIndex' : 'platon_getTransactionByBlockNumberAndIndex';
 };
 
 var uncleCall = function (args) {
-    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleByBlockHashAndIndex' : 'eth_getUncleByBlockNumberAndIndex';
+    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getUncleByBlockHashAndIndex' : 'platon_getUncleByBlockNumberAndIndex';
 };
 
 var getBlockTransactionCountCall = function (args) {
-    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getBlockTransactionCountByHash' : 'eth_getBlockTransactionCountByNumber';
+    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getBlockTransactionCountByHash' : 'platon_getBlockTransactionCountByNumber';
 };
 
 var uncleCountCall = function (args) {
-    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleCountByBlockHash' : 'eth_getUncleCountByBlockNumber';
+    return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getUncleCountByBlockHash' : 'platon_getUncleCountByBlockNumber';
 };
 
 function Eth(web3) {
@@ -5272,7 +5268,7 @@ Object.defineProperty(Eth.prototype, 'defaultAccount', {
 var methods = function () {
     var getBalance = new Method({
         name: 'getBalance',
-        call: 'eth_getBalance',
+        call: 'platon_getBalance',
         params: 2,
         inputFormatter: [formatters.inputAddressFormatter, formatters.inputDefaultBlockNumberFormatter],
         outputFormatter: formatters.outputBigNumberFormatter
@@ -5280,14 +5276,14 @@ var methods = function () {
 
     var getStorageAt = new Method({
         name: 'getStorageAt',
-        call: 'eth_getStorageAt',
+        call: 'platon_getStorageAt',
         params: 3,
         inputFormatter: [null, utils.toHex, formatters.inputDefaultBlockNumberFormatter]
     });
 
     var getCode = new Method({
         name: 'getCode',
-        call: 'eth_getCode',
+        call: 'platon_getCode',
         params: 2,
         inputFormatter: [formatters.inputAddressFormatter, formatters.inputDefaultBlockNumberFormatter]
     });
@@ -5311,7 +5307,7 @@ var methods = function () {
 
     var getCompilers = new Method({
         name: 'getCompilers',
-        call: 'eth_getCompilers',
+        call: 'platon_getCompilers',
         params: 0
     });
 
@@ -5333,7 +5329,7 @@ var methods = function () {
 
     var getTransaction = new Method({
         name: 'getTransaction',
-        call: 'eth_getTransactionByHash',
+        call: 'platon_getTransactionByHash',
         params: 1,
         outputFormatter: formatters.outputTransactionFormatter
     });
@@ -5348,14 +5344,14 @@ var methods = function () {
 
     var getTransactionReceipt = new Method({
         name: 'getTransactionReceipt',
-        call: 'eth_getTransactionReceipt',
+        call: 'platon_getTransactionReceipt',
         params: 1,
         outputFormatter: formatters.outputTransactionReceiptFormatter
     });
 
     var getTransactionCount = new Method({
         name: 'getTransactionCount',
-        call: 'eth_getTransactionCount',
+        call: 'platon_getTransactionCount',
         params: 2,
         inputFormatter: [null, formatters.inputDefaultBlockNumberFormatter],
         outputFormatter: utils.toDecimal
@@ -5363,42 +5359,42 @@ var methods = function () {
 
     var sendRawTransaction = new Method({
         name: 'sendRawTransaction',
-        call: 'eth_sendRawTransaction',
+        call: 'platon_sendRawTransaction',
         params: 1,
         inputFormatter: [null]
     });
 
     var sendTransaction = new Method({
         name: 'sendTransaction',
-        call: 'eth_sendTransaction',
+        call: 'platon_sendTransaction',
         params: 1,
         inputFormatter: [formatters.inputTransactionFormatter]
     });
 
     var signTransaction = new Method({
         name: 'signTransaction',
-        call: 'eth_signTransaction',
+        call: 'platon_signTransaction',
         params: 1,
         inputFormatter: [formatters.inputTransactionFormatter]
     });
 
     var sign = new Method({
         name: 'sign',
-        call: 'eth_sign',
+        call: 'platon_sign',
         params: 2,
         inputFormatter: [formatters.inputAddressFormatter, null]
     });
 
     var call = new Method({
         name: 'call',
-        call: 'eth_call',
+        call: 'platon_call',
         params: 2,
         inputFormatter: [formatters.inputCallFormatter, formatters.inputDefaultBlockNumberFormatter]
     });
 
     var estimateGas = new Method({
         name: 'estimateGas',
-        call: 'eth_estimateGas',
+        call: 'platon_estimateGas',
         params: 1,
         inputFormatter: [formatters.inputCallFormatter],
         outputFormatter: utils.toDecimal
@@ -5406,31 +5402,31 @@ var methods = function () {
 
     var compileSolidity = new Method({
         name: 'compile.solidity',
-        call: 'eth_compileSolidity',
+        call: 'platon_compileSolidity',
         params: 1
     });
 
     var compileLLL = new Method({
         name: 'compile.lll',
-        call: 'eth_compileLLL',
+        call: 'platon_compileLLL',
         params: 1
     });
 
     var compileSerpent = new Method({
         name: 'compile.serpent',
-        call: 'eth_compileSerpent',
+        call: 'platon_compileSerpent',
         params: 1
     });
 
     var submitWork = new Method({
         name: 'submitWork',
-        call: 'eth_submitWork',
+        call: 'platon_submitWork',
         params: 3
     });
 
     var getWork = new Method({
         name: 'getWork',
-        call: 'eth_getWork',
+        call: 'platon_getWork',
         params: 0
     });
 
@@ -5466,39 +5462,39 @@ var properties = function () {
     return [
         new Property({
             name: 'coinbase',
-            getter: 'eth_coinbase'
+            getter: 'platon_coinbase'
         }),
         new Property({
             name: 'mining',
-            getter: 'eth_mining'
+            getter: 'platon_mining'
         }),
         new Property({
             name: 'hashrate',
-            getter: 'eth_hashrate',
+            getter: 'platon_hashrate',
             outputFormatter: utils.toDecimal
         }),
         new Property({
             name: 'syncing',
-            getter: 'eth_syncing',
+            getter: 'platon_syncing',
             outputFormatter: formatters.outputSyncingFormatter
         }),
         new Property({
             name: 'gasPrice',
-            getter: 'eth_gasPrice',
+            getter: 'platon_gasPrice',
             outputFormatter: formatters.outputBigNumberFormatter
         }),
         new Property({
             name: 'accounts',
-            getter: 'eth_accounts'
+            getter: 'platon_accounts'
         }),
         new Property({
             name: 'blockNumber',
-            getter: 'eth_blockNumber',
+            getter: 'platon_blockNumber',
             outputFormatter: utils.toDecimal
         }),
         new Property({
             name: 'protocolVersion',
-            getter: 'eth_protocolVersion'
+            getter: 'platon_protocolVersion'
         })
     ];
 };
@@ -5526,7 +5522,7 @@ Eth.prototype.isSyncing = function (callback) {
 
 module.exports = Eth;
 
-},{"../../utils/config":18,"../../utils/utils":20,"../contract":25,"../filter":29,"../formatters":30,"../iban":33,"../method":36,"../namereg":44,"../property":45,"../syncing":48,"../transfer":49,"./watches":43}],39:[function(require,module,exports){
+},{"../../utils/config":18,"../../utils/utils":20,"../contract":25,"../filter":29,"../formatters":30,"../iban":33,"../method":36,"../namereg":42,"../property":43,"../syncing":45,"../transfer":46,"./watches":41}],39:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -5580,7 +5576,7 @@ var properties = function () {
 
 module.exports = Net;
 
-},{"../../utils/utils":20,"../property":45}],40:[function(require,module,exports){
+},{"../../utils/utils":20,"../property":43}],40:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -5697,300 +5693,7 @@ var properties = function () {
 
 module.exports = Personal;
 
-},{"../formatters":30,"../method":36,"../property":45}],41:[function(require,module,exports){
-/*
-    This file is part of web3.js.
-
-    web3.js is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    web3.js is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/** @file shh.js
- * @authors:
- *   Fabian Vogelsteller <fabian@ethereum.org>
- *   Marek Kotewicz <marek@ethcore.io>
- * @date 2017
- */
-
-var Method = require('../method');
-var Filter = require('../filter');
-var watches = require('./watches');
-
-var Shh = function (web3) {
-    this._requestManager = web3._requestManager;
-
-    var self = this;
-
-    methods().forEach(function(method) {
-        method.attachToObject(self);
-        method.setRequestManager(self._requestManager);
-    });
-};
-
-Shh.prototype.newMessageFilter = function (options, callback, filterCreationErrorCallback) {
-    return new Filter(options, 'shh', this._requestManager, watches.shh(), null, callback, filterCreationErrorCallback);
-};
-
-var methods = function () {
-
-    return [
-        new Method({
-            name: 'version',
-            call: 'shh_version',
-            params: 0
-        }),
-        new Method({
-            name: 'info',
-            call: 'shh_info',
-            params: 0
-        }),
-        new Method({
-            name: 'setMaxMessageSize',
-            call: 'shh_setMaxMessageSize',
-            params: 1
-        }),
-        new Method({
-            name: 'setMinPoW',
-            call: 'shh_setMinPoW',
-            params: 1
-        }),
-        new Method({
-            name: 'markTrustedPeer',
-            call: 'shh_markTrustedPeer',
-            params: 1
-        }),
-        new Method({
-            name: 'newKeyPair',
-            call: 'shh_newKeyPair',
-            params: 0
-        }),
-        new Method({
-            name: 'addPrivateKey',
-            call: 'shh_addPrivateKey',
-            params: 1
-        }),
-        new Method({
-            name: 'deleteKeyPair',
-            call: 'shh_deleteKeyPair',
-            params: 1
-        }),
-        new Method({
-            name: 'hasKeyPair',
-            call: 'shh_hasKeyPair',
-            params: 1
-        }),
-        new Method({
-            name: 'getPublicKey',
-            call: 'shh_getPublicKey',
-            params: 1
-        }),
-        new Method({
-            name: 'getPrivateKey',
-            call: 'shh_getPrivateKey',
-            params: 1
-        }),
-        new Method({
-            name: 'newSymKey',
-            call: 'shh_newSymKey',
-            params: 0
-        }),
-        new Method({
-            name: 'addSymKey',
-            call: 'shh_addSymKey',
-            params: 1
-        }),
-        new Method({
-            name: 'generateSymKeyFromPassword',
-            call: 'shh_generateSymKeyFromPassword',
-            params: 1
-        }),
-        new Method({
-            name: 'hasSymKey',
-            call: 'shh_hasSymKey',
-            params: 1
-        }),
-        new Method({
-            name: 'getSymKey',
-            call: 'shh_getSymKey',
-            params: 1
-        }),
-        new Method({
-            name: 'deleteSymKey',
-            call: 'shh_deleteSymKey',
-            params: 1
-        }),
-
-        // subscribe and unsubscribe missing
-
-        new Method({
-            name: 'post',
-            call: 'shh_post',
-            params: 1,
-            inputFormatter: [null]
-        })
-    ];
-};
-
-module.exports = Shh;
-
-
-},{"../filter":29,"../method":36,"./watches":43}],42:[function(require,module,exports){
-/*
-    This file is part of web3.js.
-
-    web3.js is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    web3.js is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * @file bzz.js
- * @author Alex Beregszaszi <alex@rtfs.hu>
- * @date 2016
- *
- * Reference: https://github.com/ethereum/go-ethereum/blob/swarm/internal/web3ext/web3ext.go#L33
- */
-
-"use strict";
-
-var Method = require('../method');
-var Property = require('../property');
-
-function Swarm(web3) {
-    this._requestManager = web3._requestManager;
-
-    var self = this;
-
-    methods().forEach(function(method) {
-        method.attachToObject(self);
-        method.setRequestManager(self._requestManager);
-    });
-
-    properties().forEach(function(p) {
-        p.attachToObject(self);
-        p.setRequestManager(self._requestManager);
-    });
-}
-
-var methods = function () {
-    var blockNetworkRead = new Method({
-        name: 'blockNetworkRead',
-        call: 'bzz_blockNetworkRead',
-        params: 1,
-        inputFormatter: [null]
-    });
-
-    var syncEnabled = new Method({
-        name: 'syncEnabled',
-        call: 'bzz_syncEnabled',
-        params: 1,
-        inputFormatter: [null]
-    });
-
-    var swapEnabled = new Method({
-        name: 'swapEnabled',
-        call: 'bzz_swapEnabled',
-        params: 1,
-        inputFormatter: [null]
-    });
-
-    var download = new Method({
-        name: 'download',
-        call: 'bzz_download',
-        params: 2,
-        inputFormatter: [null, null]
-    });
-
-    var upload = new Method({
-        name: 'upload',
-        call: 'bzz_upload',
-        params: 2,
-        inputFormatter: [null, null]
-    });
-
-    var retrieve = new Method({
-        name: 'retrieve',
-        call: 'bzz_retrieve',
-        params: 1,
-        inputFormatter: [null]
-    });
-
-    var store = new Method({
-        name: 'store',
-        call: 'bzz_store',
-        params: 2,
-        inputFormatter: [null, null]
-    });
-
-    var get = new Method({
-        name: 'get',
-        call: 'bzz_get',
-        params: 1,
-        inputFormatter: [null]
-    });
-
-    var put = new Method({
-        name: 'put',
-        call: 'bzz_put',
-        params: 2,
-        inputFormatter: [null, null]
-    });
-
-    var modify = new Method({
-        name: 'modify',
-        call: 'bzz_modify',
-        params: 4,
-        inputFormatter: [null, null, null, null]
-    });
-
-    return [
-        blockNetworkRead,
-        syncEnabled,
-        swapEnabled,
-        download,
-        upload,
-        retrieve,
-        store,
-        get,
-        put,
-        modify
-    ];
-};
-
-var properties = function () {
-    return [
-        new Property({
-            name: 'hive',
-            getter: 'bzz_hive'
-        }),
-        new Property({
-            name: 'info',
-            getter: 'bzz_info'
-        })
-    ];
-};
-
-
-module.exports = Swarm;
-
-},{"../method":36,"../property":45}],43:[function(require,module,exports){
+},{"../formatters":30,"../method":36,"../property":43}],41:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6024,13 +5727,13 @@ var eth = function () {
             case 'latest':
                 args.shift();
                 this.params = 0;
-                return 'eth_newBlockFilter';
+                return 'platon_newBlockFilter';
             case 'pending':
                 args.shift();
                 this.params = 0;
-                return 'eth_newPendingTransactionFilter';
+                return 'platon_newPendingTransactionFilter';
             default:
-                return 'eth_newFilter';
+                return 'platon_newFilter';
         }
     };
 
@@ -6042,19 +5745,19 @@ var eth = function () {
 
     var uninstallFilter = new Method({
         name: 'uninstallFilter',
-        call: 'eth_uninstallFilter',
+        call: 'platon_uninstallFilter',
         params: 1
     });
 
     var getLogs = new Method({
         name: 'getLogs',
-        call: 'eth_getFilterLogs',
+        call: 'platon_getFilterLogs',
         params: 1
     });
 
     var poll = new Method({
         name: 'poll',
-        call: 'eth_getFilterChanges',
+        call: 'platon_getFilterChanges',
         params: 1
     });
 
@@ -6099,7 +5802,7 @@ module.exports = {
 };
 
 
-},{"../method":36}],44:[function(require,module,exports){
+},{"../method":36}],42:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6140,7 +5843,7 @@ module.exports = {
 };
 
 
-},{"../contracts/GlobalRegistrar.json":1,"../contracts/ICAPRegistrar.json":2}],45:[function(require,module,exports){
+},{"../contracts/GlobalRegistrar.json":1,"../contracts/ICAPRegistrar.json":2}],43:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6286,7 +5989,7 @@ Property.prototype.request = function () {
 module.exports = Property;
 
 
-},{"../utils/utils":20}],46:[function(require,module,exports){
+},{"../utils/utils":20}],44:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6553,18 +6256,7 @@ RequestManager.prototype.poll = function () {
 module.exports = RequestManager;
 
 
-},{"../utils/config":18,"../utils/utils":20,"./errors":26,"./jsonrpc":35}],47:[function(require,module,exports){
-
-
-var Settings = function () {
-    this.defaultBlock = 'latest';
-    this.defaultAccount = undefined;
-};
-
-module.exports = Settings;
-
-
-},{}],48:[function(require,module,exports){
+},{"../utils/config":18,"../utils/utils":20,"./errors":26,"./jsonrpc":35}],45:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6628,7 +6320,7 @@ var pollSyncing = function(self) {
     };
 
     self.requestManager.startPolling({
-        method: 'eth_syncing',
+        method: 'platon_syncing',
         params: [],
     }, self.pollId, onMessage, self.stopWatching.bind(self));
 
@@ -6659,7 +6351,7 @@ IsSyncing.prototype.stopWatching = function () {
 module.exports = IsSyncing;
 
 
-},{"../utils/utils":20,"./formatters":30}],49:[function(require,module,exports){
+},{"../utils/utils":20,"./formatters":30}],46:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6753,7 +6445,9 @@ var deposit = function (eth, from, to, value, client, callback) {
 module.exports = transfer;
 
 
-},{"../contracts/SmartExchange.json":3,"./iban":33}],50:[function(require,module,exports){
+},{"../contracts/SmartExchange.json":3,"./iban":33}],47:[function(require,module,exports){
+
+},{}],48:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -6986,7 +6680,7 @@ module.exports = transfer;
 	return CryptoJS.AES;
 
 }));
-},{"./cipher-core":51,"./core":52,"./enc-base64":53,"./evpkdf":55,"./md5":60}],51:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50,"./enc-base64":51,"./evpkdf":53,"./md5":58}],49:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -7862,7 +7556,7 @@ module.exports = transfer;
 
 
 }));
-},{"./core":52}],52:[function(require,module,exports){
+},{"./core":50}],50:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -8623,7 +8317,7 @@ module.exports = transfer;
 	return CryptoJS;
 
 }));
-},{}],53:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -8759,7 +8453,7 @@ module.exports = transfer;
 	return CryptoJS.enc.Base64;
 
 }));
-},{"./core":52}],54:[function(require,module,exports){
+},{"./core":50}],52:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -8909,7 +8603,7 @@ module.exports = transfer;
 	return CryptoJS.enc.Utf16;
 
 }));
-},{"./core":52}],55:[function(require,module,exports){
+},{"./core":50}],53:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9042,7 +8736,7 @@ module.exports = transfer;
 	return CryptoJS.EvpKDF;
 
 }));
-},{"./core":52,"./hmac":57,"./sha1":76}],56:[function(require,module,exports){
+},{"./core":50,"./hmac":55,"./sha1":74}],54:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9109,7 +8803,7 @@ module.exports = transfer;
 	return CryptoJS.format.Hex;
 
 }));
-},{"./cipher-core":51,"./core":52}],57:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],55:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9253,7 +8947,7 @@ module.exports = transfer;
 
 
 }));
-},{"./core":52}],58:[function(require,module,exports){
+},{"./core":50}],56:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9272,7 +8966,7 @@ module.exports = transfer;
 	return CryptoJS;
 
 }));
-},{"./aes":50,"./cipher-core":51,"./core":52,"./enc-base64":53,"./enc-utf16":54,"./evpkdf":55,"./format-hex":56,"./hmac":57,"./lib-typedarrays":59,"./md5":60,"./mode-cfb":61,"./mode-ctr":63,"./mode-ctr-gladman":62,"./mode-ecb":64,"./mode-ofb":65,"./pad-ansix923":66,"./pad-iso10126":67,"./pad-iso97971":68,"./pad-nopadding":69,"./pad-zeropadding":70,"./pbkdf2":71,"./rabbit":73,"./rabbit-legacy":72,"./rc4":74,"./ripemd160":75,"./sha1":76,"./sha224":77,"./sha256":78,"./sha3":79,"./sha384":80,"./sha512":81,"./tripledes":82,"./x64-core":83}],59:[function(require,module,exports){
+},{"./aes":48,"./cipher-core":49,"./core":50,"./enc-base64":51,"./enc-utf16":52,"./evpkdf":53,"./format-hex":54,"./hmac":55,"./lib-typedarrays":57,"./md5":58,"./mode-cfb":59,"./mode-ctr":61,"./mode-ctr-gladman":60,"./mode-ecb":62,"./mode-ofb":63,"./pad-ansix923":64,"./pad-iso10126":65,"./pad-iso97971":66,"./pad-nopadding":67,"./pad-zeropadding":68,"./pbkdf2":69,"./rabbit":71,"./rabbit-legacy":70,"./rc4":72,"./ripemd160":73,"./sha1":74,"./sha224":75,"./sha256":76,"./sha3":77,"./sha384":78,"./sha512":79,"./tripledes":80,"./x64-core":81}],57:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9349,7 +9043,7 @@ module.exports = transfer;
 	return CryptoJS.lib.WordArray;
 
 }));
-},{"./core":52}],60:[function(require,module,exports){
+},{"./core":50}],58:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9618,7 +9312,7 @@ module.exports = transfer;
 	return CryptoJS.MD5;
 
 }));
-},{"./core":52}],61:[function(require,module,exports){
+},{"./core":50}],59:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9697,7 +9391,7 @@ module.exports = transfer;
 	return CryptoJS.mode.CFB;
 
 }));
-},{"./cipher-core":51,"./core":52}],62:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],60:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9814,7 +9508,7 @@ module.exports = transfer;
 	return CryptoJS.mode.CTRGladman;
 
 }));
-},{"./cipher-core":51,"./core":52}],63:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],61:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9873,7 +9567,7 @@ module.exports = transfer;
 	return CryptoJS.mode.CTR;
 
 }));
-},{"./cipher-core":51,"./core":52}],64:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],62:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9914,7 +9608,7 @@ module.exports = transfer;
 	return CryptoJS.mode.ECB;
 
 }));
-},{"./cipher-core":51,"./core":52}],65:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],63:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9969,7 +9663,7 @@ module.exports = transfer;
 	return CryptoJS.mode.OFB;
 
 }));
-},{"./cipher-core":51,"./core":52}],66:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],64:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10019,7 +9713,7 @@ module.exports = transfer;
 	return CryptoJS.pad.Ansix923;
 
 }));
-},{"./cipher-core":51,"./core":52}],67:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],65:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10064,7 +9758,7 @@ module.exports = transfer;
 	return CryptoJS.pad.Iso10126;
 
 }));
-},{"./cipher-core":51,"./core":52}],68:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],66:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10105,7 +9799,7 @@ module.exports = transfer;
 	return CryptoJS.pad.Iso97971;
 
 }));
-},{"./cipher-core":51,"./core":52}],69:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],67:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10136,7 +9830,7 @@ module.exports = transfer;
 	return CryptoJS.pad.NoPadding;
 
 }));
-},{"./cipher-core":51,"./core":52}],70:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],68:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10182,7 +9876,7 @@ module.exports = transfer;
 	return CryptoJS.pad.ZeroPadding;
 
 }));
-},{"./cipher-core":51,"./core":52}],71:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50}],69:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10328,7 +10022,7 @@ module.exports = transfer;
 	return CryptoJS.PBKDF2;
 
 }));
-},{"./core":52,"./hmac":57,"./sha1":76}],72:[function(require,module,exports){
+},{"./core":50,"./hmac":55,"./sha1":74}],70:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10519,7 +10213,7 @@ module.exports = transfer;
 	return CryptoJS.RabbitLegacy;
 
 }));
-},{"./cipher-core":51,"./core":52,"./enc-base64":53,"./evpkdf":55,"./md5":60}],73:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50,"./enc-base64":51,"./evpkdf":53,"./md5":58}],71:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10712,7 +10406,7 @@ module.exports = transfer;
 	return CryptoJS.Rabbit;
 
 }));
-},{"./cipher-core":51,"./core":52,"./enc-base64":53,"./evpkdf":55,"./md5":60}],74:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50,"./enc-base64":51,"./evpkdf":53,"./md5":58}],72:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10852,7 +10546,7 @@ module.exports = transfer;
 	return CryptoJS.RC4;
 
 }));
-},{"./cipher-core":51,"./core":52,"./enc-base64":53,"./evpkdf":55,"./md5":60}],75:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50,"./enc-base64":51,"./evpkdf":53,"./md5":58}],73:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11120,7 +10814,7 @@ module.exports = transfer;
 	return CryptoJS.RIPEMD160;
 
 }));
-},{"./core":52}],76:[function(require,module,exports){
+},{"./core":50}],74:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11271,7 +10965,7 @@ module.exports = transfer;
 	return CryptoJS.SHA1;
 
 }));
-},{"./core":52}],77:[function(require,module,exports){
+},{"./core":50}],75:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11352,7 +11046,7 @@ module.exports = transfer;
 	return CryptoJS.SHA224;
 
 }));
-},{"./core":52,"./sha256":78}],78:[function(require,module,exports){
+},{"./core":50,"./sha256":76}],76:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11552,7 +11246,7 @@ module.exports = transfer;
 	return CryptoJS.SHA256;
 
 }));
-},{"./core":52}],79:[function(require,module,exports){
+},{"./core":50}],77:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11876,7 +11570,7 @@ module.exports = transfer;
 	return CryptoJS.SHA3;
 
 }));
-},{"./core":52,"./x64-core":83}],80:[function(require,module,exports){
+},{"./core":50,"./x64-core":81}],78:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11960,7 +11654,7 @@ module.exports = transfer;
 	return CryptoJS.SHA384;
 
 }));
-},{"./core":52,"./sha512":81,"./x64-core":83}],81:[function(require,module,exports){
+},{"./core":50,"./sha512":79,"./x64-core":81}],79:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12284,7 +11978,7 @@ module.exports = transfer;
 	return CryptoJS.SHA512;
 
 }));
-},{"./core":52,"./x64-core":83}],82:[function(require,module,exports){
+},{"./core":50,"./x64-core":81}],80:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13055,7 +12749,7 @@ module.exports = transfer;
 	return CryptoJS.TripleDES;
 
 }));
-},{"./cipher-core":51,"./core":52,"./enc-base64":53,"./evpkdf":55,"./md5":60}],83:[function(require,module,exports){
+},{"./cipher-core":49,"./core":50,"./enc-base64":51,"./evpkdf":53,"./md5":58}],81:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13360,7 +13054,7 @@ module.exports = transfer;
 	return CryptoJS;
 
 }));
-},{"./core":52}],84:[function(require,module,exports){
+},{"./core":50}],82:[function(require,module,exports){
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
 ;(function(root) {
 
@@ -13606,25 +13300,25 @@ module.exports = transfer;
 
 }(this));
 
-},{}],85:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = XMLHttpRequest;
 
 },{}],"bignumber.js":[function(require,module,exports){
-/*! bignumber.js v4.1.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
+/*! bignumber.js v2.0.7 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
-;(function (globalObj) {
+;(function (global) {
     'use strict';
 
     /*
-      bignumber.js v4.1.0
+      bignumber.js v2.0.7
       A JavaScript library for arbitrary-precision arithmetic.
       https://github.com/MikeMcl/bignumber.js
-      Copyright (c) 2017 Michael Mclaughlin <M8ch88l@gmail.com>
+      Copyright (c) 2015 Michael Mclaughlin <M8ch88l@gmail.com>
       MIT Expat Licence
     */
 
 
-    var BigNumber,
+    var BigNumber, crypto, parseNumeric,
         isNumeric = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
         mathceil = Math.ceil,
         mathfloor = Math.floor,
@@ -13650,8 +13344,8 @@ module.exports = XMLHttpRequest;
     /*
      * Create and return a BigNumber constructor.
      */
-    function constructorFactory(config) {
-        var div, parseNumeric,
+    function another(configObj) {
+        var div,
 
             // id tracks the caller function, so its name can be included in error messages.
             id = 0,
@@ -13737,7 +13431,7 @@ module.exports = XMLHttpRequest;
 
             // The maximum number of significant digits of the result of the toPower operation.
             // If POW_PRECISION is 0, there will be unlimited significant digits.
-            POW_PRECISION = 0,                       // 0 to MAX
+            POW_PRECISION = 100,                     // 0 to MAX
 
             // The format specification used by the BigNumber.prototype.toFormat method.
             FORMAT = {
@@ -13870,9 +13564,7 @@ module.exports = XMLHttpRequest;
 
                 // Disallow numbers with over 15 significant digits if number type.
                 // 'new BigNumber() number type has more than 15 significant digits: {n}'
-                if ( num && ERRORS && len > 15 && ( n > MAX_SAFE_INTEGER || n !== mathfloor(n) ) ) {
-                    raise( id, tooManyDigits, x.s * n );
-                }
+                if ( num && ERRORS && len > 15 ) raise( id, tooManyDigits, x.s * n );
 
                 e = e - i - 1;
 
@@ -13927,7 +13619,7 @@ module.exports = XMLHttpRequest;
         // CONSTRUCTOR PROPERTIES
 
 
-        BigNumber.another = constructorFactory;
+        BigNumber.another = another;
 
         BigNumber.ROUND_UP = 0;
         BigNumber.ROUND_DOWN = 1;
@@ -13974,7 +13666,7 @@ module.exports = XMLHttpRequest;
          * Ignore properties/parameters set to null or undefined.
          * Return an object with the properties current values.
          */
-        BigNumber.config = BigNumber.set = function () {
+        BigNumber.config = function () {
             var v, p,
                 i = 0,
                 r = {},
@@ -14054,19 +13746,9 @@ module.exports = XMLHttpRequest;
             // 'config() crypto unavailable: {crypto}'
             if ( has( p = 'CRYPTO' ) ) {
 
-                if ( v === true || v === false || v === 1 || v === 0 ) {
-                    if (v) {
-                        v = typeof crypto == 'undefined';
-                        if ( !v && crypto && (crypto.getRandomValues || crypto.randomBytes)) {
-                            CRYPTO = true;
-                        } else if (ERRORS) {
-                            raise( 2, 'crypto unavailable', v ? void 0 : crypto );
-                        } else {
-                            CRYPTO = false;
-                        }
-                    } else {
-                        CRYPTO = false;
-                    }
+                if ( v === !!v || v === 1 || v === 0 ) {
+                    CRYPTO = !!( v && crypto && typeof crypto == 'object' );
+                    if ( v && !CRYPTO && ERRORS ) raise( 2, 'crypto unavailable', crypto );
                 } else if (ERRORS) {
                     raise( 2, p + notBool, v );
                 }
@@ -14156,7 +13838,7 @@ module.exports = XMLHttpRequest;
                 if (CRYPTO) {
 
                     // Browsers supporting crypto.getRandomValues.
-                    if (crypto.getRandomValues) {
+                    if ( crypto && crypto.getRandomValues ) {
 
                         a = crypto.getRandomValues( new Uint32Array( k *= 2 ) );
 
@@ -14189,7 +13871,7 @@ module.exports = XMLHttpRequest;
                         i = k / 2;
 
                     // Node.js supporting crypto.randomBytes.
-                    } else if (crypto.randomBytes) {
+                    } else if ( crypto && crypto.randomBytes ) {
 
                         // buffer
                         a = crypto.randomBytes( k *= 7 );
@@ -14214,14 +13896,13 @@ module.exports = XMLHttpRequest;
                             }
                         }
                         i = k / 7;
-                    } else {
-                        CRYPTO = false;
-                        if (ERRORS) raise( 14, 'crypto unavailable', crypto );
+                    } else if (ERRORS) {
+                        raise( 14, 'crypto unavailable', crypto );
                     }
                 }
 
-                // Use Math.random.
-                if (!CRYPTO) {
+                // Use Math.random: CRYPTO is false or crypto is unavailable and ERRORS is false.
+                if (!i) {
 
                     for ( ; i < k; ) {
                         v = random53bitInt();
@@ -14247,7 +13928,7 @@ module.exports = XMLHttpRequest;
                 } else {
 
                     // Remove leading elements which are zero and adjust exponent accordingly.
-                    for ( e = -1 ; c[0] === 0; c.splice(0, 1), e -= LOG_BASE);
+                    for ( e = -1 ; c[0] === 0; c.shift(), e -= LOG_BASE);
 
                     // Count the digits of the first element of c to determine leading zeros, and...
                     for ( i = 1, v = c[0]; v >= 10; v /= 10, i++);
@@ -14340,7 +14021,7 @@ module.exports = XMLHttpRequest;
 
                         if ( !d ) {
                             ++e;
-                            xc = [1].concat(xc);
+                            xc.unshift(1);
                         }
                     }
                 }
@@ -14378,7 +14059,7 @@ module.exports = XMLHttpRequest;
                     x[i] = temp % base;
                 }
 
-                if (carry) x = [carry].concat(x);
+                if (carry) x.unshift(carry);
 
                 return x;
             }
@@ -14412,7 +14093,7 @@ module.exports = XMLHttpRequest;
                 }
 
                 // Remove leading zeros.
-                for ( ; !a[0] && a.length > 1; a.splice(0, 1) );
+                for ( ; !a[0] && a.length > 1; a.shift() );
             }
 
             // x: dividend, y: divisor.
@@ -14481,7 +14162,7 @@ module.exports = XMLHttpRequest;
                     // Add zeros to make remainder as long as divisor.
                     for ( ; remL < yL; rem[remL++] = 0 );
                     yz = yc.slice();
-                    yz = [0].concat(yz);
+                    yz.unshift(0);
                     yc0 = yc[0];
                     if ( yc[1] >= base / 2 ) yc0++;
                     // Not necessary, but to prevent trial digit n > base, when using base 3.
@@ -14552,7 +14233,7 @@ module.exports = XMLHttpRequest;
                                 prodL = prod.length;
                             }
 
-                            if ( prodL < remL ) prod = [0].concat(prod);
+                            if ( prodL < remL ) prod.unshift(0);
 
                             // Subtract product from remainder.
                             subtract( rem, prod, remL, base );
@@ -14593,7 +14274,7 @@ module.exports = XMLHttpRequest;
                     more = rem[0] != null;
 
                     // Leading zero?
-                    if ( !qc[0] ) qc.splice(0, 1);
+                    if ( !qc[0] ) qc.shift();
                 }
 
                 if ( base == BASE ) {
@@ -14753,11 +14434,11 @@ module.exports = XMLHttpRequest;
 
         // Handle values that fail the validity test in BigNumber.
         parseNumeric = (function () {
-            var basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i,
+            var basePrefix = /^(-?)0([xbo])/i,
                 dotAfter = /^([^.]+)\.$/,
                 dotBefore = /^\.([^.]+)$/,
                 isInfinityOrNaN = /^-?(Infinity|NaN)$/,
-                whitespaceOrPlus = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
+                whitespaceOrPlus = /^\s*\+|^\s+|\s+$/g;
 
             return function ( x, str, num, b ) {
                 var base,
@@ -14925,7 +14606,7 @@ module.exports = XMLHttpRequest;
                             sd -= x.e + 1;
 
                             // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-                            xc[0] = pows10[ ( LOG_BASE - sd % LOG_BASE ) % LOG_BASE ];
+                            xc[0] = pows10[ sd % LOG_BASE ];
                             x.e = -sd || 0;
                         } else {
 
@@ -15303,7 +14984,7 @@ module.exports = XMLHttpRequest;
             }
 
             // Remove leading zeros and adjust exponent accordingly.
-            for ( ; xc[0] == 0; xc.splice(0, 1), --ye );
+            for ( ; xc[0] == 0; xc.shift(), --ye );
 
             // Zero?
             if ( !xc[0] ) {
@@ -15467,11 +15148,11 @@ module.exports = XMLHttpRequest;
             // Only start adding at yc.length - 1 as the further digits of xc can be ignored.
             for ( a = 0; b; ) {
                 a = ( xc[--b] = xc[b] + yc[b] + a ) / BASE | 0;
-                xc[b] = BASE === xc[b] ? 0 : xc[b] % BASE;
+                xc[b] %= BASE;
             }
 
             if (a) {
-                xc = [a].concat(xc);
+                xc.unshift(a);
                 ++ye;
             }
 
@@ -15760,7 +15441,7 @@ module.exports = XMLHttpRequest;
             if (c) {
                 ++e;
             } else {
-                zc.splice(0, 1);
+                zc.shift();
             }
 
             return normalise( y, zc, e );
@@ -15978,91 +15659,59 @@ module.exports = XMLHttpRequest;
          * Return the value of this BigNumber converted to a number primitive.
          */
         P.toNumber = function () {
-            return +this;
+            var x = this;
+
+            // Ensure zero has correct sign.
+            return +x || ( x.s ? x.s * 0 : NaN );
         };
 
 
         /*
          * Return a BigNumber whose value is the value of this BigNumber raised to the power n.
-         * If m is present, return the result modulo m.
          * If n is negative round according to DECIMAL_PLACES and ROUNDING_MODE.
-         * If POW_PRECISION is non-zero and m is not present, round to POW_PRECISION using
-         * ROUNDING_MODE.
+         * If POW_PRECISION is not 0, round to POW_PRECISION using ROUNDING_MODE.
          *
-         * The modular power operation works efficiently when x, n, and m are positive integers,
-         * otherwise it is equivalent to calculating x.toPower(n).modulo(m) (with POW_PRECISION 0).
-         *
-         * n {number} Integer, -MAX_SAFE_INTEGER to MAX_SAFE_INTEGER inclusive.
-         * [m] {number|string|BigNumber} The modulus.
+         * n {number} Integer, -9007199254740992 to 9007199254740992 inclusive.
+         * (Performs 54 loop iterations for n of 9007199254740992.)
          *
          * 'pow() exponent not an integer: {n}'
          * 'pow() exponent out of range: {n}'
-         *
-         * Performs 54 loop iterations for n of 9007199254740991.
          */
-        P.toPower = P.pow = function ( n, m ) {
-            var k, y, z,
+        P.toPower = P.pow = function (n) {
+            var k, y,
                 i = mathfloor( n < 0 ? -n : +n ),
                 x = this;
-
-            if ( m != null ) {
-                id = 23;
-                m = new BigNumber(m);
-            }
 
             // Pass ±Infinity to Math.pow if exponent is out of range.
             if ( !isValidInt( n, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 23, 'exponent' ) &&
               ( !isFinite(n) || i > MAX_SAFE_INTEGER && ( n /= 0 ) ||
-                parseFloat(n) != n && !( n = NaN ) ) || n == 0 ) {
-                k = Math.pow( +x, n );
-                return new BigNumber( m ? k % m : k );
+                parseFloat(n) != n && !( n = NaN ) ) ) {
+                return new BigNumber( Math.pow( +x, n ) );
             }
 
-            if (m) {
-                if ( n > 1 && x.gt(ONE) && x.isInt() && m.gt(ONE) && m.isInt() ) {
-                    x = x.mod(m);
-                } else {
-                    z = m;
-
-                    // Nullify m so only a single mod operation is performed at the end.
-                    m = null;
-                }
-            } else if (POW_PRECISION) {
-
-                // Truncating each coefficient array to a length of k after each multiplication
-                // equates to truncating significant digits to POW_PRECISION + [28, 41],
-                // i.e. there will be a minimum of 28 guard digits retained.
-                // (Using + 1.5 would give [9, 21] guard digits.)
-                k = mathceil( POW_PRECISION / LOG_BASE + 2 );
-            }
-
+            // Truncating each coefficient array to a length of k after each multiplication equates
+            // to truncating significant digits to POW_PRECISION + [28, 41], i.e. there will be a
+            // minimum of 28 guard digits retained. (Using + 1.5 would give [9, 21] guard digits.)
+            k = POW_PRECISION ? mathceil( POW_PRECISION / LOG_BASE + 2 ) : 0;
             y = new BigNumber(ONE);
 
             for ( ; ; ) {
+
                 if ( i % 2 ) {
                     y = y.times(x);
                     if ( !y.c ) break;
-                    if (k) {
-                        if ( y.c.length > k ) y.c.length = k;
-                    } else if (m) {
-                        y = y.mod(m);
-                    }
+                    if ( k && y.c.length > k ) y.c.length = k;
                 }
 
                 i = mathfloor( i / 2 );
                 if ( !i ) break;
+
                 x = x.times(x);
-                if (k) {
-                    if ( x.c && x.c.length > k ) x.c.length = k;
-                } else if (m) {
-                    x = x.mod(m);
-                }
+                if ( k && x.c && x.c.length > k ) x.c.length = k;
             }
 
-            if (m) return y;
             if ( n < 0 ) y = ONE.div(y);
-
-            return z ? y.mod(z) : k ? round( y, POW_PRECISION, ROUNDING_MODE ) : y;
+            return k ? round( y, POW_PRECISION, ROUNDING_MODE ) : y;
         };
 
 
@@ -16140,30 +15789,26 @@ module.exports = XMLHttpRequest;
         };
 
 
+
         /*
-         * Return as toString, but do not accept a base argument, and include the minus sign for
-         * negative zero.
+         * Return as toString, but do not accept a base argument.
          */
         P.valueOf = P.toJSON = function () {
-            var str,
-                n = this,
-                e = n.e;
-
-            if ( e === null ) return n.toString();
-
-            str = coeffToString( n.c );
-
-            str = e <= TO_EXP_NEG || e >= TO_EXP_POS
-                ? toExponential( str, e )
-                : toFixedPoint( str, e );
-
-            return n.s < 0 ? '-' + str : str;
+            return this.toString();
         };
 
 
-        P.isBigNumber = true;
+        // Aliases for BigDecimal methods.
+        //P.add = P.plus;         // P.add included above
+        //P.subtract = P.minus;   // P.sub included above
+        //P.multiply = P.times;   // P.mul included above
+        //P.divide = P.div;
+        //P.remainder = P.mod;
+        //P.compareTo = P.cmp;
+        //P.negate = P.neg;
 
-        if ( config != null ) BigNumber.config(config);
+
+        if ( configObj != null ) BigNumber.config(configObj);
 
         return BigNumber;
     }
@@ -16326,26 +15971,24 @@ module.exports = XMLHttpRequest;
     // EXPORT
 
 
-    BigNumber = constructorFactory();
-    BigNumber['default'] = BigNumber.BigNumber = BigNumber;
-
+    BigNumber = another();
 
     // AMD.
     if ( typeof define == 'function' && define.amd ) {
         define( function () { return BigNumber; } );
 
-    // Node.js and other environments that support module.exports.
+    // Node and other environments that support module.exports.
     } else if ( typeof module != 'undefined' && module.exports ) {
         module.exports = BigNumber;
+        if ( !crypto ) try { crypto = require('crypto'); } catch (e) {}
 
     // Browser.
     } else {
-        if ( !globalObj ) globalObj = typeof self != 'undefined' ? self : Function('return this')();
-        globalObj.BigNumber = BigNumber;
+        global.BigNumber = BigNumber;
     }
 })(this);
 
-},{}],"web3":[function(require,module,exports){
+},{"crypto":47}],"web3":[function(require,module,exports){
 var Web3 = require('./lib/web3');
 
 // dont override global variable
