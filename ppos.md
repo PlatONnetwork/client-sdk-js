@@ -342,9 +342,9 @@ reply = await ppos.call(params);
 
 由于是一个交易，将会涉及到调用交易需要的一些参数，比如gas，gasPrice。当交易发送出去之后，为了确认交易是否上链，需要不断的通过交易哈希去轮询链上的结果。这就有个轮询次数与每次轮询之间的间隔。如果默认参数不符合需求，传入other对象来更新默认的值。
 
-对于 gas, gasPrice, retry, interval 这四个参数，如果other入参有指定，则使用other指定的。如果other入参未指定，则使用调用函数时候`updateSetting(setting)`指定的参数，否则，使用默认的数值。
+对于 gas, gasPrice, retry, interval 这四个参数，如果other入参有指定，则使用other指定的。如果other入参未指定，则使用调用函数时候`updateSetting(setting)`指定的参数，否则使用默认的数值。
 
-注意此接口为async函数，需要加await返回调用结果，否在返回一个Promise对象。
+注意此接口为async函数，需要加await返回调用结果，否则返回一个Promise对象。
 
 入参说明：
 * params Object|Array 调用参数。
@@ -366,7 +366,7 @@ reply = await ppos.call(params);
   * cumulativeGasUsed - Number: 该交易执行时所在块的gas累计总用量
   * gasUsed- Number: 该交易的gas总量
   * logs - Array: 该交易产生的日志对象数组
-* errMsg String 调用失败！如果发送交易返回之后没有回执，则返回错误信息`no hash`。如果发送交易之后有回执，但是再规定的事件内没有查到收据对象，则返回 `getTransactionReceipt txHash ${hash} interval ${interval}ms by ${retry} retry failed`
+* errMsg String 调用失败！如果发送交易返回之后没有回执，则返回错误信息`no hash`。如果发送交易之后有回执，但是在规定的时间内没有查到收据对象，则返回 `getTransactionReceipt txHash ${hash} interval ${interval}ms by ${retry} retry failed`
 
 以调用 `1004. delegate(): 发起委托`这个接口，入参顺序从上到下，入参如下所示：
 
@@ -405,4 +405,4 @@ params = [1004, 0, ppos.hexStrBuf(nodeId), ppos.bigNumBuf("100000000000000000000
 reply = await ppos.send(params, other);
 ```
 ### 其他
-更多调用示例请参考test目录下面写的单元测试 ppos.js 文件
+你可以根据test的目录下面config.default.js文件为模板配置好设置保存在同级目录的config.js文件。然后执行`npm run ppos`执行单元测试。更多调用示例请参考test目录下面写的单元测试ppos.js文件
