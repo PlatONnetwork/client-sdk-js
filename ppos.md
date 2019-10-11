@@ -355,6 +355,7 @@ reply = await ppos.call(params);
   * gasPrice String 燃油价格，默认 '0x9184e72a000000'。
   * retry Number 查询交易收据对象次数，默认 600 次。
   * interval Number 查询交易收据对象的间隔，单位为ms。默认 100 ms。
+
 出参
 * reply Object 调用成功！send调用方法返回指定交易的收据对象
   * status - Boolean: 成功的交易返回true，如果EVM回滚了该交易则返回false
