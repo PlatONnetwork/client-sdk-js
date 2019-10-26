@@ -21,3 +21,5 @@ npm-debug.log
 .npm/
 packages/
 package-lock.json
+/test/config.json
+/test/logs.json
