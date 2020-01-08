@@ -6,8 +6,8 @@ var assert = chai.assert;
 
 describe("web3", function() {
     describe("version", function() {
-        it("version is 1.0.0", function() {
-            assert.deepEqual(web3.version, "1.0.0");
+        it("version is 1.2.4", function() {
+            assert.deepEqual(web3.version, "1.2.4");
         });
     });
 

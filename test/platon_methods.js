@@ -17,7 +17,6 @@ describe('platon', function() {
         u.methodExists(platon, 'getBlock');
         u.methodExists(platon, 'getTransaction');
         u.methodExists(platon, 'getBlockTransactionCount');
-        u.methodExists(platon, 'getBlockUncleCount');
         u.methodExists(platon, 'subscribe');
         u.methodExists(platon, 'Contract');
         u.methodExists(platon, 'getGasPrice');

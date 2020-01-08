@@ -13,7 +13,7 @@ var useLocalWallet = function (test, provider, web3) {
     provider.injectResult(1);
     provider.injectValidation(function (payload) {
         assert.equal(payload.jsonrpc, '2.0');
-        assert.equal(payload.method, 'net_version');
+        assert.equal(payload.method, 'platon_chainId');
         assert.deepEqual(payload.params, []);
     });
 
