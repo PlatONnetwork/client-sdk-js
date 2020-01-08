@@ -42,23 +42,23 @@ var formatter = helpers.formatters;
 
 
 var blockCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? "eth_getBlockByHash" : "eth_getBlockByNumber";
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? "platon_getBlockByHash" : "platon_getBlockByNumber";
 };
 
 var transactionFromBlockCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getTransactionByBlockHashAndIndex' : 'eth_getTransactionByBlockNumberAndIndex';
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getTransactionByBlockHashAndIndex' : 'platon_getTransactionByBlockNumberAndIndex';
 };
 
 var uncleCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleByBlockHashAndIndex' : 'eth_getUncleByBlockNumberAndIndex';
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getUncleByBlockHashAndIndex' : 'platon_getUncleByBlockNumberAndIndex';
 };
 
 var getBlockTransactionCountCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getBlockTransactionCountByHash' : 'eth_getBlockTransactionCountByNumber';
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getBlockTransactionCountByHash' : 'platon_getBlockTransactionCountByNumber';
 };
 
 var uncleCountCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleCountByBlockHash' : 'eth_getUncleCountByBlockNumber';
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'platon_getUncleCountByBlockHash' : 'platon_getUncleCountByBlockNumber';
 };
 
 
@@ -319,65 +319,49 @@ var Eth = function Eth() {
         }),
         new Method({
             name: 'getProtocolVersion',
-            call: 'eth_protocolVersion',
+            call: 'platon_protocolVersion',
             params: 0
-        }),
-        new Method({
-            name: 'getCoinbase',
-            call: 'eth_coinbase',
-            params: 0
-        }),
-        new Method({
-            name: 'isMining',
-            call: 'eth_mining',
-            params: 0
-        }),
-        new Method({
-            name: 'getHashrate',
-            call: 'eth_hashrate',
-            params: 0,
-            outputFormatter: utils.hexToNumber
         }),
         new Method({
             name: 'isSyncing',
-            call: 'eth_syncing',
+            call: 'platon_syncing',
             params: 0,
             outputFormatter: formatter.outputSyncingFormatter
         }),
         new Method({
             name: 'getGasPrice',
-            call: 'eth_gasPrice',
+            call: 'platon_gasPrice',
             params: 0,
             outputFormatter: formatter.outputBigNumberFormatter
         }),
         new Method({
             name: 'getAccounts',
-            call: 'eth_accounts',
+            call: 'platon_accounts',
             params: 0,
             outputFormatter: utils.toChecksumAddress
         }),
         new Method({
             name: 'getBlockNumber',
-            call: 'eth_blockNumber',
+            call: 'platon_blockNumber',
             params: 0,
             outputFormatter: utils.hexToNumber
         }),
         new Method({
             name: 'getBalance',
-            call: 'eth_getBalance',
+            call: 'platon_getBalance',
             params: 2,
             inputFormatter: [formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter],
             outputFormatter: formatter.outputBigNumberFormatter
         }),
         new Method({
             name: 'getStorageAt',
-            call: 'eth_getStorageAt',
+            call: 'platon_getStorageAt',
             params: 3,
             inputFormatter: [formatter.inputAddressFormatter, utils.numberToHex, formatter.inputDefaultBlockNumberFormatter]
         }),
         new Method({
             name: 'getCode',
-            call: 'eth_getCode',
+            call: 'platon_getCode',
             params: 2,
             inputFormatter: [formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter]
         }),
@@ -389,14 +373,6 @@ var Eth = function Eth() {
             outputFormatter: formatter.outputBlockFormatter
         }),
         new Method({
-            name: 'getUncle',
-            call: uncleCall,
-            params: 2,
-            inputFormatter: [formatter.inputBlockNumberFormatter, utils.numberToHex],
-            outputFormatter: formatter.outputBlockFormatter,
-
-        }),
-        new Method({
             name: 'getBlockTransactionCount',
             call: getBlockTransactionCountCall,
             params: 1,
@@ -404,15 +380,8 @@ var Eth = function Eth() {
             outputFormatter: utils.hexToNumber
         }),
         new Method({
-            name: 'getBlockUncleCount',
-            call: uncleCountCall,
-            params: 1,
-            inputFormatter: [formatter.inputBlockNumberFormatter],
-            outputFormatter: utils.hexToNumber
-        }),
-        new Method({
             name: 'getTransaction',
-            call: 'eth_getTransactionByHash',
+            call: 'platon_getTransactionByHash',
             params: 1,
             inputFormatter: [null],
             outputFormatter: formatter.outputTransactionFormatter
@@ -426,40 +395,40 @@ var Eth = function Eth() {
         }),
         new Method({
             name: 'getTransactionReceipt',
-            call: 'eth_getTransactionReceipt',
+            call: 'platon_getTransactionReceipt',
             params: 1,
             inputFormatter: [null],
             outputFormatter: formatter.outputTransactionReceiptFormatter
         }),
         new Method({
             name: 'getTransactionCount',
-            call: 'eth_getTransactionCount',
+            call: 'platon_getTransactionCount',
             params: 2,
             inputFormatter: [formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter],
             outputFormatter: utils.hexToNumber
         }),
         new Method({
             name: 'sendSignedTransaction',
-            call: 'eth_sendRawTransaction',
+            call: 'platon_sendRawTransaction',
             params: 1,
             inputFormatter: [null]
         }),
         new Method({
             name: 'signTransaction',
-            call: 'eth_signTransaction',
+            call: 'platon_signTransaction',
             params: 1,
             inputFormatter: [formatter.inputTransactionFormatter]
         }),
         new Method({
             name: 'sendTransaction',
-            call: 'eth_sendTransaction',
+            call: 'platon_sendTransaction',
             params: 1,
             inputFormatter: [formatter.inputTransactionFormatter],
             abiCoder: abi
         }),
         new Method({
             name: 'sign',
-            call: 'eth_sign',
+            call: 'platon_sign',
             params: 2,
             inputFormatter: [formatter.inputSignFormatter, formatter.inputAddressFormatter],
             transformPayload: function (payload) {
@@ -469,57 +438,40 @@ var Eth = function Eth() {
         }),
         new Method({
             name: 'call',
-            call: 'eth_call',
+            call: 'platon_call',
             params: 2,
             inputFormatter: [formatter.inputCallFormatter, formatter.inputDefaultBlockNumberFormatter],
             abiCoder: abi
         }),
         new Method({
             name: 'estimateGas',
-            call: 'eth_estimateGas',
+            call: 'platon_estimateGas',
             params: 1,
             inputFormatter: [formatter.inputCallFormatter],
             outputFormatter: utils.hexToNumber
         }),
         new Method({
-            name: 'submitWork',
-            call: 'eth_submitWork',
-            params: 3
-        }),
-        new Method({
-            name: 'getWork',
-            call: 'eth_getWork',
-            params: 0
-        }),
-        new Method({
             name: 'getPastLogs',
-            call: 'eth_getLogs',
+            call: 'platon_getLogs',
             params: 1,
             inputFormatter: [formatter.inputLogFormatter],
             outputFormatter: formatter.outputLogFormatter
         }),
         new Method({
             name: 'getChainId',
-            call: 'eth_chainId',
+            call: 'platon_chainId',
             params: 0,
             outputFormatter: utils.hexToNumber
         }),
         new Method({
             name: 'requestAccounts',
-            call: 'eth_requestAccounts',
+            call: 'platon_requestAccounts',
             params: 0,
             outputFormatter: utils.toChecksumAddress
         }),
         new Method({
-            name: 'getProof',
-            call: 'eth_getProof',
-            params: 3,
-            inputFormatter: [formatter.inputAddressFormatter, formatter.inputStorageKeysFormatter, formatter.inputDefaultBlockNumberFormatter],
-            outputFormatter: formatter.outputProofFormatter
-        }),
-        new Method({
             name: 'getPendingTransactions',
-            call: 'eth_pendingTransactions',
+            call: 'platon_pendingTransactions',
             params: 0,
             outputFormatter: formatter.outputTransactionFormatter
         }),
@@ -527,7 +479,7 @@ var Eth = function Eth() {
         // subscriptions
         new Subscriptions({
             name: 'subscribe',
-            type: 'eth',
+            type: 'platon',
             subscriptions: {
                 'newBlockHeaders': {
                     // TODO rename on RPC side?

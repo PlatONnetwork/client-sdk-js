@@ -1,7 +1,6 @@
 var chai = require('chai');
 var assert = chai.assert;
-var Eth = require('../packages/web3-eth');
-
+var Platon = require('../packages/web3-eth');
 
 var address = '0x1234567890123456789012345678901234567890';
 var signature = '0xffff';
@@ -41,7 +40,7 @@ var tests = [{
             '0x0000000000000000000000000000000000000000000000000000000000000010'
         ]
     }
-},{
+}, {
     abi: {
         name: 'event1',
         inputs: [{
@@ -235,8 +234,8 @@ describe('lib/web3/event', function () {
     describe('encode', function () {
         tests.forEach(function (test, index) {
             it('test no: ' + index, function () {
-                var eth = new Eth();
-                var contract = new eth.Contract([test.abi], address);
+                var platon = new Platon();
+                var contract = new platon.Contract([test.abi], address);
 
 
                 var result = contract._encodeEventABI(test.abi, test.options);

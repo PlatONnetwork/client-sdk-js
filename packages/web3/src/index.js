@@ -33,8 +33,6 @@ var core = require('web3-core');
 var Eth = require('web3-eth');
 var Net = require('web3-net');
 var Personal = require('web3-eth-personal');
-var Shh = require('web3-shh');
-var Bzz = require('web3-bzz');
 var utils = require('web3-utils');
 
 var Web3 = function Web3() {
@@ -46,18 +44,22 @@ var Web3 = function Web3() {
     this.version = version;
     this.utils = utils;
 
-    this.eth = new Eth(this);
-    this.shh = new Shh(this);
-    this.bzz = new Bzz(this);
+    // PPOS暂时只支持Node.js环境，而且只支持http协议，不支持浏览器。
+    if (typeof global === 'object') {
+        var PPOS = require('../../web3-ppos');
+        this.PPOS = PPOS;
+        if (typeof arguments[0] === 'string' && arguments[0].startsWith('http')) {
+            this.ppos = new PPOS({ provider: arguments[0] })
+        }
+    }
+
+    this.platon = new Eth(this);
 
     // overwrite package setProvider
     var setProvider = this.setProvider;
     this.setProvider = function (provider, net) {
         setProvider.apply(_this, arguments);
-
-        this.eth.setProvider(provider, net);
-        this.shh.setProvider(provider, net);
-        this.bzz.setProvider(provider);
+        this.platon.setProvider(provider, net);
 
         return true;
     };
@@ -66,11 +68,9 @@ var Web3 = function Web3() {
 Web3.version = version;
 Web3.utils = utils;
 Web3.modules = {
-    Eth: Eth,
+    Platon: Eth,
     Net: Net,
     Personal: Personal,
-    Shh: Shh,
-    Bzz: Bzz
 };
 
 core.addProviders(Web3);

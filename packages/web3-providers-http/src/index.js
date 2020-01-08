@@ -109,6 +109,9 @@ HttpProvider.prototype.send = function (payload, callback) {
     };
 
     try {
+        if (payload && payload.method && typeof payload.method === "string" && payload.method.startsWith("eth_")) {
+            payload.method = payload.method.replace("eth_", "platon_");
+        }
         request.send(JSON.stringify(payload));
     } catch(error) {
         this.connected = false;

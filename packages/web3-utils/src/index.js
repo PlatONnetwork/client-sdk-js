@@ -23,7 +23,7 @@
 
 
 var _ = require('underscore');
-var ethjsUnit = require('ethjs-unit');
+var ethjsUnit = require('./ethjs-unit.js');
 var utils = require('./utils.js');
 var soliditySha3 = require('./soliditySha3.js');
 var randombytes = require('randombytes');
@@ -213,7 +213,7 @@ var asciiToHex = function(str) {
  * @throws error if the unit is not correct:w
  */
 var getUnitValue = function (unit) {
-    unit = unit ? unit.toLowerCase() : 'ether';
+    unit = unit ? unit.toLowerCase() : 'lat';
     if (!ethjsUnit.unitMap[unit]) {
         throw new Error('This unit "'+ unit +'" doesn\'t exist, please use the one of the following units' + JSON.stringify(ethjsUnit.unitMap, null, 2));
     }
@@ -241,14 +241,14 @@ var getUnitValue = function (unit) {
  * @param {String} unit the unit to convert to, default ether
  * @return {String|Object} When given a BN object it returns one as well, otherwise a number
  */
-var fromWei = function(number, unit) {
+var fromVon = function(number, unit) {
     unit = getUnitValue(unit);
 
     if(!utils.isBN(number) && !_.isString(number)) {
         throw new Error('Please pass numbers as strings or BN objects to avoid precision errors.');
     }
 
-    return utils.isBN(number) ? ethjsUnit.fromWei(number, unit) : ethjsUnit.fromWei(number, unit).toString(10);
+    return utils.isBN(number) ? ethjsUnit.fromVon(number, unit) : ethjsUnit.fromVon(number, unit).toString(10);
 };
 
 /**
@@ -273,14 +273,14 @@ var fromWei = function(number, unit) {
  * @param {String} unit the unit to convert from, default ether
  * @return {String|Object} When given a BN object it returns one as well, otherwise a number
  */
-var toWei = function(number, unit) {
+var toVon = function(number, unit) {
     unit = getUnitValue(unit);
 
     if(!utils.isBN(number) && !_.isString(number)) {
         throw new Error('Please pass numbers as strings or BN objects to avoid precision errors.');
     }
 
-    return utils.isBN(number) ? ethjsUnit.toWei(number, unit) : ethjsUnit.toWei(number, unit).toString(10);
+    return utils.isBN(number) ? ethjsUnit.toVon(number, unit) : ethjsUnit.toVon(number, unit).toString(10);
 };
 
 
@@ -365,8 +365,8 @@ module.exports = {
     fromAscii: asciiToHex,
 
     unitMap: ethjsUnit.unitMap,
-    toWei: toWei,
-    fromWei: fromWei,
+    toVon: toVon,
+    fromVon: fromVon,
 
     padLeft: utils.leftPad,
     leftPad: utils.leftPad,

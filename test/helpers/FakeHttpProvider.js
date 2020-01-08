@@ -3,8 +3,6 @@ var assert = require('assert');
 var _ = require('lodash');
 
 
-
-
 var FakeHttpProvider = function HttpProvider() {
     var _this = this;
     this.countId = 1;
@@ -36,7 +34,7 @@ FakeHttpProvider.prototype.send = function (payload, callback) {
     var _this = this;
 
     // set id
-    if(payload.id)
+    if (payload.id)
         this.countId = payload.id;
     // else
     //     this.countId++;
@@ -54,7 +52,7 @@ FakeHttpProvider.prototype.send = function (payload, callback) {
     var response = this.getResponseOrError('response', payload);
     var error = this.getResponseOrError('error', payload);
 
-    setTimeout(function(){
+    setTimeout(function () {
         callback(error, response);
     }, 1);
 };
@@ -63,16 +61,16 @@ FakeHttpProvider.prototype.getResponseOrError = function (type, payload) {
     var _this = this;
     var response;
 
-    if(type === 'error') {
+    if (type === 'error') {
         response = this.error.shift();
     } else {
         response = this.response.shift() || this.getResponseStub();
     }
 
 
-    if(response) {
-        if(_.isArray(response)) {
-            response = response.map(function(resp, index) {
+    if (response) {
+        if (_.isArray(response)) {
+            response = response.map(function (resp, index) {
                 resp.id = payload[index] ? payload[index].id : _this.countId++;
                 return resp;
             });
@@ -83,17 +81,10 @@ FakeHttpProvider.prototype.getResponseOrError = function (type, payload) {
     return response;
 };
 
-
-// FakeHttpProvider.prototype.injectResponse = function (response) {
-//     this.response = response;
-// };
-
-
-
 FakeHttpProvider.prototype.injectBatchResults = function (results, error) {
     var _this = this;
     this.response.push(results.map(function (r) {
-        if(error) {
+        if (error) {
             var response = _this.getErrorStub();
             response.error.message = r;
         } else {

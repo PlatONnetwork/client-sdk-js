@@ -10,17 +10,17 @@ var useLocalWallet = function (test, provider, web3) {
 
     test.useLocalWallet(web3);
 
-    provider.injectResult("0x1");
+    provider.injectResult(1);
     provider.injectValidation(function (payload) {
         assert.equal(payload.jsonrpc, '2.0');
-        assert.equal(payload.method, 'eth_chainId');
+        assert.equal(payload.method, 'net_version');
         assert.deepEqual(payload.params, []);
     });
 
     provider.injectResult('0xa');
     provider.injectValidation(function (payload) {
         assert.equal(payload.jsonrpc, '2.0');
-        assert.equal(payload.method, 'eth_getTransactionCount');
+        assert.equal(payload.method, 'platon_getTransactionCount');
         assert.deepEqual(payload.params, [test.walletFrom, "latest"]);
     });
 };
@@ -76,7 +76,7 @@ var runTests = function (obj, method, tests) {
                     if(test.notification) {
                         provider.injectResult(null);
                         provider.injectValidation(function (payload) {
-                            assert.equal(payload.method, 'eth_getTransactionReceipt');
+                            assert.equal(payload.method, 'platon_getTransactionReceipt');
                         });
 
                         provider.injectResult(clone(test.result));
@@ -104,20 +104,8 @@ var runTests = function (obj, method, tests) {
                                 w3 = web3[obj];
                             }
 
-                            if (test.defaultOptions) {
-                                test.defaultOptions.forEach(function(option) {
-                                    w3[option[0]] = option[1];
-                                });
-                            }
-
                             assert.throws(function(){ w3[method].apply(w3, args); });
                         } else {
-                            if (test.defaultOptions) {
-                                test.defaultOptions.forEach(function(option) {
-                                    w3[option[0]] = option[1];
-                                });
-                            }
-
                             assert.throws(function(){ web3[method].apply(web3, args); });
                         }
 
@@ -132,20 +120,8 @@ var runTests = function (obj, method, tests) {
                                 w3 = web3[obj];
                             }
 
-                            if (test.defaultOptions) {
-                                test.defaultOptions.forEach(function(option) {
-                                    w3[option[0]] = option[1];
-                                });
-                            }
-
                             result = w3[method].apply(w3, args);
                         } else {
-                            if (test.defaultOptions) {
-                                test.defaultOptions.forEach(function(option) {
-                                    w3[option[0]] = option[1];
-                                });
-                            }
-
                             result = web3[method].apply(web3, args);
                         }
 
@@ -210,12 +186,6 @@ var runTests = function (obj, method, tests) {
                                 w3 = web3[obj];
                             }
 
-                            if (test.defaultOptions) {
-                                test.defaultOptions.forEach(function(option) {
-                                    w3[option[0]] = option[1];
-                                });
-                            }
-
                             assert.throws(function(){ w3[method].apply(w3, args); });
                         } else {
                             assert.throws(function(){ web3[method].apply(web3, args); });
@@ -239,20 +209,8 @@ var runTests = function (obj, method, tests) {
                                 w3 = web3[obj];
                             }
 
-                            if (test.defaultOptions) {
-                                test.defaultOptions.forEach(function(option) {
-                                    w3[option[0]] = option[1];
-                                });
-                            }
-
                             w3[method].apply(w3, args);
                         } else {
-                            if (test.defaultOptions) {
-                                test.defaultOptions.forEach(function(option) {
-                                    w3[option[0]] = option[1];
-                                });
-                            }
-
                             web3[method].apply(web3, args);
                         }
                     }
