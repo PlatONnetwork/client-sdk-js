@@ -4,9 +4,11 @@
 
 ### 准备工作
 
-首先请确保本地成功安装了nodeJS环境，通过npm包管理工具将web3引入到项目工程中，通过如下步骤：
+首先请确保本地成功安装了nodeJS环境，由于该项目使用了[lerna](https://github.com/lerna/lerna)管理工具来优化托管在git\npm上的多package代码库的工作流，所以你在安装之前确保已经全局安装了lerna包。如果没有，执行命令`npm i lerna -g`进行全局安装。
 
-- npm: `npm i https://github.com/PlatONnetwork/client-sdk-js`
+然后你就可以通过npm包管理工具将web3引入到项目工程中，通过如下步骤：
+
+- npm: `npm i PlatONnetwork/client-sdk-js`
 
 然后需要创建web3的实例，设置一个provider。为了保证不会覆盖已有的provider，需要先检查web3实例是否已经存在，可参考如下代码：
 
