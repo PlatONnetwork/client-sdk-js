@@ -79,20 +79,6 @@ var tests = [
         formattedResult: "203137",
         call: "platon_" + method
     },
-    {
-        args: ["000000000000000000000000000000000000012d"],
-        formattedArgs: ["0x000000000000000000000000000000000000012d", "latest"],
-        result: "0x31981",
-        formattedResult: "203137",
-        call: "platon_" + method
-    },
-    {
-        args: ["XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS"], // iban address
-        formattedArgs: ["0x00c5496aee77c1ba1f0854206a26dda82a81d6d8", "latest"],
-        result: "0x31981",
-        formattedResult: "203137",
-        call: "platon_" + method
-    }
 ];
 
 testMethod.runTests("platon", method, tests);

@@ -10,8 +10,8 @@ var method = 'call';
 
 var tests = [{
     input: {
-        'from': 'XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS',
-        'to': 'XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS'
+        'from': '0x00c5496aee77c1ba1f0854206a26dda82a81d6d8',
+        'to': '0x00c5496aee77c1ba1f0854206a26dda82a81d6d8'
     },
     formattedInput: [{
         'from': '0x00c5496aee77c1ba1f0854206a26dda82a81d6d8',
@@ -34,12 +34,14 @@ describe('async', function () {
                 assert.deepEqual(payload.params, test.formattedInput);
             });
 
-            web3.platon[method](test.input, function (error, result) {
+            web3.platon[method](test.input, function(error, result){
+
+                // then
                 assert.isNull(error);
                 assert.strictEqual(test.formattedResult, result);
+
                 done();
             });
-
         });
 
         it('test promise: ' + index, function (done) {

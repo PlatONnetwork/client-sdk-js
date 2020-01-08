@@ -33,7 +33,6 @@ var Net = require('web3-net');
 var ENS = require('web3-eth-ens');
 var Personal = require('web3-eth-personal');
 var BaseContract = require('web3-eth-contract');
-var Iban = require('web3-eth-iban');
 var Accounts = require('web3-eth-accounts');
 var abi = require('web3-eth-abi');
 
@@ -302,9 +301,6 @@ var Eth = function Eth() {
     this.Contract.transactionPollingTimeout = this.transactionPollingTimeout;
     this.Contract.handleRevert = this.handleRevert;
     this.Contract.setProvider(this.currentProvider, this.accounts);
-
-    // add IBAN
-    this.Iban = Iban;
 
     // add ABI
     this.abi = abi;

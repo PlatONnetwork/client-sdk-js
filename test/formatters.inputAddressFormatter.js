@@ -4,14 +4,6 @@ var formatters = require("../packages/web3-core-helpers/src/formatters.js");
 
 var tests = [
     {
-        input: "XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS",
-        result: "0x00c5496aee77c1ba1f0854206a26dda82a81d6d8"
-    },
-    {
-        input: "XE75JRZCTTLBSYEQBGAS7GID8DKR7QY0QA3",
-        result: "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b"
-    },
-    {
         input: "0x00c5496aee77c1ba1f0854206a26dda82a81d6d8",
         result: "0x00c5496aee77c1ba1f0854206a26dda82a81d6d8"
     },
@@ -49,7 +41,6 @@ var errorTests = [
     "0x0c5496aee77c1ba1f0854206a26dda82a81d6d8",
     "0x0c5496aee77c1ba1f0854206a26dda82a81d6d8",
     "00c5496aee77c1ba1f0854206a26dda82a81d6d",
-    "XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZE",
     "0x",
     "0x11f4d0a3c12e86B4b5F39b213f7E19D048276DAe",
     {},

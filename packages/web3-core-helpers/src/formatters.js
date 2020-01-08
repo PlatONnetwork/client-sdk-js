@@ -25,7 +25,6 @@
 
 var _ = require('underscore');
 var utils = require('web3-utils');
-var Iban = require('web3-eth-iban');
 
 
 /**
@@ -462,13 +461,10 @@ var outputPostFormatter = function (post) {
 };
 
 var inputAddressFormatter = function (address) {
-    var iban = new Iban(address);
-    if (iban.isValid() && iban.isDirect()) {
-        return iban.toAddress().toLowerCase();
-    } else if (utils.isAddress(address)) {
+    if (utils.isAddress(address)) {
         return '0x' + address.toLowerCase().replace('0x', '');
     }
-    throw new Error('Provided address "' + address + '" is invalid, the capitalization checksum test failed, or its an indrect IBAN address which can\'t be converted.');
+    throw new Error('Provided address "' + address + '" is invalid, the capitalization checksum test failed.');
 };
 
 
