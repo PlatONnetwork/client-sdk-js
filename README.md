@@ -10,7 +10,7 @@
 
 - npm: `npm i PlatONnetwork/client-sdk-js`
 
-然后需要创建web3的实例，设置一个provider。为了保证不会覆盖已有的provider，需要先检查web3实例是否已经存在，可参考如下代码：
+然后需要创建web3的实例，设置一个provider。可参考如下代码：
 
 ```js
 // in node.js
