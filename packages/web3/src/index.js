@@ -28,7 +28,7 @@
 "use strict";
 
 
-var version = "1.0.0";
+var version = "0.7.5";
 var core = require('web3-core');
 var Eth = require('web3-eth');
 var Net = require('web3-net');
