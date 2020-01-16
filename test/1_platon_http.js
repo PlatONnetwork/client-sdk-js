@@ -5,9 +5,9 @@ var web3 = undefined;
 
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
-    provider: "http://192.168.120.161:6789", // 请更新成自己的 http 节点
+    provider: "http://10.1.1.1:8801", // 请更新成自己的 http 节点
     chainId: 100, // 请更新成自己的节点id
-    privateKey: "0x053f34a1962467d2ff589b970883e9827f9b8a0fe5d2113d71c638db4d0b5616", // 请更新成自己的私钥(必须有十六进制前缀0x)
+    privateKey: "0xe13ebe4242500201e1bbfcd3372176e05f282595326727c8d4dcfc83daeb40fe", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
     gas: undefined,
     gasPrice: undefined,
@@ -214,6 +214,7 @@ describe("web3.platon by http(you must update cfg variable before run this test)
     });
 
     it("web3.ppos.send", async function () {
+        this.timeout(10000);
         let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
         let params = [4000, web3.ppos.hexStrBuf(toAccount), [[1, web3.ppos.bigNumBuf('100000000000')]]];
         let ret = await web3.ppos.send(params);
