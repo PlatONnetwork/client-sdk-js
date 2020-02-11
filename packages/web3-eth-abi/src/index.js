@@ -23,6 +23,7 @@
 
 var _ = require('underscore');
 var utils = require('web3-utils');
+var RLP = require('rlp');
 
 var EthersAbi = require('ethers/utils/abi-coder').AbiCoder;
 var ethersAbiCoder = new EthersAbi(function (type, value) {
@@ -40,6 +41,18 @@ function Result() {
  * ABICoder prototype should be used to encode/decode solidity params of any type
  */
 var ABICoder = function () {
+    this.type = 0; // 默认是solidity
+};
+
+/**
+ * 设置类型，0 是solidity合约，1是wasm合约
+ *
+ * @method setType
+ * @param {String|Object} functionName
+ * @return {String} encoded function name
+ */
+ABICoder.prototype.setType = function (type) {
+    this.type = type;
 };
 
 /**
@@ -97,16 +110,24 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
-    return ethersAbiCoder.encode(
-        this.mapTypes(types),
-        params.map(function (param) {
-            if (utils.isBN(param) || utils.isBigNumber(param)) {
-                return param.toString(10);
-            }
-
-            return param;
-        })
-    );
+    if (this.type) {
+        var arrRlp = [];
+        // @todo 不能简单的直接编码，要根据类型来编码
+        for (const param of params) {
+            arrRlp.push(RLP.encode(param));
+        }
+        return arrRlp;
+    } else {
+        return ethersAbiCoder.encode(
+            this.mapTypes(types),
+            params.map(function (param) {
+                if (utils.isBN(param) || utils.isBigNumber(param)) {
+                    return param.toString(10);
+                }
+                return param;
+            })
+        );
+    }
 };
 
 /**

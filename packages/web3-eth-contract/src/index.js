@@ -40,7 +40,7 @@ var formatters = require('web3-core-helpers').formatters;
 var errors = require('web3-core-helpers').errors;
 var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
-
+var RLP = require('rlp');
 
 /**
  * Should be called to create new contract instance
@@ -79,7 +79,14 @@ var Contract = function Contract(jsonInterface, address, options) {
     if (_.isObject(lastArg) && !_.isArray(lastArg)) {
         options = lastArg;
 
+
         this.options = _.extend(this.options, this._getOrSetDefaultOptions(options));
+
+        if (_.isUndefined(this.options.type)) {
+            this.options.type = 0; // 默认是solidity合约
+        }
+        abi.setType(this.options.type);
+
         if (_.isObject(address)) {
             address = null;
         }
@@ -114,7 +121,8 @@ var Contract = function Contract(jsonInterface, address, options) {
 
 
                 if (method.name) {
-                    funcName = utils._jsonInterfaceMethodToString(method);
+                    // @todo wasm如果不注释会挂掉
+                    // funcName = utils._jsonInterfaceMethodToString(method);
                 }
 
 
@@ -485,8 +493,25 @@ Contract.prototype._decodeEventABI = function (data) {
 Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
     var methodSignature = this._method.signature,
         args = this.arguments || [];
+    var signature = false;
+    var paramsABI;
 
-    var signature = false,
+    var type = this._parent.options.type;
+    if (type) {
+        paramsABI = this._parent.options.jsonInterface.filter(function (json) {
+            // wasm "name": "init" 的是构造函数
+            return (methodSignature === 'constructor' && json.name === "init");
+        }).map(function (json) {
+            var inputLength = (_.isArray(json.input)) ? json.input.length : 0;
+
+            if (inputLength !== args.length) {
+                throw new Error('The number of arguments is not matching the methods required number. You need to pass ' + inputLength + ' arguments.');
+            }
+            return _.isArray(json.input) ? json.input : [];
+        }).map(function (inputs) {
+            return abi.encodeParameters(inputs, args);
+        })[0] || [];
+    } else {
         paramsABI = this._parent.options.jsonInterface.filter(function (json) {
             return ((methodSignature === 'constructor' && json.type === methodSignature) ||
                 ((json.signature === methodSignature || json.signature === methodSignature.replace('0x', '') || json.name === methodSignature) && json.type === 'function'));
@@ -504,13 +529,24 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
         }).map(function (inputs) {
             return abi.encodeParameters(inputs, args).replace('0x', '');
         })[0] || '';
+    }
+
 
     // return constructor
     if (methodSignature === 'constructor') {
         if (!this._deployData)
             throw new Error('The contract has no contract data option set. This is necessary to append the constructor parameters.');
 
-        return this._deployData + paramsABI;
+        if (type) {
+            const magicNumBuf = Buffer.from([0x00, 0x61, 0x73, 0x6d]);
+            paramsABI.unshift("init");
+            console.log(paramsABI);
+            const deployRlp = RLP.encode([Buffer.from(this._deployData, "hex"), RLP.encode(paramsABI)])
+            const data = magicNumBuf.toString('hex') + deployRlp.toString('hex');
+            return data;
+        } else {
+            return this._deployData + paramsABI;
+        }
 
         // return method
     } else {
