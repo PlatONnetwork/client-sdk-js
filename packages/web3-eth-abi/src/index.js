@@ -166,7 +166,7 @@ ABICoder.prototype.mapStructNameAndType = function (structName) {
         structName = structName.slice(0, -2);
     }
 
-    return {type: type, name: structName};
+    return { type: type, name: structName };
 };
 
 /**
