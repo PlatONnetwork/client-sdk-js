@@ -1,0 +1,33 @@
+[
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "i",
+                "type": "int32"
+            }
+        ],
+        "name": "init",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "i",
+                "type": "int32"
+            }
+        ],
+        "name": "set",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "get",
+        "output": "int32",
+        "type": "Action"
+    }
+]
