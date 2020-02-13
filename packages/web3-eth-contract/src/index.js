@@ -532,11 +532,16 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
     var signature = false;
     var paramsABI;
 
+    // console.log("encodeMethodABI Call: ", this._method, args);
+
     var type = this._parent.options.type;
+    var funcName = "";
     if (type) {
         paramsABI = this._parent.options.jsonInterface.filter(function (json) {
-            return (methodSignature === 'constructor' && json.type === "constructor");
+            return ((methodSignature === 'constructor' && json.type === methodSignature) ||
+                ((json.signature === methodSignature || json.signature === methodSignature.replace('0x', '') || json.name === methodSignature) && json.type === 'function'));
         }).map(function (json) {
+            funcName = json.name;
             var inputLength = (_.isArray(json.inputs)) ? json.inputs.length : 0;
 
             if (inputLength !== args.length) {
@@ -577,23 +582,26 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
             paramsABI.unshift("init");
             const deployRlp = RLP.encode([Buffer.from(this._deployData, "hex"), RLP.encode(paramsABI)])
             const data = magicNumBuf.toString('hex') + deployRlp.toString('hex');
-            return data;
+            return "0x" + data;
         } else {
             return this._deployData + paramsABI;
         }
-
-        // return method
     } else {
-
-        var returnValue = (signature) ? signature + paramsABI : paramsABI;
-
-        if (!returnValue) {
-            throw new Error('Couldn\'t find a matching contract method named "' + this._method.name + '".');
-        } else {
+        let returnValue;
+        if (type) {
+            paramsABI.unshift(funcName);
+            returnValue = "0x" + RLP.encode(paramsABI).toString("hex");
             return returnValue;
+        } else {
+            returnValue = (signature) ? signature + paramsABI : paramsABI;
+
+            if (!returnValue) {
+                throw new Error('Couldn\'t find a matching contract method named "' + this._method.name + '".');
+            } else {
+                return returnValue;
+            }
         }
     }
-
 };
 
 

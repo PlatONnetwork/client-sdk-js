@@ -110,8 +110,11 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
+    console.log("encodeParameters Call:", types, params);
     if (this.type) {
         var arrRlp = [];
+        // wasm 函数编码规则 RLP.encode([funcName, RLP.encode(param1), RLP.encode(param2), ... , RLP.encode(paramN)]) [备注：官方文档是错的]
+        // 在这里只对 funcName 后面的 params 进行编码
         // @todo 不能简单的直接编码，要根据类型来编码
         for (const param of params) {
             arrRlp.push(RLP.encode(param));
@@ -256,34 +259,40 @@ ABICoder.prototype.decodeParameter = function (type, bytes) {
  * @return {Array} array of plain params
  */
 ABICoder.prototype.decodeParameters = function (outputs, bytes) {
-    if (outputs.length > 0 && (!bytes || bytes === '0x' || bytes === '0X')) {
-        throw new Error(
-            'Returned values aren\'t valid, did it run Out of Gas? ' +
-            'You might also see this error if you are not using the ' +
-            'correct ABI for the contract you are retrieving data from, ' +
-            'requesting data from a block number that does not exist, ' +
-            'or querying a node which is not fully synced.'
-        );
-    }
-
-    var res = ethersAbiCoder.decode(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
-    var returnValue = new Result();
-    returnValue.__length__ = 0;
-
-    outputs.forEach(function (output, i) {
-        var decodedValue = res[returnValue.__length__];
-        decodedValue = (decodedValue === '0x') ? null : decodedValue;
-
-        returnValue[i] = decodedValue;
-
-        if (_.isObject(output) && output.name) {
-            returnValue[output.name] = decodedValue;
+    console.log("decodeParameters Call:", outputs, bytes);
+    if (this.type) {
+        // @todo 不能简单的直接解码，要根据类型来解码
+        return parseInt("0x" + bytes);
+    } else {
+        if (outputs.length > 0 && (!bytes || bytes === '0x' || bytes === '0X')) {
+            throw new Error(
+                'Returned values aren\'t valid, did it run Out of Gas? ' +
+                'You might also see this error if you are not using the ' +
+                'correct ABI for the contract you are retrieving data from, ' +
+                'requesting data from a block number that does not exist, ' +
+                'or querying a node which is not fully synced.'
+            );
         }
 
-        returnValue.__length__++;
-    });
+        var res = ethersAbiCoder.decode(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
+        var returnValue = new Result();
+        returnValue.__length__ = 0;
 
-    return returnValue;
+        outputs.forEach(function (output, i) {
+            var decodedValue = res[returnValue.__length__];
+            decodedValue = (decodedValue === '0x') ? null : decodedValue;
+
+            returnValue[i] = decodedValue;
+
+            if (_.isObject(output) && output.name) {
+                returnValue[output.name] = decodedValue;
+            }
+
+            returnValue.__length__++;
+        });
+
+        return returnValue;
+    }
 };
 
 /**
