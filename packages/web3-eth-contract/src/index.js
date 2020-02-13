@@ -92,6 +92,43 @@ var Contract = function Contract(jsonInterface, address, options) {
         }
     }
 
+    // 如果是wasm，则将wasm描述的abi转为跟solidity一致的abi
+    if (this.options.type) {
+        let jsonAbi = [];
+        for (const curInterface of jsonInterface) {
+            let item = _.clone(curInterface);
+            if (curInterface.type === "Action") {
+                item.type = "function";
+            }
+
+            if (curInterface.type === "Event") {
+                item.type = "event";
+            }
+
+            // 这个逻辑放 Action --> function后面，否则逻辑会被覆盖
+            if (curInterface.name === "init") {
+                item.type = "constructor"
+            }
+
+            if (curInterface.input) {
+                delete item.input;
+                item.inputs = _.clone(curInterface.input);
+            }
+
+            if (curInterface.output) {
+                delete item.output;
+                item.outputs = [{
+                    name: "",
+                    type: curInterface.output
+                }];
+            }
+
+            jsonAbi.push(item);
+        }
+        jsonInterface = jsonAbi;
+        // console.log(JSON.stringify(jsonInterface, undefined, 4));
+    }
+
     // set address
     Object.defineProperty(this.options, 'address', {
         set: function (value) {
@@ -121,8 +158,7 @@ var Contract = function Contract(jsonInterface, address, options) {
 
 
                 if (method.name) {
-                    // @todo wasm如果不注释会挂掉
-                    // funcName = utils._jsonInterfaceMethodToString(method);
+                    funcName = utils._jsonInterfaceMethodToString(method);
                 }
 
 
@@ -499,15 +535,14 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
     var type = this._parent.options.type;
     if (type) {
         paramsABI = this._parent.options.jsonInterface.filter(function (json) {
-            // wasm "name": "init" 的是构造函数
-            return (methodSignature === 'constructor' && json.name === "init");
+            return (methodSignature === 'constructor' && json.type === "constructor");
         }).map(function (json) {
-            var inputLength = (_.isArray(json.input)) ? json.input.length : 0;
+            var inputLength = (_.isArray(json.inputs)) ? json.inputs.length : 0;
 
             if (inputLength !== args.length) {
                 throw new Error('The number of arguments is not matching the methods required number. You need to pass ' + inputLength + ' arguments.');
             }
-            return _.isArray(json.input) ? json.input : [];
+            return _.isArray(json.inputs) ? json.inputs : [];
         }).map(function (inputs) {
             return abi.encodeParameters(inputs, args);
         })[0] || [];
@@ -540,7 +575,6 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
         if (type) {
             const magicNumBuf = Buffer.from([0x00, 0x61, 0x73, 0x6d]);
             paramsABI.unshift("init");
-            console.log(paramsABI);
             const deployRlp = RLP.encode([Buffer.from(this._deployData, "hex"), RLP.encode(paramsABI)])
             const data = magicNumBuf.toString('hex') + deployRlp.toString('hex');
             return data;
