@@ -40,12 +40,13 @@ public:
 5%
 
 ## 工作内容
-1、跟文俊讨论client-sdk-js社区开发相关事项。
-2、查看合约构造函数，确定在options里面传type来区分是一个solidity合约还是wasm合约，兼容以前写的solidity合约。
-3、尝试根据wasm文件以及入参对数据进行RLP编码，暂未成功，与龙辉编码出来的不一致
+* 跟文俊讨论client-sdk-js社区开发相关事项。
+* 查看合约构造函数，确定在options里面传type来区分是一个solidity合约还是wasm合约，兼容以前写的solidity合约。
+* 尝试根据wasm文件以及入参对数据进行RLP编码，暂未成功，与龙辉编码出来的不一致
 
 ## 其他
 **李维成**提供了编译后的两个测试合约
+
 **邓龙辉**给我解答了合约部署数据相关RLP编码规则
 
 ******
@@ -56,10 +57,11 @@ public:
 8%
 
 ## 工作内容
-1、部署成功一个wasm合约，并使用签名与非签名的方式send, call调用成功。初步掌握wasm调用规则。
+* 部署成功一个wasm合约，并使用签名与非签名的方式send, call调用成功。初步掌握wasm调用规则。
 
 ## 其他
 **张军**协助我在我本地机器部署了一个节点并解答了相关问题
+
 **邓龙辉**给我解答了合约部署数据相关RLP编码规则
 
 
@@ -71,8 +73,8 @@ public:
 10%
 
 ## 工作内容
-1、将wasm abi 转化为 solidity abi。
-2、使用web3.platon.Contract合约对象调通下面的合约。
+* 将wasm abi 转化为 solidity abi。
+* 使用web3.platon.Contract合约对象调通下面的合约。
 
 ```cpp
 #include <platon/platon.hpp>
