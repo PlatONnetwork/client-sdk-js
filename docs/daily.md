@@ -142,7 +142,7 @@ var fs = require("fs-extra");
     let contract = new web3.platon.Contract(JSON.parse(cfg.simpleStorageInit.abiStr), { type: 1 }); // wasm type: 1入参
     let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
     let chainId = cfg.chainId;
-    let num = parseInt(Math.random() * 100);
+    let num = parseInt(2147483648 * Math.random());
     let data = contract.deploy({
         data: cfg.simpleStorageInit.bin,
         arguments: [num]
@@ -160,7 +160,7 @@ var fs = require("fs-extra");
     console.log("init num = ", num, ", get num = ", await getMethod.call({}));
 
     // 发送 set 交易(使用签名)
-    num = parseInt(Math.random() * 100);
+    num = parseInt(Math.random() * 2147483648);
     data = contract.methods["set"].apply(contract.methods, [num]).encodeABI();
     nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
     tx = { gasPrice, gas, nonce, chainId, data, to: contract.options.address };
@@ -171,9 +171,11 @@ var fs = require("fs-extra");
     console.log("set num = ", num, ", get num = ", await getMethod.call({}));
 
     // 发送 set 交易(使用解锁账号)
-    num = parseInt(Math.random() * 100);
+    num = parseInt(Math.random() * 2147483648);
     data = contract.methods["set"].apply(contract.methods, [num]).encodeABI();
     await web3.platon.sendTransaction({
+        gas,
+        gasPrice,
         from: cfg.address,
         to: contract.options.address,
         data
@@ -181,8 +183,6 @@ var fs = require("fs-extra");
     // 测试一下set没有生效
     console.log("set num = ", num, ", get num = ", await getMethod.call({}));
 })()
-
-
 ```
 
 ## 其他

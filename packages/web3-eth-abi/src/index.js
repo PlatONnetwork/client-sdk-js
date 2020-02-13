@@ -262,7 +262,8 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
     console.log("decodeParameters Call:", outputs, bytes);
     if (this.type) {
         // @todo 不能简单的直接解码，要根据类型来解码
-        return parseInt("0x" + bytes);
+        // 解码规则：RLP.decode(Buffer.from(bytes, "hex")) 再把出来的数据按照 type 去解码。没有官方文档靠猜的......
+        return parseInt("0x" + RLP.decode(Buffer.from(bytes, "hex")).toString("hex"));
     } else {
         if (outputs.length > 0 && (!bytes || bytes === '0x' || bytes === '0X')) {
             throw new Error(

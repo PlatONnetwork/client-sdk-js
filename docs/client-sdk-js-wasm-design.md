@@ -295,5 +295,5 @@ solidity | wasm| 说明
  inputs | input | 函数或者事件输入描述
  outputs | output | 函数输出描述，还有，solidity是以数组形式输出outputs，而wasm是字符串。
  type:function | type:Action | 函数描述
- type:event | type:Event | 函数描述
+ type:event | type:Event | 事件描述
  type:constructor| type:Action，name:init | 构造函数描述
