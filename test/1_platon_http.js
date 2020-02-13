@@ -5,7 +5,7 @@ var web3 = undefined;
 
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
-    provider: "http://10.1.1.1:8801", // 请更新成自己的 http 节点
+    provider: "http://192.168.0.105:6789", // 请更新成自己的 http 节点
     chainId: 100, // 请更新成自己的节点id
     privateKey: "0xe13ebe4242500201e1bbfcd3372176e05f282595326727c8d4dcfc83daeb40fe", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
