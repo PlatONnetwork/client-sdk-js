@@ -71,7 +71,117 @@ public:
 10%
 
 ## 工作内容
-1、将wasm abi --> solidity abi
+1、将wasm abi 转化为 solidity abi。
+2、使用web3.platon.Contract合约对象调通下面的合约。
+
+```cpp
+#include <platon/platon.hpp>
+
+using namespace platon;
+
+CONTRACT SimpleStorageInit : public Contract {
+ public:
+    ACTION void init(int i) {
+        n_.self() = i;
+    }
+
+    ACTION void set(int i) {
+        n_.self() = i;
+    }
+
+    CONST int get() {
+        return n_.get();
+    }
+
+ private:
+    //Int<"test"_n> n_;
+    StorageType<"test"_n, int> n_;
+};
+
+PLATON_DISPATCH(SimpleStorageInit, (init)(set)(get));
+```
+
+用来测试的 wasm.js文件(在项目 client-sdk-js 根目录创建一个wasm.js文件，复制如下内容，使用node wasm.js即可执行脚本)：
+
+```javascript
+var Web3 = require("./packages/web3/src");
+var RLP = require("rlp");
+var fs = require("fs-extra");
+
+(async () => {
+    const binFilePath = './test/wasm/simple_storage_init.wasm';
+    const abiFilePath = './test/wasm/simple_storage_init.abi.json';
+
+    let bin = (await fs.readFile(binFilePath)).toString("hex");
+    let abiStr = (await fs.readFile(abiFilePath)).toString();
+
+    // 默认为undefined的不要管，程序会自动获取。
+    var cfg = {
+        provider: "http://192.168.0.105:6789", // 请更新成自己的 http 节点
+        chainId: 100, // 请更新成自己的节点id
+        privateKey: "0xa11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7", // 请更新成自己的私钥(必须有十六进制前缀0x)
+        address: "0x714de266a0effa39fcaca1442b927e5f1053eaa3", // 请更新成上面私钥对应的地址
+        contractAddress: "0xa48558E299918d3bc9598D6ff44E6112fD7E7Cc7", // 合约地址
+        gas: undefined,
+        gasPrice: undefined,
+        // 合约源文件 ./test/wasm/simple_storage_init.cpp
+        simpleStorageInit: {
+            bin: bin,
+            abiStr: abiStr,
+            txReceipt: undefined
+        },
+    };
+
+    let web3 = new Web3(cfg.provider);
+    let gasPrice = web3.utils.numberToHex(await web3.platon.getGasPrice());
+    let gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit - 1));
+
+    let from = web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address;
+    let contract = new web3.platon.Contract(JSON.parse(cfg.simpleStorageInit.abiStr), { type: 1 }); // wasm type: 1入参
+    let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
+    let chainId = cfg.chainId;
+    let num = parseInt(Math.random() * 100);
+    let data = contract.deploy({
+        data: cfg.simpleStorageInit.bin,
+        arguments: [num]
+    }).encodeABI();
+
+    // 合约部署
+    let tx = { gasPrice, gas, nonce, chainId, data };
+    let signTx = await web3.platon.accounts.signTransaction(tx, cfg.privateKey);
+    let ret = await web3.platon.sendSignedTransaction(signTx.rawTransaction);
+    cfg.simpleStorageInit.txReceipt = ret;
+    contract.options.address = ret.contractAddress; // 设置好合约地址
+
+    // 测试一下构造函数入参有没有生效
+    let getMethod = contract.methods["get"].apply(contract.methods, []);
+    console.log("init num = ", num, ", get num = ", await getMethod.call({}));
+
+    // 发送 set 交易(使用签名)
+    num = parseInt(Math.random() * 100);
+    data = contract.methods["set"].apply(contract.methods, [num]).encodeABI();
+    nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
+    tx = { gasPrice, gas, nonce, chainId, data, to: contract.options.address };
+    signTx = await web3.platon.accounts.signTransaction(tx, cfg.privateKey);
+    ret = await web3.platon.sendSignedTransaction(signTx.rawTransaction);
+
+    // 测试一下set没有生效
+    console.log("set num = ", num, ", get num = ", await getMethod.call({}));
+
+    // 发送 set 交易(使用解锁账号)
+    num = parseInt(Math.random() * 100);
+    data = contract.methods["set"].apply(contract.methods, [num]).encodeABI();
+    await web3.platon.sendTransaction({
+        from: cfg.address,
+        to: contract.options.address,
+        data
+    });
+    // 测试一下set没有生效
+    console.log("set num = ", num, ", get num = ", await getMethod.call({}));
+})()
+
+
+```
 
 ## 其他
 
