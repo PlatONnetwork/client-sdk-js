@@ -591,6 +591,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
         if (type) {
             paramsABI.unshift(funcName);
             returnValue = "0x" + RLP.encode(paramsABI).toString("hex");
+            // console.log("returnValue = ", returnValue);
             return returnValue;
         } else {
             returnValue = (signature) ? signature + paramsABI : paramsABI;

@@ -112,12 +112,28 @@ ABICoder.prototype.encodeParameter = function (type, param) {
 ABICoder.prototype.encodeParameters = function (types, params) {
     console.log("encodeParameters Call:", types, params);
     if (this.type) {
-        var arrRlp = [];
+        let arrRlp = [];
         // wasm 函数编码规则 RLP.encode([funcName, RLP.encode(param1), RLP.encode(param2), ... , RLP.encode(paramN)]) [备注：官方文档是错的]
         // 在这里只对 funcName 后面的 params 进行编码
         // @todo 不能简单的直接编码，要根据类型来编码
-        for (const param of params) {
-            arrRlp.push(RLP.encode(param));
+        for (let i = 0; i < params.length; i++) {
+            const param = params[i];
+            const paramType = types[i].type;
+            if (paramType === "string") {
+                arrRlp.push(RLP.encode(param));
+            } else if (paramType === "uint8") {
+                arrRlp.push(param);
+            } else if (paramType === "uint16") {
+                arrRlp.push(param);
+            } else if (paramType === "uint32") {
+                arrRlp.push(param);
+            } else if (paramType === "uint64") {
+                let data = new utils.BN(param);
+                if (data.toString() === "0") data = 0;
+                arrRlp.push(data);
+            } else if (paramType === "bool") {
+                arrRlp.push(param ? 1 : 0);
+            }
         }
         return arrRlp;
     } else {
@@ -259,11 +275,48 @@ ABICoder.prototype.decodeParameter = function (type, bytes) {
  * @return {Array} array of plain params
  */
 ABICoder.prototype.decodeParameters = function (outputs, bytes) {
-    console.log("decodeParameters Call:", outputs, bytes);
     if (this.type) {
         // @todo 不能简单的直接解码，要根据类型来解码
         // 解码规则：RLP.decode(Buffer.from(bytes, "hex")) 再把出来的数据按照 type 去解码。没有官方文档靠猜的......
-        return parseInt("0x" + RLP.decode(Buffer.from(bytes, "hex")).toString("hex"));
+
+        // 根据RLP编码规则和过程，RLP解码的输入一律视为二进制字符数组，其过程如下：
+        // 1. 根据输入首字节数据，解码数据类型、实际数据长度和位置；
+        // 2. 根据类型和实际数据，解码不同类型的数据；
+        // 3. 继续解码剩余的数据；
+        // 其中，解码数据类型、实际数据类型和位置的规则如下：
+        // 1. 如果首字节(prefix)的值在[0x00, 0x7f]范围之间，那么该数据是字符串，且字符串就是首字节本身；
+        // 2. 如果首字节的值在[0x80, 0xb7]范围之间，那么该数据是字符串，且字符串的长度等于首字节减去0x80，且字符串位于首字节之后；
+        // 3. 如果首字节的值在[0xb8, 0xbf]范围之间，那么该数据是字符串，且字符串的长度的字节长度等于首字节减去0xb7，数据的长度位于首字节之后，且字符串位于数据的长度之后；
+        // 4. 如果首字节的值在[0xc0, 0xf7]范围之间，那么该数据是列表，在这种情况下，需要对列表各项的数据进行递归解码。列表的总长度（列表各项编码后的长度之和）等于首字节减去0xc0，且列表各项位于首字节之后；
+        // 5. 如果首字节的值在[0xf8, 0xff]范围之间，那么该数据为列表，列表的总长度的字节长度等于首字节减去0xf7，列表的总长度位于首字节之后，且列表各项位于列表的总长度之后；
+
+        let data = {};
+
+        // 暂时只对单个数据解码
+        let paramType = outputs[0].type;
+        let buf = RLP.decode(Buffer.from(bytes, "hex"));
+        console.log("decodeParameters Call:", paramType, bytes, buf);
+        if (paramType === "string") {
+            buf = RLP.decode(buf);
+            data = buf.toString();
+        } else if (paramType === "uint8") {
+            buf = Buffer.concat([Buffer.alloc(1), buf]); // 数据补齐
+            data = buf.readUInt8(buf.length - 1); // 补齐之后要偏移一下
+        } else if (paramType === "uint16") {
+            buf = Buffer.concat([Buffer.alloc(2), buf]);
+            data = buf.readUInt16BE(buf.length - 2);
+        } else if (paramType === "uint32") {
+            buf = Buffer.concat([Buffer.alloc(4), buf]);
+            data = buf.readUInt32BE(buf.length - 4);
+        } else if (paramType === "uint64") {
+            buf = Buffer.concat([Buffer.alloc(8), buf]);
+            data = buf.readBigUInt64BE(buf.length - 8).toString();
+        } else if (paramType === "bool") {
+            buf = Buffer.concat([Buffer.alloc(8), buf]);
+            data = buf.readUInt8(buf.length - 1) === 1;
+        }
+
+        return data;
     } else {
         if (outputs.length > 0 && (!bytes || bytes === '0x' || bytes === '0X')) {
             throw new Error(
