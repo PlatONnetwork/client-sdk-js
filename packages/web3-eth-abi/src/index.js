@@ -41,18 +41,38 @@ function Result() {
  * ABICoder prototype should be used to encode/decode solidity params of any type
  */
 var ABICoder = function () {
-    this.type = 0; // 默认是solidity
+    this.vmType = 0; // 默认是solidity
+    this.abi = []; // 因为要对结构体编解码，需要将所有的 abi 数据都传进来
 };
 
 /**
  * 设置类型，0 是solidity合约，1是wasm合约
  *
  * @method setType
- * @param {String|Object} functionName
- * @return {String} encoded function name
+ * @param {Number} type
  */
-ABICoder.prototype.setType = function (type) {
-    this.type = type;
+ABICoder.prototype.setVmType = function (vmType_) {
+    this.vmType = vmType_;
+};
+
+/**
+ * 判断是否是一个基础类型
+ *
+ * @method baseType
+ * @param {String} type
+ */
+ABICoder.prototype.baseType = function (type) {
+    return type.indexOf("int") >= 0 || type === "string" || type === "bool";
+};
+
+/**
+ * 设置abi数据
+ *
+ * @method setAbi
+ * @param {Array} abi
+ */
+ABICoder.prototype.setAbi = function (abi) {
+    this.abi = abi;
 };
 
 /**
@@ -99,6 +119,7 @@ ABICoder.prototype.encodeParameter = function (type, param) {
     return this.encodeParameters([type], [param]);
 };
 
+
 /**
  * Should be used to encode list of params
  *
@@ -110,47 +131,68 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
-    console.log("encodeParameters Call:", types, params);
-    if (this.type) {
+    // console.log("encodeParameters Call:", types, params);
+    if (this.vmType) {
         let arrRlp = [];
         // wasm 函数编码规则 RLP.encode([funcName, param1, param2, ... , paramN])
         // 在这里只对 funcName 后面的 params 进行编码
         // @todo 不能简单的直接编码，要根据类型来编码
         for (let i = 0; i < params.length; i++) {
             const param = params[i];
-            const paramType = types[i].type;
+            const type = types[i].type;
+            const name = types[i].name;
+            // console.log(type, name, param);
             let buf;
-            if (paramType === "string") {
-                arrRlp.push(RLP.encode(param));
-            } else if (paramType === "uint8") {
+            if (type === "string") {
+                arrRlp.push(Buffer.from(param));
+            } else if (type === "uint8") {
                 arrRlp.push(param);
-            } else if (paramType === "uint16") {
+            } else if (type === "uint16") {
                 arrRlp.push(param);
-            } else if (paramType === "uint32") {
+            } else if (type === "uint32") {
                 arrRlp.push(param);
-            } else if (paramType === "uint64") {
+            } else if (type === "uint64") {
                 let bnUint64 = new utils.BN(param);
                 if (bnUint64.toString() === "0") bnUint64 = 0;
                 arrRlp.push(bnUint64);
-            } else if (paramType === "bool") {
+            } else if (type === "bool") {
                 arrRlp.push(param ? 1 : 0);
-            } else if (paramType === "int8") {
+            } else if (type === "int8") {
                 // 对于所有的有符号的类型，因为RLP不支持直接编码，都必须转为 Buffer 送进去
                 buf = Buffer.alloc(1);
                 buf.writeInt8(param);
                 arrRlp.push(buf);
-            } else if (paramType === "int16") {
+            } else if (type === "int16") {
                 buf = Buffer.alloc(2);
                 buf.writeInt16BE(param);
                 arrRlp.push(buf);
-            } else if (paramType === "int32") {
+            } else if (type === "int32") {
                 buf = Buffer.alloc(4);
                 buf.writeInt32BE(param);
                 arrRlp.push(buf);
-            } else if (paramType === "int64") {
+            } else if (type === "int64") {
                 let bnInt64 = new utils.BN(param);
                 if (bnInt64.toString() === "0") bnInt64 = 0;
                 arrRlp.push(bnInt64);
+            } else if (type.endsWith("[]")) {
+                // vector(即数组)
+            } else if (type === "struct") {
+                // 确定是结构体了，那就找到结构体的描述进行递归编码
+                let structType = this.abi.find(item => item.name === name && item.type === 'struct');
+                if (!structType) {
+                    throw new Error(`通过名字 ${type.name} 找不到结构体`);
+                } else {
+                    arrRlp.push(this.encodeParameters(structType.inputs, param));
+                }
+            } else {
+                // 剩下往结构体靠
+                let structType = this.abi.find(item => item.name === type);
+                if (!structType) {
+                    throw new Error(`通过名字 ${type} 找不到结构体`);
+                } else {
+                    // 找到结构体了递归搞起来
+                    arrRlp.push(this.encodeParameters(structType.inputs, param));
+                }
             }
         }
         return arrRlp;
@@ -293,8 +335,7 @@ ABICoder.prototype.decodeParameter = function (type, bytes) {
  * @return {Array} array of plain params
  */
 ABICoder.prototype.decodeParameters = function (outputs, bytes) {
-    if (this.type) {
-        // @todo 不能简单的直接解码，要根据类型来解码
+    if (this.vmType) {
         // 解码规则：RLP.decode(Buffer.from(bytes, "hex")) 再把出来的数据按照 type 去解码。没有官方文档靠猜的......
 
         // 根据RLP编码规则和过程，RLP解码的输入一律视为二进制字符数组，其过程如下：
@@ -308,42 +349,70 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         // 4. 如果首字节的值在[0xc0, 0xf7]范围之间，那么该数据是列表，在这种情况下，需要对列表各项的数据进行递归解码。列表的总长度（列表各项编码后的长度之和）等于首字节减去0xc0，且列表各项位于首字节之后；
         // 5. 如果首字节的值在[0xf8, 0xff]范围之间，那么该数据为列表，列表的总长度的字节长度等于首字节减去0xf7，列表的总长度位于首字节之后，且列表各项位于列表的总长度之后；
 
-        let data = {};
-
-        // 暂时只对单个数据解码
-        let paramType = outputs[0].type;
-        let buf = RLP.decode(Buffer.from(bytes, "hex"));
-        console.log("decodeParameters Call:", paramType, bytes, buf);
-        if (paramType === "string") {
-            buf = RLP.decode(buf);
+        // C++ 只能返回一个数据
+        let type = outputs[0].type;
+        let name = outputs[0].name;
+        // 再次递归进来的时候，就不要进行rlp解码了。
+        let buf = typeof bytes === "string" ? RLP.decode(Buffer.from(bytes, "hex")) : bytes;
+        let data = buf;
+        // console.log("decodeParameters Call:", type, bytes, buf);
+        if (type === "string") {
             data = buf.toString();
-        } else if (paramType === "uint8") {
+        } else if (type === "uint8") {
             buf = Buffer.concat([Buffer.alloc(1), buf]); // 数据补齐
             data = buf.readUInt8(buf.length - 1); // 补齐之后要偏移一下
-        } else if (paramType === "uint16") {
+        } else if (type === "uint16") {
             buf = Buffer.concat([Buffer.alloc(2), buf]);
             data = buf.readUInt16BE(buf.length - 2);
-        } else if (paramType === "uint32") {
+        } else if (type === "uint32") {
             buf = Buffer.concat([Buffer.alloc(4), buf]);
             data = buf.readUInt32BE(buf.length - 4);
-        } else if (paramType === "uint64") {
+        } else if (type === "uint64") {
             buf = Buffer.concat([Buffer.alloc(8), buf]);
             data = buf.readBigUInt64BE(buf.length - 8).toString();
-        } else if (paramType === "bool") {
+        } else if (type === "bool") {
             buf = Buffer.concat([Buffer.alloc(8), buf]);
             data = buf.readUInt8(buf.length - 1) === 1;
-        } else if (paramType === "int8") {
+        } else if (type === "int8") {
             buf = Buffer.concat([Buffer.alloc(1), buf]);
             data = buf.readInt8(buf.length - 1);
-        } else if (paramType === "int16") {
+        } else if (type === "int16") {
             buf = Buffer.concat([Buffer.alloc(2), buf]);
             data = buf.readInt16BE(buf.length - 2);
-        } else if (paramType === "int32") {
+        } else if (type === "int32") {
             buf = Buffer.concat([Buffer.alloc(4), buf]);
             data = buf.readInt32BE(buf.length - 4);
-        } else if (paramType === "int64") {
+        } else if (type === "int64") {
             buf = Buffer.concat([Buffer.alloc(8), buf]);
             data = buf.readBigInt64BE(buf.length - 8).toString();
+        } else if (type.endsWith("[]")) {
+            // vector(即数组)
+        } else if (type === "struct") {
+            // 确定是结构体了，那就找到结构体的描述进行递归解码
+            let structType = this.abi.find(item => item.name === name && item.type === 'struct');
+            // console.log(structType);
+            if (!structType) {
+                throw new Error(`通过名字 ${type.name} 找不到结构体`);
+            } else {
+                // 找到结构体了递归搞起来
+                for (let i = 0; i < structType.inputs.length; i++) {
+                    const input = structType.inputs[i];
+                    data[i] = this.decodeParameters([input], data[i])
+                }
+            }
+        } else {
+            // 剩下往结构体靠
+            let structType = this.abi.find(item => item.name === type);
+            // console.log(structType);
+            if (!structType) {
+                throw new Error(`通过名字 ${type} 找不到结构体`);
+            } else {
+                // 找到结构体了递归搞起来
+                for (let i = 0; i < structType.inputs.length; i++) {
+                    const input = structType.inputs[i];
+                    data[i] = this.decodeParameters([input], data[i])
+                }
+            }
         }
 
         return data;

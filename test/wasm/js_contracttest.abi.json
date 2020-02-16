@@ -159,6 +159,17 @@
         "type": "Action"
     },
     {
+        "baseclass": [],
+        "fields": [
+            {
+                "name": "head",
+                "type": "string"
+            }
+        ],
+        "name": "message",
+        "type": "struct"
+    },
+    {
         "constant": false,
         "input": [
             {
@@ -176,6 +187,21 @@
         "name": "getMessage",
         "output": "message",
         "type": "Action"
+    },
+    {
+        "baseclass": ["message"],
+        "fields": [
+            {
+                "name": "body",
+                "type": "string"
+            },
+            {
+                "name": "end",
+                "type": "string"
+            }
+        ],
+        "name": "my_message",
+        "type": "struct"
     },
     {
         "constant": false,

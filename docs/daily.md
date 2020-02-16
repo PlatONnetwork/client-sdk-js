@@ -221,9 +221,11 @@ var fs = require("fs-extra");
 
 ## 工作内容
 * 使用手工编码的方式调通`setMessage`，`getMessage`，`setMyMessage`，`getMyMessage` 这四个函数。
-* 完成对 `int8`, `int16`, `int32`, `int64` 类型的编解码。
-* 完成对结构体编解码设计，请见/doc/client-sdk-js-wasm-design.md文档。(还未实现！)。
+  * `RLP.encode(["setMessage", ["HelloWorld"]]).toString("hex");`
+  * `RLP.encode(["setMyMessage", [["HelloWorld"], "Wasm", "Good"]]).toString("hex")` 
+* 完成对 `int8` 类型的编解码。
+* 完成对结构体编解码设计，请见/doc/client-sdk-js-wasm-design.md文档。并调通结构体的编解码！
+* 由于type用作abi里面的类型描述，为了不混淆，在构造合约对象的时候，改为传vmType字段。
 
 ## 其他
 
-**邓龙辉**给我解答了RLP解码规则

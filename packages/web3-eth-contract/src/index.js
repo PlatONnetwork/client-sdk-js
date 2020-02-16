@@ -82,10 +82,10 @@ var Contract = function Contract(jsonInterface, address, options) {
 
         this.options = _.extend(this.options, this._getOrSetDefaultOptions(options));
 
-        if (_.isUndefined(this.options.type)) {
-            this.options.type = 0; // 默认是solidity合约
+        if (_.isUndefined(this.options.vmType)) {
+            this.options.vmType = 0; // 默认是solidity合约
         }
-        abi.setType(this.options.type);
+        abi.setVmType(this.options.vmType);
 
         if (_.isObject(address)) {
             address = null;
@@ -93,7 +93,7 @@ var Contract = function Contract(jsonInterface, address, options) {
     }
 
     // 如果是wasm，则将wasm描述的abi转为跟solidity一致的abi
-    if (this.options.type) {
+    if (this.options.vmType) {
         let jsonAbi = [];
         for (const curInterface of jsonInterface) {
             let item = _.clone(curInterface);
@@ -103,6 +103,20 @@ var Contract = function Contract(jsonInterface, address, options) {
 
             if (curInterface.type === "Event") {
                 item.type = "event";
+            }
+
+            // 数据设计的就是一坨屎，给改造一下符合递归调用
+            // {"baseclass":["message"],"fields":[{"name":"body","type":"string"},{"name":"end","type":"string"}],"name":"my_message","type":"struct"}"
+            if (curInterface.type === "struct") {
+                item.inputs = item.fields;
+                for (const bclass of curInterface.baseclass) {
+                    item.inputs.unshift({
+                        "name": bclass,
+                        "type": "struct" // 父类一定是一个结构体
+                    })
+                }
+                delete item.fields;
+                delete item.baseclass;
             }
 
             // 这个逻辑放 Action --> function后面，否则逻辑会被覆盖
@@ -126,6 +140,7 @@ var Contract = function Contract(jsonInterface, address, options) {
             jsonAbi.push(item);
         }
         jsonInterface = jsonAbi;
+        abi.setAbi(jsonInterface);
         // console.log(JSON.stringify(jsonInterface, undefined, 4));
     }
 
@@ -157,7 +172,7 @@ var Contract = function Contract(jsonInterface, address, options) {
                 method.payable = (method.stateMutability === "payable" || method.payable);
 
 
-                if (method.name) {
+                if (method.name && method.type !== "struct") {
                     funcName = utils._jsonInterfaceMethodToString(method);
                 }
 
@@ -204,6 +219,8 @@ var Contract = function Contract(jsonInterface, address, options) {
 
                     // add event by name
                     _this.events[funcName] = event;
+                } else if (method.type === 'type') {
+                    // 对 wasm 的结构体处理
                 }
 
 
@@ -534,9 +551,9 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
 
     // console.log("encodeMethodABI Call: ", this._method, args);
 
-    var type = this._parent.options.type;
+    var vmType = this._parent.options.vmType;
     var funcName = "";
-    if (type) {
+    if (vmType) {
         paramsABI = this._parent.options.jsonInterface.filter(function (json) {
             return ((methodSignature === 'constructor' && json.type === methodSignature) ||
                 ((json.signature === methodSignature || json.signature === methodSignature.replace('0x', '') || json.name === methodSignature) && json.type === 'function'));
@@ -577,7 +594,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
         if (!this._deployData)
             throw new Error('The contract has no contract data option set. This is necessary to append the constructor parameters.');
 
-        if (type) {
+        if (vmType) {
             const magicNumBuf = Buffer.from([0x00, 0x61, 0x73, 0x6d]);
             paramsABI.unshift("init");
             const deployRlp = RLP.encode([Buffer.from(this._deployData, "hex"), RLP.encode(paramsABI)])
@@ -588,7 +605,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
         }
     } else {
         let returnValue;
-        if (type) {
+        if (vmType) {
             paramsABI.unshift(funcName);
             returnValue = "0x" + RLP.encode(paramsABI).toString("hex");
             // console.log("returnValue = ", returnValue);

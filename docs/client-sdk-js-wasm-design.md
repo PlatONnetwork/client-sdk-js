@@ -16,13 +16,13 @@ new web3.platon.Contract(jsonInterface[, address][, options])
    *  gasPrice - String: 用于交易的gas价格，单位：wei
    *  gas - Number: 交易可用的最大gas量，即gas limit
    *  data - String: 合约的字节码，部署合约时需要
-   *  type - Number: 合约类型。0表示solidity合约，1表示wasm合约。不传默认是solidity合约。(新增字段)
+   *  vmType - Number: 合约类型。0表示solidity合约，1表示wasm合约。不传默认是solidity合约。(新增字段)
 
 返回值：
 
 `Object`: The contract instance with all its methods and events.
 
-为了区分，传进来的是solidity合约还是wasm合约，**在options的基础上增加一个type字段，类型为Number**，如果options没有传type字段，那么默认是solidity合约。如果传了，那么：
+为了区分，传进来的是solidity合约还是wasm合约，**在options的基础上增加一个vmType字段，类型为Number**，如果options没有传vmType字段，那么默认是solidity合约。如果传了，那么：
 
 * 0 表示是solidity合约
 * 1 表示是wasm合约

@@ -59,7 +59,7 @@ describe("wasm unit test (you must update config before run this test)", functio
         gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit - 1));
 
         let abi = JSON.parse((await fs.readFile(abiFilePath)).toString());
-        contract = new web3.platon.Contract(abi, address, { type: 1 }); // 默认一个address，如果要是部署合约，可以替换掉
+        contract = new web3.platon.Contract(abi, address, { vmType: 1 }); // 默认一个address，如果要是部署合约，可以替换掉
     });
 
     it("wasm deploy", async function () {
@@ -153,6 +153,26 @@ describe("wasm unit test (you must update config before run this test)", functio
             ret = await contractCall("getChar", []);
             assert.strictEqual(ret, num);
         }
+    });
+
+    it("wasm call setMessage getMessage", async function () {
+        this.timeout(waitTime);
+        let message = [randomString()];
+        await contractSend("setMessage", [message]);
+        ret = await contractCall("getMessage", []);
+        assert.deepEqual(ret, message);
+    });
+
+    it("wasm call setMyMessage getMyMessage", async function () {
+        this.timeout(waitTime);
+
+        let head = randomString();
+        let body = randomString();
+        let end = randomString();
+        let myMessage = [[head], body, end];
+        await contractSend("setMyMessage", [myMessage]);
+        ret = await contractCall("getMyMessage", []);
+        assert.deepEqual(ret, myMessage);
     });
 })
 

@@ -1,0 +1,332 @@
+[
+    {
+        "constant": false,
+        "name": "init",
+        "type": "constructor",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setUint8",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "uint8"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getUint8",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint8"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setUint16",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "uint16"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setUint64",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "uint64"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getUint16",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint16"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setUint32",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "uint32"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getUint32",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint32"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getUint64",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint64"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setString",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "string"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getString",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setBool",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "bool"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getBool",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setChar",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "int8"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getChar",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "int8"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setU256",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "uint64"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getU256",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "name": "message",
+        "type": "struct",
+        "inputs": [
+            {
+                "name": "head",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setMessage",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "msg",
+                "type": "message"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getMessage",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "message"
+            }
+        ]
+    },
+    {
+        "name": "my_message",
+        "type": "struct",
+        "inputs": [
+            {
+                "name": "message",
+                "type": "struct"
+            },
+            {
+                "name": "body",
+                "type": "string"
+            },
+            {
+                "name": "end",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setMyMessage",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "msg",
+                "type": "my_message"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getMyMessage",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "my_message"
+            }
+        ]
+    }
+]
