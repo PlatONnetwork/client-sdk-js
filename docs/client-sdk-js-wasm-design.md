@@ -297,3 +297,53 @@ solidity | wasm| 说明
  type:function | type:Action | 函数描述
  type:event | type:Event | 事件描述
  type:constructor| type:Action，name:init | 构造函数描述
+
+### wasm struct 入参设计
+
+对于没有继承的结构体的abi例子描述如下
+
+```json
+{
+    "baseclass": [],
+    "fields": [
+        {
+            "name": "head",
+            "type": "string"
+        }
+    ],
+    "name": "message",
+    "type": "struct"
+}
+```
+
+一个有继承的结构体的abi例子描述如下
+
+```json
+{
+    "baseclass": [
+        "message"
+    ],
+    "fields": [
+        {
+            "name": "body",
+            "type": "string"
+        },
+        {
+            "name": "end",
+            "type": "string"
+        }
+    ],
+    "name": "my_message",
+    "type": "struct"
+}
+```
+
+综合之前web3.js合约对象构造的时候对于入参options.arguments的描述：Array : 可选，在部署时将传入合约的构造函数，以及对于函数的编码的一个例子`contract.methods[methodName].apply(contract.methods, [args1, args2, ..., argsN]).encodeABI()`
+
+为了跟之前的入参保持一致，以及尽量简化入参的输入，采用`数组`的入参方式。数组一来可以跟之前的调用方式保持一致，其次，能按照顺序对结构体的成员进行编码。举一个例子：
+
+对于第一个没有继承的结构体 `message`，那么它的入参形式依次为它的成员，即 `[ head ]`。一个实际的入参示例比如 `[ "HelloWorld" ]`
+
+对于第二个有继承的结构体 `my_message`，那么它的入参形式依次为它基类，然后它自己的成员，即 `[ message, body, end ]` --> `[ [ head ], body, end ]`。一个实际的入参示例比如 `[ [ "HelloWorld" ], "Wasm", "Good" ]`
+
+对于函数调用返回结构体的编码。解码之后跟入参的格式一致。

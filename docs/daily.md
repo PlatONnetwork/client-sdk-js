@@ -222,6 +222,7 @@ var fs = require("fs-extra");
 ## 工作内容
 * 使用手工编码的方式调通`setMessage`，`getMessage`，`setMyMessage`，`getMyMessage` 这四个函数。
 * 完成对 `int8`, `int16`, `int32`, `int64` 类型的编解码。
+* 完成对结构体编解码设计，请见/doc/client-sdk-js-wasm-design.md文档。(还未实现！)。
 
 ## 其他
 
