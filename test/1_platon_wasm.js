@@ -143,6 +143,17 @@ describe("wasm unit test (you must update config before run this test)", functio
             assert.strictEqual(ret, num);
         }
     });
+
+    // C++ 的 char 类型编译出来之后是 int8 类型
+    it("wasm call setChar(setInt8) getChar", async function () {
+        let nums = [-128, 127, _.random(-128, 127)]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setChar", [num]);
+            ret = await contractCall("getChar", []);
+            assert.strictEqual(ret, num);
+        }
+    });
 })
 
 

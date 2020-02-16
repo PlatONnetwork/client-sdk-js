@@ -201,7 +201,7 @@ var fs = require("fs-extra");
 **邓龙辉**给我解答了RLP解码规则
 
 
-# 2月14日日志
+# 2月15日日志
 
 ## 总体进度
 20%
@@ -209,6 +209,19 @@ var fs = require("fs-extra");
 ## 工作内容
 * 写了一个`/test/1_platon_wasm.js`的单元测试用例，在项目根目录执行 `npm run wasm` 即可单独执行 wasm 相关的合约测试。
 * 完成对 `uint8`, `uint16`, `uint32`, `uint64`, `bool`, `string` 类型的编解码。
+
+## 其他
+
+**邓龙辉**给我解答了RLP解码规则
+
+# 2月16日日志
+
+## 总体进度
+30%
+
+## 工作内容
+* 使用手工编码的方式调通`setMessage`，`getMessage`，`setMyMessage`，`getMyMessage` 这四个函数。
+* 完成对 `int8`, `int16`, `int32`, `int64` 类型的编解码。
 
 ## 其他
 

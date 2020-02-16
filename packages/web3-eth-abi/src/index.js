@@ -113,12 +113,13 @@ ABICoder.prototype.encodeParameters = function (types, params) {
     console.log("encodeParameters Call:", types, params);
     if (this.type) {
         let arrRlp = [];
-        // wasm 函数编码规则 RLP.encode([funcName, RLP.encode(param1), RLP.encode(param2), ... , RLP.encode(paramN)]) [备注：官方文档是错的]
+        // wasm 函数编码规则 RLP.encode([funcName, param1, param2, ... , paramN])
         // 在这里只对 funcName 后面的 params 进行编码
         // @todo 不能简单的直接编码，要根据类型来编码
         for (let i = 0; i < params.length; i++) {
             const param = params[i];
             const paramType = types[i].type;
+            let buf;
             if (paramType === "string") {
                 arrRlp.push(RLP.encode(param));
             } else if (paramType === "uint8") {
@@ -128,11 +129,28 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             } else if (paramType === "uint32") {
                 arrRlp.push(param);
             } else if (paramType === "uint64") {
-                let data = new utils.BN(param);
-                if (data.toString() === "0") data = 0;
-                arrRlp.push(data);
+                let bnUint64 = new utils.BN(param);
+                if (bnUint64.toString() === "0") bnUint64 = 0;
+                arrRlp.push(bnUint64);
             } else if (paramType === "bool") {
                 arrRlp.push(param ? 1 : 0);
+            } else if (paramType === "int8") {
+                // 对于所有的有符号的类型，因为RLP不支持直接编码，都必须转为 Buffer 送进去
+                buf = Buffer.alloc(1);
+                buf.writeInt8(param);
+                arrRlp.push(buf);
+            } else if (paramType === "int16") {
+                buf = Buffer.alloc(2);
+                buf.writeInt16BE(param);
+                arrRlp.push(buf);
+            } else if (paramType === "int32") {
+                buf = Buffer.alloc(4);
+                buf.writeInt32BE(param);
+                arrRlp.push(buf);
+            } else if (paramType === "int64") {
+                let bnInt64 = new utils.BN(param);
+                if (bnInt64.toString() === "0") bnInt64 = 0;
+                arrRlp.push(bnInt64);
             }
         }
         return arrRlp;
@@ -314,6 +332,18 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         } else if (paramType === "bool") {
             buf = Buffer.concat([Buffer.alloc(8), buf]);
             data = buf.readUInt8(buf.length - 1) === 1;
+        } else if (paramType === "int8") {
+            buf = Buffer.concat([Buffer.alloc(1), buf]);
+            data = buf.readInt8(buf.length - 1);
+        } else if (paramType === "int16") {
+            buf = Buffer.concat([Buffer.alloc(2), buf]);
+            data = buf.readInt16BE(buf.length - 2);
+        } else if (paramType === "int32") {
+            buf = Buffer.concat([Buffer.alloc(4), buf]);
+            data = buf.readInt32BE(buf.length - 4);
+        } else if (paramType === "int64") {
+            buf = Buffer.concat([Buffer.alloc(8), buf]);
+            data = buf.readBigInt64BE(buf.length - 8).toString();
         }
 
         return data;
