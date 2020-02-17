@@ -1,5 +1,39 @@
 [
     {
+        "constant": true,
+        "input": [],
+        "name": "getInt16",
+        "output": "int16",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "uint64"
+            }
+        ],
+        "name": "setUint64",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "input": [
+            {
+                "name": "topic",
+                "type": "string"
+            },
+            {
+                "name": "arg1",
+                "type": "string"
+            }
+        ],
+        "name": "transfer",
+        "topic": 1,
+        "type": "Event"
+    },
+    {
         "constant": false,
         "input": [],
         "name": "init",
@@ -26,6 +60,13 @@
         "type": "Action"
     },
     {
+        "constant": true,
+        "input": [],
+        "name": "getVector",
+        "output": "uint16[]",
+        "type": "Action"
+    },
+    {
         "constant": false,
         "input": [
             {
@@ -34,18 +75,6 @@
             }
         ],
         "name": "setUint16",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "uint64"
-            }
-        ],
-        "name": "setUint64",
         "output": "void",
         "type": "Action"
     },
@@ -66,6 +95,13 @@
         ],
         "name": "setUint32",
         "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getMap",
+        "output": "map<string,string>",
         "type": "Action"
     },
     {
@@ -220,6 +256,157 @@
         "input": [],
         "name": "getMyMessage",
         "output": "my_message",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int8"
+            }
+        ],
+        "name": "setInt8",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getInt8",
+        "output": "int8",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int16"
+            }
+        ],
+        "name": "setInt16",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int32"
+            }
+        ],
+        "name": "setInt32",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getInt32",
+        "output": "int32",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int64"
+            }
+        ],
+        "name": "setInt64",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getInt64",
+        "output": "int64",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "float"
+            }
+        ],
+        "name": "setFloat",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getFloat",
+        "output": "float",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "double"
+            }
+        ],
+        "name": "setDouble",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getDouble",
+        "output": "double",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "vec",
+                "type": "uint16[]"
+            }
+        ],
+        "name": "setVector",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "map<string,string>"
+            }
+        ],
+        "name": "setMap",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "msg",
+                "type": "message"
+            },
+            {
+                "name": "input1",
+                "type": "int32"
+            },
+            {
+                "name": "input2",
+                "type": "bool"
+            }
+        ],
+        "name": "testMultiParams",
+        "output": "void",
         "type": "Action"
     }
 ]

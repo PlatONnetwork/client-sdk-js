@@ -12,7 +12,7 @@ const provider = "http://192.168.0.105:6789"; // 请更新成自己的 http 节�
 const chainId = 100; // 请更新成自己的节点id
 const privateKey = "0xe13ebe4242500201e1bbfcd3372176e05f282595326727c8d4dcfc83daeb40fe"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const from = "0x54a7a3c6822eb222c53f76443772a60b0f9a8bab"; // 请更新成上面私钥对应的地址
-const address = "0x2FFc7CBBb28374fa6D86e0BA917fB69333da54F7"; // 合约地址(如果不测试部署就更换)
+const address = "0xAe924768A8A5cff75d8fFcf453F78AC898274804"; // 合约地址(如果不测试部署就更换)
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';
 const abiFilePath = './test/wasm/js_contracttest.abi.json';
@@ -155,6 +155,46 @@ describe("wasm unit test (you must update config before run this test)", functio
         }
     });
 
+    it("wasm call setInt8 getInt8", async function () {
+        let nums = [-128, 127, _.random(-128, 127)]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setInt8", [num]);
+            ret = await contractCall("getInt8", []);
+            assert.strictEqual(ret, num);
+        }
+    });
+
+    it("wasm call setInt16 getInt16", async function () {
+        let nums = [-32767, 32767, _.random(-32767, 32768)]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setInt16", [num]);
+            ret = await contractCall("getInt16", []);
+            assert.strictEqual(ret, num);
+        }
+    });
+
+    it("wasm call setInt32 getInt32", async function () {
+        let nums = [-2147483648, 2147483647, _.random(-2147483648, 2147483647)]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setInt32", [num]);
+            ret = await contractCall("getInt32", []);
+            assert.strictEqual(ret, num);
+        }
+    });
+
+    it("wasm call setInt64 getInt64", async function () {
+        let nums = ["-9223372036854775808", "9223372036854775807", _.random(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setInt64", [num]);
+            ret = await contractCall("getInt64", []);
+            assert.strictEqual(ret, num.toString());
+        }
+    });
+
     it("wasm call setMessage getMessage", async function () {
         this.timeout(waitTime);
         let message = [randomString()];
@@ -173,6 +213,48 @@ describe("wasm unit test (you must update config before run this test)", functio
         await contractSend("setMyMessage", [myMessage]);
         ret = await contractCall("getMyMessage", []);
         assert.deepEqual(ret, myMessage);
+    });
+
+    it("wasm call setVector getVector", async function () {
+        this.timeout(waitTime);
+        let nums = [0, 65535, _.random(0, 65535), _.random(0, 65535), _.random(0, 65535), _.random(0, 65535)];
+        await contractSend("setVector", [nums]);
+        ret = await contractCall("getVector", []);
+        assert.deepEqual(ret, nums);
+    });
+
+    it("wasm call setMap getMap", async function () {
+        this.timeout(waitTime);
+        let maps = [["name", "lucy"], ["age", "18"], ["sex", "female"]];
+        let len = _.random(0, 10);
+        for (let i = 0; i < len; i++) {
+            maps.push([randomString(_.random(1, 10)), randomString(_.random(1, 100))])
+        }
+        await contractSend("setMap", [maps]);
+        ret = await contractCall("getMap", []);
+
+        // map 是无序的，需要先排序才好比较
+        maps = _.sortBy(maps, '0');
+        ret = _.sortBy(ret, '0');
+        assert.deepEqual(maps, ret);
+    });
+
+    it("wasm call testMultiParams(message, int32_t, bool)", async function () {
+        this.timeout(waitTime);
+        let message = [randomString()];
+        let num = _.random(-2147483648, 2147483647);
+        let flag = _.random(0, 1) ? true : false;
+
+        await contractSend("testMultiParams", [message, num, flag]);
+
+        ret = await contractCall("getMessage", []);
+        assert.deepEqual(ret, message);
+
+        ret = await contractCall("getInt32", []);
+        assert.strictEqual(ret, num);
+
+        ret = await contractCall("getBool", []);
+        assert.strictEqual(ret, flag);
     });
 })
 

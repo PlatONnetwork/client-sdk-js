@@ -24,6 +24,7 @@
 var _ = require('underscore');
 var utils = require('web3-utils');
 var RLP = require('rlp');
+var BigInteger = require("big-integer");
 
 var EthersAbi = require('ethers/utils/abi-coder').AbiCoder;
 var ethersAbiCoder = new EthersAbi(function (type, value) {
@@ -131,12 +132,11 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
-    // console.log("encodeParameters Call:", types, params);
+    console.log("encodeParameters Call:", types, params);
     if (this.vmType) {
         let arrRlp = [];
         // wasm 函数编码规则 RLP.encode([funcName, param1, param2, ... , paramN])
         // 在这里只对 funcName 后面的 params 进行编码
-        // @todo 不能简单的直接编码，要根据类型来编码
         for (let i = 0; i < params.length; i++) {
             const param = params[i];
             const type = types[i].type;
@@ -167,15 +167,47 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 buf.writeInt16BE(param);
                 arrRlp.push(buf);
             } else if (type === "int32") {
-                buf = Buffer.alloc(4);
-                buf.writeInt32BE(param);
-                arrRlp.push(buf);
+                let bigNum = BigInteger(param);
+                bigNum = bigNum.shiftLeft(1).xor(bigNum.shiftRight(63)).toString(16);
+                arrRlp.push(Buffer.from(bigNum, "hex"));
             } else if (type === "int64") {
-                let bnInt64 = new utils.BN(param);
-                if (bnInt64.toString() === "0") bnInt64 = 0;
-                arrRlp.push(bnInt64);
+                let bigNum = BigInteger(param);
+                bigNum = bigNum.shiftLeft(1).xor(bigNum.shiftRight(63)).toString(16);
+                arrRlp.push(Buffer.from(bigNum, "hex"));
             } else if (type.endsWith("[]")) {
-                // vector(即数组)
+                // vector(即数组) uint16[]
+                let vecType = type.split("[")[0];
+                let data = [];
+                // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
+                for (const p of param) {
+                    data.push(this.encodeParameters([{
+                        type: vecType,
+                        name: ''
+                    }], [p])[0]);
+                }
+                arrRlp.push(data);
+            } else if (type.startsWith("map")) {
+                // map<string,string>
+                let i1 = type.indexOf('<');
+                let i2 = type.indexOf(',');
+                let i3 = type.indexOf('>');
+                let kType = type.substring(i1 + 1, i2);
+                let vType = type.substring(i2 + 1, i3);
+
+                let data = [];
+                // 分别对Map的key, value进行编码，但要注意编码回来的是一个数组。需要第一个数
+                for (const p of param) {
+                    let kValue = this.encodeParameters([{
+                        type: kType,
+                        name: ''
+                    }], [p[0]])[0];
+                    let vValue = this.encodeParameters([{
+                        type: vType,
+                        name: ''
+                    }], [p[1]])[0];
+                    data.push([kValue, vValue]);
+                }
+                arrRlp.push(data);
             } else if (type === "struct") {
                 // 确定是结构体了，那就找到结构体的描述进行递归编码
                 let structType = this.abi.find(item => item.name === name && item.type === 'struct');
@@ -355,7 +387,7 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         // 再次递归进来的时候，就不要进行rlp解码了。
         let buf = typeof bytes === "string" ? RLP.decode(Buffer.from(bytes, "hex")) : bytes;
         let data = buf;
-        // console.log("decodeParameters Call:", type, bytes, buf);
+        console.log("decodeParameters Call:", type, bytes, buf);
         if (type === "string") {
             data = buf.toString();
         } else if (type === "uint8") {
@@ -380,13 +412,44 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             buf = Buffer.concat([Buffer.alloc(2), buf]);
             data = buf.readInt16BE(buf.length - 2);
         } else if (type === "int32") {
-            buf = Buffer.concat([Buffer.alloc(4), buf]);
-            data = buf.readInt32BE(buf.length - 4);
+            let bi = BigInteger(buf.toString("hex"), 16);
+            let bi1 = bi.shiftRight(1);
+            let bi2 = bi.and(1).multiply(-1);
+            data = parseInt(bi1.xor(bi2).toString());
         } else if (type === "int64") {
-            buf = Buffer.concat([Buffer.alloc(8), buf]);
-            data = buf.readBigInt64BE(buf.length - 8).toString();
+            let bi = BigInteger(buf.toString("hex"), 16);
+            let bi1 = bi.shiftRight(1);
+            let bi2 = bi.and(1).multiply(-1);
+            data = bi1.xor(bi2).toString();
         } else if (type.endsWith("[]")) {
             // vector(即数组)
+            let vecType = type.split("[")[0];
+            // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
+            for (let i = 0; i < data.length; i++) {
+                data[i] = this.decodeParameters([{
+                    type: vecType,
+                    name: ''
+                }], data[i]);
+            }
+        } else if (type.startsWith("map")) {
+            // map<string,string>
+            let i1 = type.indexOf('<');
+            let i2 = type.indexOf(',');
+            let i3 = type.indexOf('>');
+            let kType = type.substring(i1 + 1, i2);
+            let vType = type.substring(i2 + 1, i3);
+            // 进一步根据类型对buffer解码
+            for (let i = 0; i < data.length; i++) {
+                data[i][0] = this.decodeParameters([{
+                    type: kType,
+                    name: ''
+                }], data[i][0]);
+
+                data[i][1] = this.decodeParameters([{
+                    type: vType,
+                    name: ''
+                }], data[i][1]);
+            }
         } else if (type === "struct") {
             // 确定是结构体了，那就找到结构体的描述进行递归解码
             let structType = this.abi.find(item => item.name === name && item.type === 'struct');
