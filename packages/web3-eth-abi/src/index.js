@@ -132,7 +132,7 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
-    console.log("encodeParameters Call:", types, params);
+    // console.log("encodeParameters Call:", types, params);
     if (this.vmType) {
         let arrRlp = [];
         // wasm 函数编码规则 RLP.encode([funcName, param1, param2, ... , paramN])
@@ -168,11 +168,15 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 arrRlp.push(buf);
             } else if (type === "int32") {
                 let bigNum = BigInteger(param);
-                bigNum = bigNum.shiftLeft(1).xor(bigNum.shiftRight(63)).toString(16);
+                let b1 = bigNum.shiftLeft(1);
+                let b2 = bigNum.shiftRight(63);
+                bigNum = b1.xor(b2).toString(16);
                 arrRlp.push(Buffer.from(bigNum, "hex"));
             } else if (type === "int64") {
                 let bigNum = BigInteger(param);
-                bigNum = bigNum.shiftLeft(1).xor(bigNum.shiftRight(63)).toString(16);
+                let b1 = bigNum.shiftLeft(1);
+                let b2 = bigNum.shiftRight(63);
+                bigNum = b1.xor(b2).toString(16);
                 arrRlp.push(Buffer.from(bigNum, "hex"));
             } else if (type === "float") {
                 buf = Buffer.alloc(4);
@@ -395,7 +399,7 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         // 再次递归进来的时候，就不要进行rlp解码了。
         let buf = typeof bytes === "string" ? RLP.decode(Buffer.from(bytes, "hex")) : bytes;
         let data = buf;
-        console.log("decodeParameters Call:", type, bytes, buf);
+        // console.log("decodeParameters Call:", type, bytes, buf);
         if (type === "string") {
             data = buf.toString();
         } else if (type === "uint8") {

@@ -70,7 +70,7 @@ var Contract = function Contract(jsonInterface, address, options) {
         throw new Error('You must provide the json interface of the contract when instantiating a contract object.');
     }
 
-
+    abi.setVmType(0); // 默认是solidity
 
     // create the options object
     this.options = {};
@@ -103,9 +103,10 @@ var Contract = function Contract(jsonInterface, address, options) {
 
             if (curInterface.type === "Event") {
                 item.type = "event";
+                item.anonymous = false;
             }
 
-            // 数据设计的就是一坨屎，给改造一下符合递归调用
+            // 数据设计给改造一下符合递归调用
             // {"baseclass":["message"],"fields":[{"name":"body","type":"string"},{"name":"end","type":"string"}],"name":"my_message","type":"struct"}"
             if (curInterface.type === "struct") {
                 item.inputs = item.fields;

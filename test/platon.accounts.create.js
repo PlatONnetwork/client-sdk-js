@@ -6,7 +6,7 @@ var Web3 = require('../packages/web3');
 var web3 = new Web3();
 
 var tests = [];
-for (var i = 0; i < 1000; i++) {
+for (var i = 0; i < 10; i++) {
     tests.push(i);
 }
 

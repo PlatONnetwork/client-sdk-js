@@ -347,3 +347,11 @@ solidity | wasm| 说明
 对于第二个有继承的结构体 `my_message`，那么它的入参形式依次为它基类，然后它自己的成员，即 `[ message, body, end ]` --> `[ [ head ], body, end ]`。一个实际的入参示例比如 `[ [ "HelloWorld" ], "Wasm", "Good" ]`
 
 对于函数调用返回结构体的编码。解码之后跟入参的格式一致。
+
+## 主要修改点
+
+1. 在构造合约实例的时候，入参新增了一个vmType。
+2. 为了ABI跟solidity保持一致，在构造合约的时候，对ABI进行了修改。详细请见`web3-eth-contract/src/index.js`文件的`function Contract(jsonInterface, address, options)` (大概在代码96行)
+3. 对合约部署的数据与函数调用的data数据最后组装进行了修改。详细请见`web3-eth-contract/src/index.js`文件的`Contract.prototype._encodeMethodABI`函数。(大概在代码547行)
+4. 对函数的入参组装进行了修改。详细请见`web3-eth-abi/src/index.js`文件的`ABICoder.prototype.encodeParameters`函数。(大概在代码134行)
+5. 对函数的出参解码进行了修改。详细请见`web3-eth-abi/src/index.js`文件的`ABICoder.prototype.decodeParameters`函数。(大概在代码377行)。至于对于入参与入参的编解码的规定，请看后台提供的文件`rlp编码规则.md`

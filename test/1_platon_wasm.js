@@ -84,14 +84,6 @@ describe("wasm unit test (you must update config before run this test)", functio
         contract.options.address = ret.contractAddress;
     });
 
-    it("wasm call setString getString", async function () {
-        this.timeout(waitTime);
-        const str = randomString();
-        await contractSend("setString", [str]);
-        ret = await contractCall("getString", []);
-        assert.strictEqual(ret, str);
-    });
-
     it("wasm call setUint8 getUint8", async function () {
         let nums = [0, 255, _.random(0, 255)]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
@@ -193,6 +185,14 @@ describe("wasm unit test (you must update config before run this test)", functio
             ret = await contractCall("getInt64", []);
             assert.strictEqual(ret, num.toString());
         }
+    });
+
+    it("wasm call setString getString", async function () {
+        this.timeout(waitTime);
+        const str = randomString();
+        await contractSend("setString", [str]);
+        ret = await contractCall("getString", []);
+        assert.strictEqual(ret, str);
     });
 
     it("wasm call setMessage getMessage", async function () {

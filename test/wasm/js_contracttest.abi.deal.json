@@ -1,5 +1,50 @@
 [
     {
+        "constant": true,
+        "name": "getInt16",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "int16"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setUint64",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "uint64"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "name": "transfer",
+        "topic": 1,
+        "type": "event",
+        "anonymous": false,
+        "inputs": [
+            {
+                "name": "topic",
+                "type": "string"
+            },
+            {
+                "name": "arg1",
+                "type": "string"
+            }
+        ]
+    },
+    {
         "constant": false,
         "name": "init",
         "type": "constructor",
@@ -41,6 +86,18 @@
         ]
     },
     {
+        "constant": true,
+        "name": "getVector",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint16[]"
+            }
+        ]
+    },
+    {
         "constant": false,
         "name": "setUint16",
         "type": "function",
@@ -48,23 +105,6 @@
             {
                 "name": "input",
                 "type": "uint16"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "void"
-            }
-        ]
-    },
-    {
-        "constant": false,
-        "name": "setUint64",
-        "type": "function",
-        "inputs": [
-            {
-                "name": "input",
-                "type": "uint64"
             }
         ],
         "outputs": [
@@ -100,6 +140,18 @@
             {
                 "name": "",
                 "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getMap",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "map<string,string>"
             }
         ]
     },
@@ -326,6 +378,227 @@
             {
                 "name": "",
                 "type": "my_message"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setInt8",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "int8"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getInt8",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "int8"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setInt16",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "int16"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setInt32",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "int32"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getInt32",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "int32"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setInt64",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "int64"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getInt64",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "int64"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setFloat",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "float"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getFloat",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "float"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setDouble",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "double"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": true,
+        "name": "getDouble",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "double"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setVector",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "vec",
+                "type": "uint16[]"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "setMap",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "input",
+                "type": "map<string,string>"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
+            }
+        ]
+    },
+    {
+        "constant": false,
+        "name": "testMultiParams",
+        "type": "function",
+        "inputs": [
+            {
+                "name": "msg",
+                "type": "message"
+            },
+            {
+                "name": "input1",
+                "type": "int32"
+            },
+            {
+                "name": "input2",
+                "type": "bool"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "void"
             }
         ]
     }

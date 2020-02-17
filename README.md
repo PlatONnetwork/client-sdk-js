@@ -1404,9 +1404,7 @@ subscription.unsubscribe(function(error, success){
 
 #### web3.platon.Contract
 
-`web3.platon.Contract`类简化了与以太坊区块链上智能合约的交互。创建合约对象时，
-只需指定相应智能合约的json接口，web3就可以自动地将所有的调用转换为底层
-基于RPC的ABI调用。
+`web3.platon.Contract`类简化了与以太坊区块链上智能合约的交互。创建合约对象时，只需指定相应智能合约的json接口，web3就可以自动地将所有的调用转换为底层基于RPC的ABI调用。
 
 通过web3的封装，与智能合约的交互就像与JavaScript对象一样简单。
 
@@ -1425,7 +1423,7 @@ new web3.platon.Contract(jsonInterface[, address][, options])
    *  gasPrice - String: 用于交易的gas价格，单位：wei
    *  gas - Number: 交易可用的最大gas量，即gas limit
    *  data - String: 合约的字节码，部署合约时需要
-
+   *  vmType - Number: 合约类型。0表示solidity合约，1表示wasm合约。不传默认是solidity合约。(新增字段)
 返回值：
 
 `Object`: The contract instance with all its methods and events.

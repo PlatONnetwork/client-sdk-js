@@ -82,6 +82,7 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
     it("web3.platon.Contract", async function () {
         let from = cfg.address;
         let contract = new web3.platon.Contract(JSON.parse(cfg.myToken.abiStr));
+        console.log("contract.options.vmType", contract.options.vmType);
         let gasPrice = cfg.gasPrice;
         let gas = cfg.gas;
         let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
