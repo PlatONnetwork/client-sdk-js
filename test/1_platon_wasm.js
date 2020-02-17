@@ -12,7 +12,7 @@ const provider = "http://192.168.0.105:6789"; // 请更新成自己的 http 节�
 const chainId = 100; // 请更新成自己的节点id
 const privateKey = "0xe13ebe4242500201e1bbfcd3372176e05f282595326727c8d4dcfc83daeb40fe"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const from = "0x54a7a3c6822eb222c53f76443772a60b0f9a8bab"; // 请更新成上面私钥对应的地址
-const address = "0xAe924768A8A5cff75d8fFcf453F78AC898274804"; // 合约地址(如果不测试部署就更换)
+const address = "0x66035C2ee9cA2ab4a472125DAc88667d475e5249"; // 合约地址(如果不测试部署就更换)
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';
 const abiFilePath = './test/wasm/js_contracttest.abi.json';
@@ -255,6 +255,26 @@ describe("wasm unit test (you must update config before run this test)", functio
 
         ret = await contractCall("getBool", []);
         assert.strictEqual(ret, flag);
+    });
+
+    it.skip("wasm call setFloat getFloat", async function () {
+        let nums = [-1.68, 0, 1.68];
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setFloat", [num]);
+            ret = await contractCall("getFloat", []);
+            assert.isTrue(Math.abs(num - ret) <= Number.EPSILON); // 浮点数有精度问题，不会全等
+        }
+    });
+
+    it.skip("wasm call setDouble getDouble", async function () {
+        let nums = [-1.68, 0, 1.68];
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setDouble", [num]);
+            ret = await contractCall("getDouble", []);
+            assert.isTrue(Math.abs(num - ret) <= Number.EPSILON); // 浮点数有精度问题，不会全等
+        }
     });
 })
 

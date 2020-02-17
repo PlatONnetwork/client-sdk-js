@@ -174,6 +174,14 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 let bigNum = BigInteger(param);
                 bigNum = bigNum.shiftLeft(1).xor(bigNum.shiftRight(63)).toString(16);
                 arrRlp.push(Buffer.from(bigNum, "hex"));
+            } else if (type === "float") {
+                buf = Buffer.alloc(4);
+                buf.writeFloatBE(param);
+                arrRlp.push(buf);
+            } else if (type === "double") {
+                buf = Buffer.alloc(8);
+                buf.writeDoubleBE(param);
+                arrRlp.push(buf);
             } else if (type.endsWith("[]")) {
                 // vector(即数组) uint16[]
                 let vecType = type.split("[")[0];
@@ -421,6 +429,11 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             let bi1 = bi.shiftRight(1);
             let bi2 = bi.and(1).multiply(-1);
             data = bi1.xor(bi2).toString();
+        } else if (type === "float") {
+            // 注意float跟double都有精度的损失
+            data = buf.readFloatBE();
+        } else if (type === "double") {
+            data = buf.readDoubleBE();
         } else if (type.endsWith("[]")) {
             // vector(即数组)
             let vecType = type.split("[")[0];
