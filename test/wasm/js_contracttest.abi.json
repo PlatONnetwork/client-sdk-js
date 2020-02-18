@@ -1,12 +1,5 @@
 [
     {
-        "constant": true,
-        "input": [],
-        "name": "getInt16",
-        "output": "int16",
-        "type": "Action"
-    },
-    {
         "constant": false,
         "input": [
             {
@@ -225,7 +218,9 @@
         "type": "Action"
     },
     {
-        "baseclass": ["message"],
+        "baseclass": [
+            "message"
+        ],
         "fields": [
             {
                 "name": "body",
@@ -287,6 +282,13 @@
         ],
         "name": "setInt16",
         "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getInt16",
+        "output": "int16",
         "type": "Action"
     },
     {
