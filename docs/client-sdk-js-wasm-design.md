@@ -355,3 +355,4 @@ solidity | wasm| 说明
 3. 对合约部署的数据与函数调用的data数据最后组装进行了修改。详细请见`web3-eth-contract/src/index.js`文件的`Contract.prototype._encodeMethodABI`函数。(大概在代码547行)
 4. 对函数的入参组装进行了修改。详细请见`web3-eth-abi/src/index.js`文件的`ABICoder.prototype.encodeParameters`函数。(大概在代码134行)
 5. 对函数的出参解码进行了修改。详细请见`web3-eth-abi/src/index.js`文件的`ABICoder.prototype.decodeParameters`函数。(大概在代码377行)。至于对于入参与入参的编解码的规定，请看后台提供的文件`rlp编码规则.md`
+6. 对于事件的修改。以太坊对于事件的签名是`sha3(eventName(var1Type, var2Type, ... ,varNtype))`，改为 `sha3(RLP(eventName))`。详细请见`web3-eth-abi/src/index.js`文件的`ABICoder.prototype.encodeEventSignature`函数。(大概在代码107行)

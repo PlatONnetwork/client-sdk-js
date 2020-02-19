@@ -103,7 +103,10 @@ var Contract = function Contract(jsonInterface, address, options) {
 
             if (curInterface.type === "Event") {
                 item.type = "event";
-                item.anonymous = false;
+                item.anonymous = false; // 目前 platon 不支持匿名事件，生成的 abi 文件中 anonymous 为 false
+                for (let i = 0; i < curInterface.input.length; i++) {
+                    curInterface.input[i].indexed = (i + 1) <= curInterface.topic; // 转为跟solidity结构一致的indexed
+                }
             }
 
             // 数据设计给改造一下符合递归调用
@@ -142,7 +145,7 @@ var Contract = function Contract(jsonInterface, address, options) {
         }
         jsonInterface = jsonAbi;
         abi.setAbi(jsonInterface);
-        // console.log(JSON.stringify(jsonInterface, undefined, 4));
+        // console.log(JSON.stringify(jsonInterface));
     }
 
     // set address
@@ -357,7 +360,6 @@ var Contract = function Contract(jsonInterface, address, options) {
     // set getter/setter properties
     this.options.address = address;
     this.options.jsonInterface = jsonInterface;
-
 };
 
 Contract.setProvider = function (provider, accounts) {
@@ -508,6 +510,8 @@ Contract.prototype._decodeEventABI = function (data) {
             return (intf.signature === data.topics[0]);
         }) || { anonymous: true };
     }
+
+    // console.log("_decodeEventABI Call:", data, event);
 
     // create empty inputs if none are present (e.g. anonymous events on allEvents)
     event.inputs = event.inputs || [];

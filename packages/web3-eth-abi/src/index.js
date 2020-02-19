@@ -102,7 +102,10 @@ ABICoder.prototype.encodeEventSignature = function (functionName) {
     if (_.isObject(functionName)) {
         functionName = utils._jsonInterfaceMethodToString(functionName);
     }
-
+    // keccak256(rlp(EVENT名称字符串)) 得到的[32]byte
+    if (this.vmType) {
+        functionName = RLP.encode(functionName.split("(")[0]);
+    }
     return utils.sha3(functionName);
 };
 
@@ -379,6 +382,7 @@ ABICoder.prototype.decodeParameter = function (type, bytes) {
  * @return {Array} array of plain params
  */
 ABICoder.prototype.decodeParameters = function (outputs, bytes) {
+    // console.log("decodeParameters Call:", outputs, bytes);
     if (this.vmType) {
         // 解码规则：RLP.decode(Buffer.from(bytes, "hex")) 再把出来的数据按照 type 去解码。没有官方文档靠猜的......
 
@@ -538,6 +542,7 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
  * @return {Array} array of plain params
  */
 ABICoder.prototype.decodeLog = function (inputs, data, topics) {
+    // console.log("decodeLog Call:", inputs, data, topics)
     var _this = this;
     topics = _.isArray(topics) ? topics : [topics];
 
@@ -548,25 +553,43 @@ ABICoder.prototype.decodeLog = function (inputs, data, topics) {
     var topicCount = 0;
 
     // TODO check for anonymous logs?
-
+    var vmType = this.vmType;
     inputs.forEach(function (input, i) {
         if (input.indexed) {
-            indexedParams[i] = (['bool', 'int', 'uint', 'address', 'fixed', 'ufixed'].find(function (staticType) {
+            let canDecodeType = (['bool', 'int', 'uint', 'address', 'fixed', 'ufixed'].find(function (staticType) {
                 return input.type.indexOf(staticType) !== -1;
-            })) ? _this.decodeParameter(input.type, topics[topicCount]) : topics[topicCount];
+            }));
+            if (canDecodeType) {
+                if (vmType) {
+                    // 没有进行RLP编码，直接32字节补齐的。**数值**: 大端编码的[]byte
+                    let num = utils.hexToNumber(topics[topicCount]);
+                    indexedParams[i] = Number.isSafeInteger(num) ? num : utils.hexToNumberString(topics[topicCount]);
+                } else {
+                    indexedParams[i] = _this.decodeParameter(input.type, topics[topicCount]);
+                }
+            } else {
+                indexedParams[i] = topics[topicCount];
+            }
             topicCount++;
         } else {
             notIndexedInputs[i] = input;
         }
     });
 
-
     var nonIndexedData = data;
-    var notIndexedParams = (nonIndexedData) ? this.decodeParameters(notIndexedInputs, nonIndexedData) : [];
+    var notIndexedParams = [];
+    if (vmType) {
+        let arrData = RLP.decode(Buffer.from(nonIndexedData.replace("0x", ""), "hex")); // 后面的数据是经过RLP编码的
+        let j = 0;
+        for (let i = 0; i < notIndexedInputs.length; i++) {
+            notIndexedParams[i] = notIndexedInputs[i] ? this.decodeParameters([notIndexedInputs[i]], arrData[j++]) : undefined;
+        }
+    } else {
+        notIndexedParams = (nonIndexedData) ? this.decodeParameters(notIndexedInputs, nonIndexedData) : [];
+    }
 
     var returnValue = new Result();
     returnValue.__length__ = 0;
-
 
     inputs.forEach(function (res, i) {
         returnValue[i] = (res.type === 'string') ? '' : null;

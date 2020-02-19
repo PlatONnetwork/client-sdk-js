@@ -12,7 +12,7 @@ const provider = "http://192.168.0.105:6789"; // 请更新成自己的 http 节�
 const chainId = 100; // 请更新成自己的节点id
 const privateKey = "0xe13ebe4242500201e1bbfcd3372176e05f282595326727c8d4dcfc83daeb40fe"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const from = "0x54a7a3c6822eb222c53f76443772a60b0f9a8bab"; // 请更新成上面私钥对应的地址
-const address = "0x66035C2ee9cA2ab4a472125DAc88667d475e5249"; // 合约地址(如果不测试部署就更换)
+const address = "0xe63A3be0C998aC2de634EB125A9e915Cc52bF6B8"; // 合约地址(如果不测试部署就更换)
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';
 const abiFilePath = './test/wasm/js_contracttest.abi.json';
@@ -88,7 +88,11 @@ describe("wasm unit test (you must update config before run this test)", functio
         let nums = [0, 255, _.random(0, 255)]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
-            await contractSend("setUint8", [num]);
+            ret = await contractSend("setUint8", [num]);
+
+            ret = (await contract.getPastEvents("transfer", { fromBlock: ret.blockNumber, toBlock: ret.blockNumber }))[0].returnValues;
+            assert.strictEqual(ret.arg1, "event");
+
             ret = await contractCall("getUint8", []);
             assert.strictEqual(ret, num);
         }
@@ -98,7 +102,12 @@ describe("wasm unit test (you must update config before run this test)", functio
         let nums = [0, 65535, _.random(0, 65535)]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
-            await contractSend("setUint16", [num]);
+            ret = await contractSend("setUint16", [num]);
+
+            ret = (await contract.getPastEvents("setUint16Evt", { fromBlock: ret.blockNumber, toBlock: ret.blockNumber }))[0].returnValues;
+            assert.strictEqual(ret.arg2, "data1");
+            assert.strictEqual(ret.arg1, num);
+
             ret = await contractCall("getUint16", []);
             assert.strictEqual(ret, num);
         }
@@ -108,11 +117,19 @@ describe("wasm unit test (you must update config before run this test)", functio
         let nums = [0, 4294967295, _.random(0, 4294967295)]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
-            await contractSend("setUint32", [num]);
+            ret = await contractSend("setUint32", [num]);
+
+            ret = (await contract.getPastEvents("setUint32Evt", { fromBlock: ret.blockNumber, toBlock: ret.blockNumber }))[0].returnValues;
+            assert.strictEqual(ret.topic2, num);
+            assert.strictEqual(ret.arg1, num);
+            assert.strictEqual(ret.arg2, num);
+            assert.strictEqual(ret.arg3, "data1");
+
             ret = await contractCall("getUint32", []);
             assert.strictEqual(ret, num);
         }
     });
+
 
     it("wasm call setUint64 getUint64", async function () {
         // 两个边界值，一个中间的随机数，由于JavaScript最大的安全整数-(2^53 - 1) 到 2^53 - 1(即9007199254740991)，所以超过这个必须以字符串表示送进去给编码

@@ -1,13 +1,39 @@
 [
     {
+        "baseclass": [],
+        "fields": [
+            {
+                "name": "head",
+                "type": "string"
+            }
+        ],
+        "name": "message",
+        "type": "struct"
+    },
+    {
+        "baseclass": ["message"],
+        "fields": [
+            {
+                "name": "body",
+                "type": "string"
+            },
+            {
+                "name": "end",
+                "type": "string"
+            }
+        ],
+        "name": "my_message",
+        "type": "struct"
+    },
+    {
         "constant": false,
         "input": [
             {
-                "name": "input",
-                "type": "uint64"
+                "name": "msg",
+                "type": "my_message"
             }
         ],
-        "name": "setUint64",
+        "name": "setMyMessage",
         "output": "void",
         "type": "Action"
     },
@@ -27,10 +53,63 @@
         "type": "Event"
     },
     {
+        "input": [
+            {
+                "name": "topic",
+                "type": "string"
+            },
+            {
+                "name": "arg2",
+                "type": "string"
+            },
+            {
+                "name": "arg1",
+                "type": "uint16"
+            }
+        ],
+        "name": "setUint16Evt",
+        "topic": 1,
+        "type": "Event"
+    },
+    {
+        "input": [
+            {
+                "name": "topic1",
+                "type": "string"
+            },
+            {
+                "name": "topic2",
+                "type": "uint32"
+            },
+            {
+                "name": "arg3",
+                "type": "string"
+            },
+            {
+                "name": "arg2",
+                "type": "uint32"
+            },
+            {
+                "name": "arg1",
+                "type": "uint32"
+            }
+        ],
+        "name": "setUint32Evt",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
         "constant": false,
         "input": [],
         "name": "init",
         "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getDouble",
+        "output": "double",
         "type": "Action"
     },
     {
@@ -50,13 +129,6 @@
         "input": [],
         "name": "getUint8",
         "output": "uint8",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getVector",
-        "output": "uint16[]",
         "type": "Action"
     },
     {
@@ -93,15 +165,20 @@
     {
         "constant": true,
         "input": [],
-        "name": "getMap",
-        "output": "map<string,string>",
+        "name": "getUint32",
+        "output": "uint32",
         "type": "Action"
     },
     {
-        "constant": true,
-        "input": [],
-        "name": "getUint32",
-        "output": "uint32",
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "uint64"
+            }
+        ],
+        "name": "setUint64",
+        "output": "void",
         "type": "Action"
     },
     {
@@ -188,17 +265,6 @@
         "type": "Action"
     },
     {
-        "baseclass": [],
-        "fields": [
-            {
-                "name": "head",
-                "type": "string"
-            }
-        ],
-        "name": "message",
-        "type": "struct"
-    },
-    {
         "constant": false,
         "input": [
             {
@@ -215,35 +281,6 @@
         "input": [],
         "name": "getMessage",
         "output": "message",
-        "type": "Action"
-    },
-    {
-        "baseclass": [
-            "message"
-        ],
-        "fields": [
-            {
-                "name": "body",
-                "type": "string"
-            },
-            {
-                "name": "end",
-                "type": "string"
-            }
-        ],
-        "name": "my_message",
-        "type": "struct"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "msg",
-                "type": "my_message"
-            }
-        ],
-        "name": "setMyMessage",
-        "output": "void",
         "type": "Action"
     },
     {
@@ -361,13 +398,6 @@
         "type": "Action"
     },
     {
-        "constant": true,
-        "input": [],
-        "name": "getDouble",
-        "output": "double",
-        "type": "Action"
-    },
-    {
         "constant": false,
         "input": [
             {
@@ -380,6 +410,13 @@
         "type": "Action"
     },
     {
+        "constant": true,
+        "input": [],
+        "name": "getVector",
+        "output": "uint16[]",
+        "type": "Action"
+    },
+    {
         "constant": false,
         "input": [
             {
@@ -389,6 +426,13 @@
         ],
         "name": "setMap",
         "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getMap",
+        "output": "map<string,string>",
         "type": "Action"
     },
     {

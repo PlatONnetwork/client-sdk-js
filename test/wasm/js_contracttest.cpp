@@ -20,6 +20,8 @@ public:
 CONTRACT JSSDKTestContract : public platon::Contract
 {
     PLATON_EVENT1(transfer, std::string, std::string)
+    PLATON_EVENT1(setUint16Evt, std::string, std::string, uint16_t)
+    PLATON_EVENT2(setUint32Evt, std::string, uint32_t, std::string, uint32_t, uint32_t)
 public:
     ACTION void init()
     {
@@ -41,6 +43,7 @@ public:
     ACTION void setUint16(uint16_t input)
     {
         DEBUG("js_contract", "setUint16", input);
+        PLATON_EMIT_EVENT1(setUint16Evt, "topic1", "data1", input);
         tUint16.self() = input;
     }
     CONST uint16_t getUint16()
@@ -51,6 +54,7 @@ public:
     ACTION void setUint32(uint32_t input)
     {
         DEBUG("js_contract", "setUint32", input);
+        PLATON_EMIT_EVENT2(setUint32Evt, "topic1", input, "data1", input, input);
         tUint32.self() = input;
     }
     CONST uint32_t getUint32()
