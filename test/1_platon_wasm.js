@@ -12,7 +12,7 @@ const provider = "http://192.168.0.105:6789"; // 请更新成自己的 http 节�
 const chainId = 100; // 请更新成自己的节点id
 const privateKey = "0xe13ebe4242500201e1bbfcd3372176e05f282595326727c8d4dcfc83daeb40fe"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const from = "0x54a7a3c6822eb222c53f76443772a60b0f9a8bab"; // 请更新成上面私钥对应的地址
-const address = "0xe63A3be0C998aC2de634EB125A9e915Cc52bF6B8"; // 合约地址(如果不测试部署就更换)
+const address = "0xAc2288354E43AF8Eab95e1F896aeCC1783AF89a7"; // 合约地址(如果不测试部署就更换)
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';
 const abiFilePath = './test/wasm/js_contracttest.abi.json';
@@ -140,6 +140,36 @@ describe("wasm unit test (you must update config before run this test)", functio
             await contractSend("setUint64", [num]);
             ret = await contractCall("getUint64", []);
             assert.strictEqual(ret, num.toString());
+        }
+    });
+
+    it("wasm call setU160 getU160", async function () {
+        let nums = ["0", "8888", "100"]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setU160", [num]);
+            ret = await contractCall("getU160", []);
+            assert.strictEqual(ret, num);
+        }
+    });
+
+    it("wasm call setU256new getU256new", async function () {
+        let nums = ["0", "8888", "100"]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setU256new", [num]);
+            ret = await contractCall("getU256new", []);
+            assert.strictEqual(ret, num);
+        }
+    });
+
+    it("wasm call setBigInt getBigInt", async function () {
+        let nums = ["0", "8888", "100"]; // 两个边界值，一个中间的随机数
+        this.timeout(waitTime * nums.length);
+        for (const num of nums) {
+            await contractSend("setBigInt", [num]);
+            ret = await contractCall("getBigInt", []);
+            assert.strictEqual(ret, num);
         }
     });
 
@@ -292,6 +322,55 @@ describe("wasm unit test (you must update config before run this test)", functio
             ret = await contractCall("getDouble", []);
             assert.isTrue(Math.abs(num - ret) <= Number.EPSILON); // 浮点数有精度问题，不会全等
         }
+    });
+
+    it("wasm call setArray getArray (array<std::string, 10>)", async function () {
+        this.timeout(waitTime);
+
+        const len = 10;
+        let strs = []
+        for (let i = 0; i < len; i++) {
+            strs.push(randomString((i + 1) * 5))
+        }
+        await contractSend("setArray", [strs]);
+        ret = await contractCall("getArray", []);
+        assert.deepEqual(ret, strs);
+    });
+
+    it("wasm call setPair getPair (pair<std::string, int32_t>)", async function () {
+        this.timeout(waitTime);
+        let pair = [randomString(), _.random(-2147483648, 2147483647)]
+        await contractSend("setPair", [pair]);
+        ret = await contractCall("getPair", []);
+        assert.deepEqual(ret, pair);
+    });
+
+    it("wasm call setSet getSet (set<string>)", async function () {
+        this.timeout(waitTime);
+        let set = [randomString(), randomString(), randomString()]
+        await contractSend("setSet", [set]);
+        ret = await contractCall("getSet", []);
+        set = _.sortBy(set, '0');
+        ret = _.sortBy(ret, '0');
+        assert.deepEqual(ret, set);
+    });
+
+    // bytes 是 uint8[]
+    it("wasm call setBytes getBytes", async function () {
+        let bytes = Buffer.from([_.random(0, 255), _.random(0, 255), _.random(0, 255)]);
+        this.timeout(waitTime);
+        await contractSend("setBytes", [bytes]);
+        ret = await contractCall("getBytes", []);
+        assert.strictEqual(Buffer.compare(bytes, ret), 0); // 他们两个buffer应该要等于
+    });
+
+    it("wasm call setFixedHash getFixedHash", async function () {
+        this.timeout(waitTime);
+        let hexStr = web3.utils.randomHex(256).replace("0x", ""); //定义的256
+        await contractSend("setFixedHash", [hexStr]);
+        ret = await contractCall("getFixedHash", []);
+
+        assert.strictEqual(ret, hexStr); // 他们两个buffer应该要等于
     });
 })
 

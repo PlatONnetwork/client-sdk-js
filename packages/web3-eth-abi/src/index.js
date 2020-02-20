@@ -148,16 +148,10 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             let buf;
             if (type === "string") {
                 arrRlp.push(Buffer.from(param));
-            } else if (type === "uint8") {
-                arrRlp.push(param);
-            } else if (type === "uint16") {
-                arrRlp.push(param);
-            } else if (type === "uint32") {
-                arrRlp.push(param);
-            } else if (type === "uint64") {
-                let bnUint64 = new utils.BN(param);
-                if (bnUint64.toString() === "0") bnUint64 = 0;
-                arrRlp.push(bnUint64);
+            } else if (type.startsWith("uint") && !type.endsWith("]")) {
+                let bnInt = new utils.BN(param);
+                if (bnInt.toString() === "0") bnInt = 0;
+                arrRlp.push(bnInt);
             } else if (type === "bool") {
                 arrRlp.push(param ? 1 : 0);
             } else if (type === "int8") {
@@ -189,18 +183,22 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 buf = Buffer.alloc(8);
                 buf.writeDoubleBE(param);
                 arrRlp.push(buf);
-            } else if (type.endsWith("[]")) {
+            } else if (type.endsWith("]")) {
                 // vector(即数组) uint16[]
                 let vecType = type.split("[")[0];
-                let data = [];
-                // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
-                for (const p of param) {
-                    data.push(this.encodeParameters([{
-                        type: vecType,
-                        name: ''
-                    }], [p])[0]);
+                if (vecType === "uint8") {
+                    return [param]; // uint8 直接送进去
+                } else {
+                    let data = [];
+                    // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
+                    for (const p of param) {
+                        data.push(this.encodeParameters([{
+                            type: vecType,
+                            name: ''
+                        }], [p])[0]);
+                    }
+                    arrRlp.push(data);
                 }
-                arrRlp.push(data);
             } else if (type.startsWith("map")) {
                 // map<string,string>
                 let i1 = type.indexOf('<');
@@ -223,6 +221,37 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                     data.push([kValue, vValue]);
                 }
                 arrRlp.push(data);
+            } else if (type.startsWith("pair")) {
+                // map<string,string>
+                let i1 = type.indexOf('<');
+                let i2 = type.indexOf(',');
+                let i3 = type.indexOf('>');
+                let kType = type.substring(i1 + 1, i2);
+                let vType = type.substring(i2 + 1, i3);
+
+                // 分别对Pair的key, value进行编码，但要注意编码回来的是一个数组。需要第一个数
+                let kValue = this.encodeParameters([{
+                    type: kType,
+                    name: ''
+                }], [param[0]])[0];
+                let vValue = this.encodeParameters([{
+                    type: vType,
+                    name: ''
+                }], [param[1]])[0];
+
+                arrRlp.push([kValue, vValue]);
+            } else if (type.startsWith("set")) {
+                // map<string,string>
+                let i1 = type.indexOf('<');
+                let i2 = type.indexOf('>');
+                let kType = type.substring(i1 + 1, i2);
+                for (const p of param) {
+                    arrRlp.push(this.encodeParameters([{
+                        type: kType,
+                        name: ''
+                    }], [p])[0]);
+                }
+                arrRlp = [arrRlp]; // 要以数组返回
             } else if (type === "struct") {
                 // 确定是结构体了，那就找到结构体的描述进行递归编码
                 let structType = this.abi.find(item => item.name === name && item.type === 'struct');
@@ -231,6 +260,8 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 } else {
                     arrRlp.push(this.encodeParameters(structType.inputs, param));
                 }
+            } else if (type.startsWith("FixedHash")) {
+                arrRlp = [Buffer.from(param, "hex")];
             } else {
                 // 剩下往结构体靠
                 let structType = this.abi.find(item => item.name === type);
@@ -406,18 +437,10 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         // console.log("decodeParameters Call:", type, bytes, buf);
         if (type === "string") {
             data = buf.toString();
-        } else if (type === "uint8") {
-            buf = Buffer.concat([Buffer.alloc(1), buf]); // 数据补齐
-            data = buf.readUInt8(buf.length - 1); // 补齐之后要偏移一下
-        } else if (type === "uint16") {
-            buf = Buffer.concat([Buffer.alloc(2), buf]);
-            data = buf.readUInt16BE(buf.length - 2);
-        } else if (type === "uint32") {
-            buf = Buffer.concat([Buffer.alloc(4), buf]);
-            data = buf.readUInt32BE(buf.length - 4);
-        } else if (type === "uint64") {
-            buf = Buffer.concat([Buffer.alloc(8), buf]);
-            data = buf.readBigUInt64BE(buf.length - 8).toString();
+        } else if (type.startsWith("uint") && !type.endsWith("]")) {
+            let digit = parseInt(type.replace("uint", ""));
+            let bigInt = BigInteger(buf.toString("hex"), 16);
+            data = digit <= 32 ? bigInt.toJSNumber() : bigInt.toString();
         } else if (type === "bool") {
             buf = Buffer.concat([Buffer.alloc(8), buf]);
             data = buf.readUInt8(buf.length - 1) === 1;
@@ -442,15 +465,22 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             data = buf.readFloatBE();
         } else if (type === "double") {
             data = buf.readDoubleBE();
-        } else if (type.endsWith("[]")) {
+        } else if (type.startsWith("wide_integer")) {
+            let bi = BigInteger(buf.toString("hex"), 16);
+            data = bi.toString(10);
+        } else if (type.endsWith("]")) {
             // vector(即数组)
             let vecType = type.split("[")[0];
-            // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
-            for (let i = 0; i < data.length; i++) {
-                data[i] = this.decodeParameters([{
-                    type: vecType,
-                    name: ''
-                }], data[i]);
+            if (Buffer.isBuffer(data)) {
+                // 说明他是一个bytes，不要处理
+            } else {
+                // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
+                for (let i = 0; i < data.length; i++) {
+                    data[i] = this.decodeParameters([{
+                        type: vecType,
+                        name: ''
+                    }], data[i]);
+                }
             }
         } else if (type.startsWith("map")) {
             // map<string,string>
@@ -471,6 +501,36 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
                     name: ''
                 }], data[i][1]);
             }
+        } else if (type.startsWith("pair")) {
+            // map<string,string>
+            let i1 = type.indexOf('<');
+            let i2 = type.indexOf(',');
+            let i3 = type.indexOf('>');
+            let kType = type.substring(i1 + 1, i2);
+            let vType = type.substring(i2 + 1, i3);
+            // 进一步根据类型对buffer解码
+
+            data[0] = this.decodeParameters([{
+                type: kType,
+                name: ''
+            }], data[0]);
+
+            data[1] = this.decodeParameters([{
+                type: vType,
+                name: ''
+            }], data[1]);
+
+        } else if (type.startsWith("set")) {
+            // map<string,string>
+            let i1 = type.indexOf('<');
+            let i2 = type.indexOf('>');
+            let kType = type.substring(i1 + 1, i2);
+            for (let i = 0; i < data.length; i++) {
+                data[i] = this.decodeParameters([{
+                    type: kType,
+                    name: ''
+                }], data[i]);
+            }
         } else if (type === "struct") {
             // 确定是结构体了，那就找到结构体的描述进行递归解码
             let structType = this.abi.find(item => item.name === name && item.type === 'struct');
@@ -484,6 +544,8 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
                     data[i] = this.decodeParameters([input], data[i])
                 }
             }
+        } else if (type.startsWith("FixedHash")) {
+            data = data.toString("hex");
         } else {
             // 剩下往结构体靠
             let structType = this.abi.find(item => item.name === type);

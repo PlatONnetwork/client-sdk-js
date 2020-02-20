@@ -613,7 +613,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
         if (vmType) {
             paramsABI.unshift(funcName);
             returnValue = "0x" + RLP.encode(paramsABI).toString("hex");
-            // console.log("returnValue = ", returnValue);
+            // console.log("returnValue = ", paramsABI, returnValue);
             return returnValue;
         } else {
             returnValue = (signature) ? signature + paramsABI : paramsABI;
