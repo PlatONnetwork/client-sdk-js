@@ -248,3 +248,40 @@ var fs = require("fs-extra");
 * 完成对 `float`，`double` 相关的编解码。
 
 ## 其他
+
+# 2月21日日志
+
+## 总体进度
+50%
+
+## 工作内容
+
+* 以下是截止到2020/02/21编解码完成情况
+
+|类型|ABI|
+|---|---|
+|√ bool | bool|
+|√ uint8_t  | uint8 | 
+|√ uint16_t | uint16|
+|√ uint32_t | uint32|
+|√ uint64_t | uint64|
+|√ int8_t   | int8  |    
+|√ int16_t  | int16 |
+|√ int32_t  | int32 |
+|√ int64_t  | int64 |
+|(后台不支持)float    | float |
+|(后台不支持)double   | double|
+|√ bytes | uint8[]|
+|√ std::string| string|
+|√ std::vector&lt;T&gt;| T[]|
+|√ std::array&lt;T, N&gt; | T[N]|
+|√ std::pair&lt;T, U&gt; | pair&lt;T,U&gt;|
+|√ std::set&lt;T&gt; | set&lt;T&gt; |
+|√ std::map&lt;T, V&gt;| map&lt;T,V&gt; |
+|(编译没通过)std::list&lt;T&gt; | list&lt;T&gt; |
+|FixedHash&lt;N&gt; | FixedHash&lt;N&gt; |
+|√(已进行编解码，后台有问题) u160 | uint160 |
+|√(已进行编解码，后台有问题) u256 | uint256 |
+|√(已进行编解码，后台有问题) bigint | uint512 |
+
+## 其他
