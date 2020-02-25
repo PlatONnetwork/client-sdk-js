@@ -199,6 +199,20 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                     }
                     arrRlp.push(data);
                 }
+            } else if (type.startsWith("list")) {
+                // list 跟vector一样编码 uint16[]
+                let i1 = type.indexOf('<');
+                let i2 = type.indexOf('>');
+                let lType = type.substring(i1 + 1, i2);
+                let data = [];
+                // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
+                for (const p of param) {
+                    data.push(this.encodeParameters([{
+                        type: lType,
+                        name: ''
+                    }], [p])[0]);
+                }
+                arrRlp.push(data);
             } else if (type.startsWith("map")) {
                 // map<string,string>
                 let i1 = type.indexOf('<');
@@ -465,9 +479,6 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             data = buf.readFloatBE();
         } else if (type === "double") {
             data = buf.readDoubleBE();
-        } else if (type.startsWith("wide_integer")) {
-            let bi = BigInteger(buf.toString("hex"), 16);
-            data = bi.toString(10);
         } else if (type.endsWith("]")) {
             // vector(即数组)
             let vecType = type.split("[")[0];
@@ -481,6 +492,17 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
                         name: ''
                     }], data[i]);
                 }
+            }
+        } else if (type.startsWith("list")) {
+            // list 跟vector一样编码 uint16[]
+            let i1 = type.indexOf('<');
+            let i2 = type.indexOf('>');
+            let lType = type.substring(i1 + 1, i2);
+            for (let i = 0; i < data.length; i++) {
+                data[i] = this.decodeParameters([{
+                    type: lType,
+                    name: ''
+                }], data[i]);
             }
         } else if (type.startsWith("map")) {
             // map<string,string>

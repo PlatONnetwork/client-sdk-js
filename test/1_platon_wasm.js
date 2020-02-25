@@ -372,6 +372,18 @@ describe("wasm unit test (you must update config before run this test)", functio
 
         assert.strictEqual(ret, hexStr); // 他们两个buffer应该要等于
     });
+
+    // list 跟 vector 一样的编码
+    // 底层暂时还不支持整个合约测试，先注释掉
+    it.skip("wasm call setList getList", async function () {
+        this.timeout(waitTime);
+        let listStrs = ["1", "hello", "world"];
+        await contractSend("setList", [listStrs]);
+        ret = await contractCall("getList", []);
+
+        assert.deepEqual(ret, listStrs);
+    });
+
 })
 
 
