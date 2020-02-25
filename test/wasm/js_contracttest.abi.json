@@ -1,39 +1,33 @@
 [
     {
-        "constant": true,
-        "input": [],
-        "name": "getInt16",
-        "output": "int16",
-        "type": "Action"
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic",
+                "type": "string"
+            },
+            {
+                "name": "arg2",
+                "type": "string"
+            },
+            {
+                "name": "arg1",
+                "type": "uint16"
+            }
+        ],
+        "name": "setUint16Evt",
+        "topic": 1,
+        "type": "Event"
     },
     {
         "constant": false,
         "input": [
             {
                 "name": "input",
-                "type": "int32"
+                "type": "uint160"
             }
         ],
-        "name": "setInt32",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getInt32",
-        "output": "int32",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "int64"
-            }
-        ],
-        "name": "setInt64",
+        "name": "setU160",
         "output": "void",
         "type": "Action"
     },
@@ -46,6 +40,41 @@
             }
         ],
         "name": "setU256",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "string"
+            },
+            {
+                "name": "topic2",
+                "type": "uint32"
+            },
+            {
+                "name": "arg3",
+                "type": "string"
+            },
+            {
+                "name": "arg2",
+                "type": "uint32"
+            },
+            {
+                "name": "arg1",
+                "type": "uint32"
+            }
+        ],
+        "name": "setUint32Evt",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "constant": false,
+        "input": [],
+        "name": "init",
         "output": "void",
         "type": "Action"
     },
@@ -92,18 +121,11 @@
         "input": [
             {
                 "name": "input",
-                "type": "uint64"
+                "type": "uint16"
             }
         ],
-        "name": "setUint64",
+        "name": "setUint16",
         "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getPair",
-        "output": "pair<string,int32>",
         "type": "Action"
     },
     {
@@ -121,73 +143,6 @@
         "name": "transfer",
         "topic": 1,
         "type": "Event"
-    },
-    {
-        "anonymous": false,
-        "input": [
-            {
-                "name": "topic",
-                "type": "string"
-            },
-            {
-                "name": "arg2",
-                "type": "string"
-            },
-            {
-                "name": "arg1",
-                "type": "uint16"
-            }
-        ],
-        "name": "setUint16Evt",
-        "topic": 1,
-        "type": "Event"
-    },
-    {
-        "anonymous": false,
-        "input": [
-            {
-                "name": "topic1",
-                "type": "string"
-            },
-            {
-                "name": "topic2",
-                "type": "uint32"
-            },
-            {
-                "name": "arg3",
-                "type": "string"
-            },
-            {
-                "name": "arg2",
-                "type": "uint32"
-            },
-            {
-                "name": "arg1",
-                "type": "uint32"
-            }
-        ],
-        "name": "setUint32Evt",
-        "topic": 2,
-        "type": "Event"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "uint160"
-            }
-        ],
-        "name": "setU160",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [],
-        "name": "init",
-        "output": "void",
-        "type": "Action"
     },
     {
         "constant": true,
@@ -213,18 +168,6 @@
         "input": [],
         "name": "getUint8",
         "output": "uint8",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "uint16"
-            }
-        ],
-        "name": "setUint16",
-        "output": "void",
         "type": "Action"
     },
     {
@@ -258,6 +201,18 @@
         "input": [],
         "name": "getSet",
         "output": "set<string>",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "uint64"
+            }
+        ],
+        "name": "setUint64",
+        "output": "void",
         "type": "Action"
     },
     {
@@ -322,6 +277,13 @@
         "input": [],
         "name": "getChar",
         "output": "int8",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getBytes",
+        "output": "uint8[]",
         "type": "Action"
     },
     {
@@ -397,6 +359,44 @@
             }
         ],
         "name": "setInt16",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getInt16",
+        "output": "int16",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int32"
+            }
+        ],
+        "name": "setInt32",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getInt32",
+        "output": "int32",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int64"
+            }
+        ],
+        "name": "setInt64",
         "output": "void",
         "type": "Action"
     },
@@ -509,13 +509,6 @@
         "type": "Action"
     },
     {
-        "constant": true,
-        "input": [],
-        "name": "getBytes",
-        "output": "uint8[]",
-        "type": "Action"
-    },
-    {
         "constant": false,
         "input": [
             {
@@ -532,6 +525,13 @@
         "input": [],
         "name": "getArray",
         "output": "string[10]",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getPair",
+        "output": "pair<string,int32>",
         "type": "Action"
     },
     {
@@ -608,6 +608,44 @@
         "input": [],
         "name": "getFixedHash",
         "output": "FixedHash<256>",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "list<string>"
+            }
+        ],
+        "name": "setList",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getList",
+        "output": "list<string>",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "addr",
+                "type": "FixedHash<20>"
+            }
+        ],
+        "name": "setAddress",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getAddress",
+        "output": "FixedHash<20>",
         "type": "Action"
     }
 ]

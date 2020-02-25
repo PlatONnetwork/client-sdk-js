@@ -308,48 +308,60 @@ public:
         return sFixedHash.self();
     }
 
-    /*ACTION void setList(const std::list<std::string>& input) {
-		  for(auto iter = input.begin(); iter != input.end(); iter++) {
-        DEBUG("js_contract", "setList", *iter);
-      }
-		  sList.self() = input;
-		}
-		CONST std::list<std::string> getList() {
-		  return sList.self();
-		}*/
+    ACTION void setList(const std::list<std::string> &input)
+    {
+        for (auto iter = input.begin(); iter != input.end(); iter++)
+        {
+            DEBUG("js_contract", "setList", *iter);
+        }
+        sList.self() = input;
+    }
+    CONST std::list<std::string> getList()
+    {
+        return sList.self();
+    }
+    ACTION void setAddress(const Address &addr)
+    {
+        sAddress.self() = addr;
+    }
+    CONST Address getAddress()
+    {
+        return sAddress.self();
+    }
 
 private:
-    platon::StorageType<"suint8"_n, uint8_t> tUint8;
-    platon::StorageType<"suint16"_n, uint16_t> tUint16;
-    platon::StorageType<"suint32"_n, uint32_t> tUint32;
-    platon::StorageType<"suint64"_n, uint64_t> tUint64;
+    platon::StorageType<"suint1"_n, uint8_t> tUint8;
+    platon::StorageType<"suint2"_n, uint16_t> tUint16;
+    platon::StorageType<"suint3"_n, uint32_t> tUint32;
+    platon::StorageType<"suint5"_n, uint64_t> tUint64;
     platon::StorageType<"sstring"_n, std::string> tString;
     platon::StorageType<"sbool"_n, bool> tBool;
     platon::StorageType<"sbyte"_n, char> tByte;
-    platon::StorageType<"su256"_n, u256> tU256;
+    platon::StorageType<"su123"_n, u256> tU256;
 
     platon::StorageType<"message"_n, message> sMessage;
-    platon::StorageType<"my_message"_n, my_message> sMyMessage;
+    platon::StorageType<"mymessage"_n, my_message> sMyMessage;
 
-    platon::StorageType<"sint8"_n, int8_t> tInt8;
-    platon::StorageType<"sint16"_n, int16_t> tInt16;
-    platon::StorageType<"sint32"_n, int32_t> tInt32;
-    platon::StorageType<"sint64"_n, int64_t> tInt64;
-    platon::StorageType<"storage_float"_n, float> tFloat;
-    platon::StorageType<"storage_double"_n, double> tDouble;
+    platon::StorageType<"sint1"_n, int8_t> tInt8;
+    platon::StorageType<"sint2"_n, int16_t> tInt16;
+    platon::StorageType<"sint3"_n, int32_t> tInt32;
+    platon::StorageType<"sint5"_n, int64_t> tInt64;
+    platon::StorageType<"storagefloat"_n, float> tFloat;
+    platon::StorageType<"storagedouble"_n, double> tDouble;
 
-    platon::StorageType<"vector_var"_n, std::vector<uint16_t>> sVector;
-    platon::StorageType<"map_var"_n, std::map<std::string, std::string>> sMap;
+    platon::StorageType<"vectorvar"_n, std::vector<uint16_t>> sVector;
+    platon::StorageType<"mapvar"_n, std::map<std::string, std::string>> sMap;
 
-    platon::StorageType<"bytes_var"_n, bytes> sBytes;
-    platon::StorageType<"array_var"_n, std::array<std::string, 10>> sArray;
-    platon::StorageType<"pair_var"_n, std::pair<std::string, int32_t>> sPair;
-    platon::StorageType<"set_var"_n, std::set<std::string>> sSet;
-    platon::StorageType<"u160_var"_n, u160> sU160;
-    platon::StorageType<"u256_var"_n, u256> sU256;
-    platon::StorageType<"bigint_var"_n, bigint> sBigint;
-    platon::StorageType<"fixedhash_var"_n, FixedHash<256>> sFixedHash;
-    //platon::StorageType<"list_var"_n, std::list<std::string>> sList;
+    platon::StorageType<"bytesvar"_n, bytes> sBytes;
+    platon::StorageType<"arrayvar"_n, std::array<std::string, 10>> sArray;
+    platon::StorageType<"pairvar"_n, std::pair<std::string, int32_t>> sPair;
+    platon::StorageType<"setvar"_n, std::set<std::string>> sSet;
+    platon::StorageType<"u111var"_n, u160> sU160;
+    platon::StorageType<"u222var"_n, u256> sU256;
+    platon::StorageType<"bigintvar"_n, bigint> sBigint;
+    platon::StorageType<"fixedhashvar"_n, FixedHash<256>> sFixedHash;
+    platon::StorageType<"listvar"_n, std::list<std::string>> sList;
+    platon::StorageType<"address"_n, Address> sAddress;
 };
 
-PLATON_DISPATCH(JSSDKTestContract, (init)(setUint8)(getUint8)(setUint16)(getUint16)(setUint32)(getUint32)(setUint64)(getUint64)(setString)(getString)(setBool)(getBool)(setChar)(getChar)(setU256)(getU256)(setMessage)(getMessage)(setMyMessage)(getMyMessage)(setInt8)(getInt8)(setInt16)(getInt16)(setInt32)(getInt32)(setInt64)(getInt64)(setFloat)(getFloat)(setDouble)(getDouble)(setVector)(getVector)(setMap)(getMap)(testMultiParams)(setBytes)(getBytes)(setArray)(getArray)(setPair)(getPair)(setSet)(getSet)(setU160)(getU160)(setU256new)(getU256new)(setBigInt)(getBigInt)(setFixedHash)(getFixedHash))
+PLATON_DISPATCH(JSSDKTestContract, (init)(setUint8)(getUint8)(setUint16)(getUint16)(setUint32)(getUint32)(setUint64)(getUint64)(setString)(getString)(setBool)(getBool)(setChar)(getChar)(setU256)(getU256)(setMessage)(getMessage)(setMyMessage)(getMyMessage)(setInt8)(getInt8)(setInt16)(getInt16)(setInt32)(getInt32)(setInt64)(getInt64)(setFloat)(getFloat)(setDouble)(getDouble)(setVector)(getVector)(setMap)(getMap)(testMultiParams)(setBytes)(getBytes)(setArray)(getArray)(setPair)(getPair)(setSet)(getSet)(setU160)(getU160)(setU256new)(getU256new)(setBigInt)(getBigInt)(setFixedHash)(getFixedHash)(setList)(getList)(setAddress)(getAddress))
