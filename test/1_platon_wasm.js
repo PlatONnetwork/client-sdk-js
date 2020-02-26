@@ -8,10 +8,10 @@ var assert = chai.assert;
 var Web3 = require("../packages/web3/src");
 
 
-const provider = "http://192.168.0.105:6789"; // 请更新成自己的 http 节点
+const provider = "http://10.1.1.6:8806"; // 请更新成自己的 http 节点
 const chainId = 100; // 请更新成自己的节点id
-const privateKey = "0xe13ebe4242500201e1bbfcd3372176e05f282595326727c8d4dcfc83daeb40fe"; // 请更新成自己的私钥(必须有十六进制前缀0x)
-const from = "0x54a7a3c6822eb222c53f76443772a60b0f9a8bab"; // 请更新成上面私钥对应的地址
+const privateKey = "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557"; // 请更新成自己的私钥(必须有十六进制前缀0x)
+const from = "0xe03887881e1e0CD6CdBFc82BC3292b8AD9A683f2"; // 请更新成上面私钥对应的地址
 const address = "0x27E74FbD0d11eDeD263e8eC25dBb2670B82b8EF8"; // 合约地址(如果不测试部署就更换)
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';

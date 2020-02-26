@@ -167,14 +167,14 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 let bigNum = BigInteger(param);
                 let b1 = bigNum.shiftLeft(1);
                 let b2 = bigNum.shiftRight(63);
-                bigNum = b1.xor(b2).toString(16);
-                arrRlp.push(Buffer.from(bigNum, "hex"));
+                bigNum = b1.xor(b2).toString();
+                arrRlp.push(parseInt(bigNum));
             } else if (type === "int64") {
                 let bigNum = BigInteger(param);
                 let b1 = bigNum.shiftLeft(1);
                 let b2 = bigNum.shiftRight(63);
-                bigNum = b1.xor(b2).toString(16);
-                arrRlp.push(Buffer.from(bigNum, "hex"));
+                let bnInt = new utils.BN(b1.xor(b2).toString());
+                arrRlp.push(bnInt);
             } else if (type === "float") {
                 buf = Buffer.alloc(4);
                 buf.writeFloatBE(param);
