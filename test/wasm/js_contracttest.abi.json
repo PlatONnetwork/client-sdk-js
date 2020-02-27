@@ -72,13 +72,6 @@
         "type": "Event"
     },
     {
-        "constant": false,
-        "input": [],
-        "name": "init",
-        "output": "void",
-        "type": "Action"
-    },
-    {
         "baseclass": [],
         "fields": [
             {
@@ -90,7 +83,9 @@
         "type": "struct"
     },
     {
-        "baseclass": ["message"],
+        "baseclass": [
+            "message"
+        ],
         "fields": [
             {
                 "name": "body",
@@ -145,10 +140,10 @@
         "type": "Event"
     },
     {
-        "constant": true,
+        "constant": false,
         "input": [],
-        "name": "getDouble",
-        "output": "double",
+        "name": "init",
+        "output": "void",
         "type": "Action"
     },
     {
@@ -436,6 +431,13 @@
         ],
         "name": "setDouble",
         "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getDouble",
+        "output": "double",
         "type": "Action"
     },
     {

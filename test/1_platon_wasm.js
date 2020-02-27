@@ -144,7 +144,7 @@ describe("wasm unit test (you must update config before run this test)", functio
     });
 
     it("wasm call setU160 getU160", async function () {
-        let nums = ["0", "8888", "100"]; // 两个边界值，一个中间的随机数
+        let nums = ["0", web3.utils.hexToNumberString("0x" + "ff".repeat(20)), web3.utils.hexToNumberString(web3.utils.randomHex(parseInt(Math.random() * 19) + 1))]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
             await contractSend("setU160", [num]);
@@ -154,7 +154,7 @@ describe("wasm unit test (you must update config before run this test)", functio
     });
 
     it("wasm call setU256new getU256new", async function () {
-        let nums = ["0", "8888", "100"]; // 两个边界值，一个中间的随机数
+        let nums = ["0", web3.utils.hexToNumberString("0x" + "ff".repeat(32)), web3.utils.hexToNumberString(web3.utils.randomHex(parseInt(Math.random() * 31) + 1))]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
             await contractSend("setU256new", [num]);
@@ -163,8 +163,8 @@ describe("wasm unit test (you must update config before run this test)", functio
         }
     });
 
-    it("wasm call setBigInt getBigInt", async function () {
-        let nums = ["0", "8888", "100"]; // 两个边界值，一个中间的随机数
+    it("wasm call setBigInt getBigInt (512 bytes)", async function () {
+        let nums = ["0", web3.utils.hexToNumberString("0x" + "ff".repeat(64)), web3.utils.hexToNumberString(web3.utils.randomHex(parseInt(Math.random() * 63) + 1))]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
             await contractSend("setBigInt", [num]);
