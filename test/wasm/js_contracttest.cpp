@@ -103,15 +103,15 @@ CONTRACT JSSDKTestContract: public platon::Contract
 			return tByte.self();
 		}
 
-		ACTION void setU256(uint64_t input)
-		{
+		//ACTION void setU256(uint64_t input)
+		//{
       //DEBUG("js_contract", "setU256", input);
-			tU256.self() = u256(input);
-		}
-		CONST std::string getU256()
-		{
-			return to_string(tU256.self());
-		}
+			//tU256.self() = u256(input);
+		//}
+		//CONST std::string getU256()
+		//{
+			//return to_string(tU256.self());
+		//}
 
 
     ACTION void setMessage(const message &msg) {
@@ -246,33 +246,33 @@ CONTRACT JSSDKTestContract: public platon::Contract
 		CONST std::set<std::string> getSet() {
 		  return sSet.self();
 		}
-		ACTION void setU160(u160 input)
-		{
+		//ACTION void setU160(u160 input)
+		//{
       //DEBUG("js_contract", "setU160", input);
-			sU160.self() = input;
-		}
-		CONST u160 getU160()
-		{
-			return sU160.self();
-		}
-		ACTION void setU256new(u256 input)
-		{
+			//sU160.self() = input;
+		//}
+		//CONST u160 getU160()
+		//{
+			//return sU160.self();
+		//}
+		//ACTION void setU256new(u256 input)
+		//{
       //DEBUG("js_contract", "setU256new", input);
-			sU256.self() = input;
-		}
-		CONST u256 getU256new()
-		{
-			return sU256.self();
-		}
-		ACTION void setBigInt(bigint input)
-		{
+			//sU256.self() = input;
+		//}
+		//CONST u256 getU256new()
+		//{
+			//return sU256.self();
+		//}
+		//ACTION void setBigInt(bigint input)
+		//{
       //DEBUG("js_contract", "setBigInt", input);
-			sBigint.self() = input;
-		}
-		CONST bigint getBigInt()
-		{
-			return sBigint.self();
-		}
+			//sBigint.self() = input;
+		//}
+		//CONST bigint getBigInt()
+		//{
+			//return sBigint.self();
+		//}
 		ACTION void setFixedHash(const FixedHash<256>& input) {
 		  //DEBUG("js_contract", "setFixedHash", input);
 			sFixedHash.self() = input;
@@ -305,7 +305,7 @@ CONTRACT JSSDKTestContract: public platon::Contract
 		platon::StorageType<"sstring"_n, std::string> tString;
 		platon::StorageType<"sbool"_n, bool> tBool;
 		platon::StorageType<"sbyte"_n, char> tByte;
-		platon::StorageType<"su123"_n, u256> tU256;
+		//platon::StorageType<"su123"_n, u256> tU256;
 
 		platon::StorageType<"message"_n, message> sMessage;
 		platon::StorageType<"mymessage"_n, my_message> sMyMessage;
@@ -324,9 +324,9 @@ CONTRACT JSSDKTestContract: public platon::Contract
 		platon::StorageType<"arrayvar"_n, std::array<std::string,10>> sArray;
 		platon::StorageType<"pairvar"_n, std::pair<std::string,int32_t>> sPair;
 		platon::StorageType<"setvar"_n, std::set<std::string>> sSet;
-		platon::StorageType<"u111var"_n, u160> sU160;
-		platon::StorageType<"u222var"_n, u256> sU256;
-		platon::StorageType<"bigintvar"_n, bigint> sBigint;
+		//platon::StorageType<"u111var"_n, u160> sU160;
+		//platon::StorageType<"u222var"_n, u256> sU256;
+		//platon::StorageType<"bigintvar"_n, bigint> sBigint;
 		platon::StorageType<"fixedhashvar"_n, FixedHash<256>> sFixedHash;
 		platon::StorageType<"listvar"_n, std::list<std::string>> sList;
 		platon::StorageType<"address"_n, Address> sAddress;
@@ -334,11 +334,11 @@ CONTRACT JSSDKTestContract: public platon::Contract
 
 PLATON_DISPATCH(JSSDKTestContract,(init)
 (setUint8)(getUint8)(setUint16)(getUint16)(setUint32)(getUint32)(setUint64)(getUint64)
-(setString)(getString)(setBool)(getBool)(setChar)(getChar)(setU256)(getU256)
+(setString)(getString)(setBool)(getBool)(setChar)(getChar)
 (setMessage)(getMessage)(setMyMessage)(getMyMessage)
 (setInt8)(getInt8)(setInt16)(getInt16)(setInt32)(getInt32)(setInt64)(getInt64)
 (setFloat)(getFloat)(setDouble)(getDouble)(setVector)(getVector)(setMap)(getMap)(testMultiParams)
-(setBytes)(getBytes)(setArray)(getArray)(setPair)(getPair)(setSet)(getSet)(setU160)(getU160)
-(setU256new)(getU256new)(setBigInt)(getBigInt)(setFixedHash)(getFixedHash)
+(setBytes)(getBytes)(setArray)(getArray)(setPair)(getPair)(setSet)(getSet)
+(setFixedHash)(getFixedHash)
 (setList)(getList)(setAddress)(getAddress))
 

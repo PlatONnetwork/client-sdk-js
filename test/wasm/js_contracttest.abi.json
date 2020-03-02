@@ -1,5 +1,106 @@
 [
     {
+        "constant": true,
+        "input": [],
+        "name": "getVector",
+        "output": "uint16[]",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int8"
+            }
+        ],
+        "name": "setChar",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "int8"
+            }
+        ],
+        "name": "setInt8",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "uint8"
+            }
+        ],
+        "name": "setUint8",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getPair",
+        "output": "pair<string,int32>",
+        "type": "Action"
+    },
+    {
+        "baseclass": [],
+        "fields": [
+            {
+                "name": "head",
+                "type": "string"
+            }
+        ],
+        "name": "message",
+        "type": "struct"
+    },
+    {
+        "baseclass": [
+            "message"
+        ],
+        "fields": [
+            {
+                "name": "body",
+                "type": "string"
+            },
+            {
+                "name": "end",
+                "type": "string"
+            }
+        ],
+        "name": "my_message",
+        "type": "struct"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getMyMessage",
+        "output": "my_message",
+        "type": "Action"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic",
+                "type": "string"
+            },
+            {
+                "name": "arg1",
+                "type": "string"
+            }
+        ],
+        "name": "transfer",
+        "topic": 1,
+        "type": "Event"
+    },
+    {
         "anonymous": false,
         "input": [
             {
@@ -24,22 +125,10 @@
         "input": [
             {
                 "name": "input",
-                "type": "uint160"
+                "type": "FixedHash<256>"
             }
         ],
-        "name": "setU160",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "uint64"
-            }
-        ],
-        "name": "setU256",
+        "name": "setFixedHash",
         "output": "void",
         "type": "Action"
     },
@@ -72,43 +161,17 @@
         "type": "Event"
     },
     {
-        "baseclass": [],
-        "fields": [
-            {
-                "name": "head",
-                "type": "string"
-            }
-        ],
-        "name": "message",
-        "type": "struct"
-    },
-    {
-        "baseclass": [
-            "message"
-        ],
-        "fields": [
-            {
-                "name": "body",
-                "type": "string"
-            },
-            {
-                "name": "end",
-                "type": "string"
-            }
-        ],
-        "name": "my_message",
-        "type": "struct"
-    },
-    {
         "constant": false,
-        "input": [
-            {
-                "name": "msg",
-                "type": "my_message"
-            }
-        ],
-        "name": "setMyMessage",
+        "input": [],
+        "name": "init",
         "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": true,
+        "input": [],
+        "name": "getUint8",
+        "output": "uint8",
         "type": "Action"
     },
     {
@@ -121,48 +184,6 @@
         ],
         "name": "setUint16",
         "output": "void",
-        "type": "Action"
-    },
-    {
-        "anonymous": false,
-        "input": [
-            {
-                "name": "topic",
-                "type": "string"
-            },
-            {
-                "name": "arg1",
-                "type": "string"
-            }
-        ],
-        "name": "transfer",
-        "topic": 1,
-        "type": "Event"
-    },
-    {
-        "constant": false,
-        "input": [],
-        "name": "init",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "uint8"
-            }
-        ],
-        "name": "setUint8",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getUint8",
-        "output": "uint8",
         "type": "Action"
     },
     {
@@ -189,13 +210,6 @@
         "input": [],
         "name": "getUint32",
         "output": "uint32",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getSet",
-        "output": "set<string>",
         "type": "Action"
     },
     {
@@ -256,36 +270,10 @@
         "type": "Action"
     },
     {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "int8"
-            }
-        ],
-        "name": "setChar",
-        "output": "void",
-        "type": "Action"
-    },
-    {
         "constant": true,
         "input": [],
         "name": "getChar",
         "output": "int8",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getBytes",
-        "output": "uint8[]",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getU256",
-        "output": "string",
         "type": "Action"
     },
     {
@@ -311,30 +299,11 @@
         "constant": false,
         "input": [
             {
-                "name": "input",
-                "type": "pair<string,int32>"
+                "name": "msg",
+                "type": "my_message"
             }
         ],
-        "name": "setPair",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getMyMessage",
-        "output": "my_message",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "int8"
-            }
-        ],
-        "name": "setInt8",
+        "name": "setMyMessage",
         "output": "void",
         "type": "Action"
     },
@@ -453,13 +422,6 @@
         "type": "Action"
     },
     {
-        "constant": true,
-        "input": [],
-        "name": "getVector",
-        "output": "uint16[]",
-        "type": "Action"
-    },
-    {
         "constant": false,
         "input": [
             {
@@ -511,6 +473,13 @@
         "type": "Action"
     },
     {
+        "constant": true,
+        "input": [],
+        "name": "getBytes",
+        "output": "uint8[]",
+        "type": "Action"
+    },
+    {
         "constant": false,
         "input": [
             {
@@ -530,10 +499,15 @@
         "type": "Action"
     },
     {
-        "constant": true,
-        "input": [],
-        "name": "getPair",
-        "output": "pair<string,int32>",
+        "constant": false,
+        "input": [
+            {
+                "name": "input",
+                "type": "pair<string,int32>"
+            }
+        ],
+        "name": "setPair",
+        "output": "void",
         "type": "Action"
     },
     {
@@ -551,58 +525,8 @@
     {
         "constant": true,
         "input": [],
-        "name": "getU160",
-        "output": "uint160",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "uint256"
-            }
-        ],
-        "name": "setU256new",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getU256new",
-        "output": "uint256",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "uint512"
-            }
-        ],
-        "name": "setBigInt",
-        "output": "void",
-        "type": "Action"
-    },
-    {
-        "constant": true,
-        "input": [],
-        "name": "getBigInt",
-        "output": "uint512",
-        "type": "Action"
-    },
-    {
-        "constant": false,
-        "input": [
-            {
-                "name": "input",
-                "type": "FixedHash<256>"
-            }
-        ],
-        "name": "setFixedHash",
-        "output": "void",
+        "name": "getSet",
+        "output": "set<string>",
         "type": "Action"
     },
     {

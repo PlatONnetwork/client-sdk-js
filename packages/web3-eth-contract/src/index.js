@@ -601,7 +601,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
 
         if (vmType) {
             const magicNumBuf = Buffer.from([0x00, 0x61, 0x73, 0x6d]);
-            paramsABI.unshift("init");
+            paramsABI.unshift(abi.fnvOne64Hash("init"));
             const deployRlp = RLP.encode([Buffer.from(this._deployData, "hex"), RLP.encode(paramsABI)])
             const data = magicNumBuf.toString('hex') + deployRlp.toString('hex');
             return "0x" + data;
@@ -611,7 +611,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
     } else {
         let returnValue;
         if (vmType) {
-            paramsABI.unshift(funcName);
+            paramsABI.unshift(abi.fnvOne64Hash(funcName));
             returnValue = "0x" + RLP.encode(paramsABI).toString("hex");
             // console.log("returnValue = ", returnValue);
             return returnValue;

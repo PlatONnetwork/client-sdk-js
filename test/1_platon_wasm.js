@@ -6,6 +6,7 @@ var fs = require("fs-extra");
 var chai = require("chai");
 var assert = chai.assert;
 var Web3 = require("../packages/web3/src");
+var abi = require("../packages/web3-eth-abi/src");
 
 
 const provider = "http://10.1.1.6:8806"; // 请更新成自己的 http 节点
@@ -64,6 +65,11 @@ describe("wasm unit test (you must update config before run this test)", functio
 
     it("wasm deploy", async function () {
         this.timeout(waitTime);
+
+        /*let strs = ["init", "setString", "getString", "setUint32", "getUint32"];
+        for (const str of strs) {
+            console.log("hash=", abi.fnvOne64Hash(str).toString(10));
+        }*/
 
         let bin = (await fs.readFile(binFilePath)).toString("hex");
         let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
@@ -143,7 +149,7 @@ describe("wasm unit test (you must update config before run this test)", functio
         }
     });
 
-    it("wasm call setU160 getU160", async function () {
+    /*it("wasm call setU160 getU160", async function () {
         let nums = ["0", web3.utils.hexToNumberString("0x" + "ff".repeat(20)), web3.utils.hexToNumberString(web3.utils.randomHex(parseInt(Math.random() * 19) + 1))]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
@@ -171,7 +177,7 @@ describe("wasm unit test (you must update config before run this test)", functio
             ret = await contractCall("getBigInt", []);
             assert.strictEqual(ret, num);
         }
-    });
+    });*/
 
     it("wasm call setBool getBool", async function () {
         let nums = [true, false];

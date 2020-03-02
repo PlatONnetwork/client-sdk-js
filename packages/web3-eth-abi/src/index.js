@@ -695,6 +695,19 @@ ABICoder.prototype.decodeLog = function (inputs, data, topics) {
     return returnValue;
 };
 
+ABICoder.prototype.fnvOne64Hash = function (value) {
+    let rv = new utils.BN("14695981039346656037");
+    let FNV_64_PRIME = new utils.BN("1099511628211");
+    let bigIntConst = new utils.BN("ff".repeat(8), 16);
+
+    for (let i=0; i<value.length; i++) {
+        rv = rv.mul(FNV_64_PRIME);
+        rv = rv.and(bigIntConst);
+        rv = rv.xor(new utils.BN(value.charCodeAt(i)));
+    }
+    return rv;
+}
+
 var coder = new ABICoder();
 
 module.exports = coder;
