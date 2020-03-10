@@ -602,7 +602,7 @@ var tests = [
                 result: {
                     startingBlock: "0xbff23",
                     currentBlock: "0xbff11",
-                    highestBlock: "0xbff11",
+                    highestBlock: "0xadf23",
                     knownStates: "0xaaa23",
                     pulledStates: "0x23"
                 }
@@ -620,7 +620,7 @@ var tests = [
             {
                 startingBlock: 786211,
                 currentBlock: 786193,
-                highestBlock: 786193,
+                highestBlock: 712483,
                 knownStates: 698915,
                 pulledStates: 35
             },

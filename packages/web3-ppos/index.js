@@ -44,7 +44,7 @@ const paramsOrder = {
     '4000': ['account', 'plan'],
     '4100': ['account'],
 
-    '5000': ['NodeID', 'StakingNum', 'Reward'],
+    '5000': [],
     '5100': ['address', 'nodeIDs'],
 }
 
@@ -92,6 +92,7 @@ function funcTypeTo(funcType) {
     if (funcType >= 2000 && funcType < 3000) return '0x1000000000000000000000000000000000000005';
     if (funcType >= 3000 && funcType < 4000) return '0x1000000000000000000000000000000000000004';
     if (funcType >= 4000 && funcType < 5000) return '0x1000000000000000000000000000000000000001';
+    if (funcType >= 5000 && funcType < 6000) return '0x1000000000000000000000000000000000000006';
 }
 
 // 使用私钥对交易进行签名

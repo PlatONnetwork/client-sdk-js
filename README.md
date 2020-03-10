@@ -50,7 +50,7 @@ web3.version
 
 ```js
 web3.version;
-> "0.8.0"
+> "0.9.1"
 ```
 
 ***
@@ -1425,7 +1425,7 @@ new web3.platon.Contract(jsonInterface[, address][, options])
    *  gasPrice - String: 用于交易的gas价格，单位：wei
    *  gas - Number: 交易可用的最大gas量，即gas limit
    *  data - String: 合约的字节码，部署合约时需要
-
+   *  vmType - Number: 合约类型。0表示solidity合约，1表示wasm合约。不传默认是solidity合约。(新增字段)
 返回值：
 
 `Object`: The contract instance with all its methods and events.
@@ -3320,7 +3320,7 @@ web3.utils.toVon(number [, unit])
 
 *  `number` - String|Number|BN: 金额 
 *  `unit` - String，可选，默认值为`ether`
- 
+
 
 返回值：
 
@@ -3661,6 +3661,7 @@ let setting = ppos.getSetting();
 * method String 方法名
 * params Array 调用rpc接口需要的参数，如果调用此rpc端口不需要参数，则此参数可以省略。
   
+
 出参
 * reply rpc调用返回的结果
 
@@ -3684,6 +3685,7 @@ let reply = await ppos.rpc('platon_getBalance', ["0x714de266a0effa39fcaca1442b92
 入参说明：
 * intStr String 字符串十进制大整数。
   
+
 出参
 * buffer Buffer 一个缓存区。
 
@@ -3702,6 +3704,7 @@ let buffer = ppos.bigNumBuf('1000000000000000000000000000000000000000000');
 入参说明：
 * hexStr String 一个十六进制的字符串。
   
+
 出参
 * buffer Buffer 一个缓存区。
 
@@ -3723,6 +3726,7 @@ let buffer = ppos.hexStrBuf(nodeId);
 入参说明：
 * params Object | Array 调用参数。
   
+
 出参
 * reply Object call调用的返回的结果。注意，我已将将返回的结果转为了Object对象。
   * Code Number 调用返回码，0表示调用结果正常。
@@ -4343,9 +4347,50 @@ reply = await ppos.send(params, other);
 | debt  | string(0x十六进制字符串)            | 欠释放金额                                                 |
 | plans    | bytes           | 锁仓分录信息，json数组：[{"blockNumber":"","amount":""},...,{"blockNumber":"","amount":""}]。其中：<br/>blockNumber：\*big.Int，释放区块高度<br/>amount：\string(0x十六进制字符串)，释放金额 |
 
+#### 奖励接口
+
+* 提取账户当前所有的可提取的委托奖励，send 发送交易。
+
+入参：
+
+| 参数     | 类型           | 说明                 |
+| -------- | -------------- | -------------------- |
+| funcType | uint16(2bytes) | 代表方法类型码(5000) |
+
+注:交易结果存储在交易回执的logs.data中，如交易成功，存储 rlp.Encode([][]byte{[]byte(状态码0)， rlp.Encode(`节点收益列表`) })，如交易不成功，与之前方式一致。
+
+返回的`节点收益列表`为数组
+
+| 参数       | 类型                     | 说明           |
+| ---------- | ------------------------ | -------------- |
+| NodeID     | discover.NodeID(64bytes) | 节点ID         |
+| StakingNum | uint64                   | 节点的质押块高 |
+| Reward     | *big.Int                 | 领取到的收益   |
+
+* 查询账户在各节点未提取委托奖励，call 查询。
+
+入参：
+
+| 参数     | 类型              | 说明                                             |
+| -------- | ----------------- | ------------------------------------------------ |
+| funcType | uint16(2bytes)    | 代表方法类型码(5100)                             |
+| address  | 20bytes           | `要查询账户的地址`                               |
+| nodeIDs  | []discover.NodeID | `要查询的节点，如果为空则查询账户委托的所有节点` |
+
+返参：
+
+是个[]Reward数组
+
+| 名称       | 类型                     | 说明             |
+| ---------- | ------------------------ | ---------------- |
+| nodeID     | discover.NodeID(64bytes) | 节点ID           |
+| stakingNum | uint64                   | 节点的质押块高   |
+| reward     | string(0x十六进制字符串) | 未领取的委托收益 |
+
 ### 内置合约错误码说明
+
 | 错误码    | 说明            |
-| ------- | --------------- | 
+| ------- | --------------- |
 |301000  | Wrong bls public key|
 |301001  | Wrong bls public key proof|
 |301002  | The Description length is wrong|

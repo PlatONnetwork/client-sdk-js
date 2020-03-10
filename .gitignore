@@ -20,4 +20,5 @@ lerna-debug.log
 .nyc_output/
 package-lock.json
 test.js
+wasm.js
 mochawesome-report

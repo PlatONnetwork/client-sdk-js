@@ -1,0 +1,169 @@
+[
+    {
+        "baseclass": [],
+        "fields": [
+            {
+                "name": "nnn",
+                "type": "int32"
+            },
+            {
+                "name": "ccc",
+                "type": "int8"
+            }
+        ],
+        "name": "N",
+        "type": "struct"
+    },
+    {
+        "constant": true,
+        "input": [
+            {
+                "name": "n",
+                "type": "N[]"
+            }
+        ],
+        "name": "f",
+        "output": "N[]",
+        "type": "Action"
+    },
+	{
+        "constant": true,
+        "input": [
+            {
+                "name": "strs",
+                "type": "string[]"
+            }
+        ],
+        "name": "aaaa",
+        "output": "string[]",
+        "type": "Action"
+    },
+	{
+        "constant": true,
+        "input": [
+        ],
+        "name": "testaaa",
+        "output": "string[]",
+        "type": "Action"
+    },
+	{
+        "constant": true,
+        "input": [
+            {
+                "name": "strs",
+                "type": "string"
+            }
+        ],
+        "name": "bbbb",
+        "output": "string",
+        "type": "Action"
+    },
+    {
+        "baseclass": [
+            "N"
+        ],
+        "fields": [
+            {
+                "name": "mmm",
+                "type": "int32"
+            },
+            {
+                "name": "n",
+                "type": "N"
+            }
+        ],
+        "name": "M",
+        "type": "struct"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "i",
+                "type": "int32"
+            },
+            {
+                "name": "m",
+                "type": "M"
+            }
+        ],
+        "name": "h",
+        "output": "int32",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "a",
+                "type": "bool"
+            },
+            {
+                "name": "b",
+                "type": "int8"
+            },
+            {
+                "name": "c",
+                "type": "int16"
+            },
+            {
+                "name": "d",
+                "type": "int32"
+            },
+            {
+                "name": "e",
+                "type": "int64"
+            }
+        ],
+        "name": "base0",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "a",
+                "type": "bool"
+            },
+            {
+                "name": "b",
+                "type": "uint8"
+            },
+            {
+                "name": "c",
+                "type": "uint16"
+            },
+            {
+                "name": "d",
+                "type": "uint32"
+            },
+            {
+                "name": "e",
+                "type": "uint64"
+            }
+        ],
+        "name": "base1",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "input": [
+            {
+                "name": "s",
+                "type": "string"
+            },
+            {
+                "name": "x",
+                "type": "int8"
+            },
+            {
+                "name": "i",
+                "type": "int32"
+            }
+        ],
+        "name": "g",
+        "topic": 1,
+        "type": "Event"
+    }
+]
