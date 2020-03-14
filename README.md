@@ -890,6 +890,7 @@ PromiEvent: 一个整合了事件发生器的Promise对象。当交易收据生�
 
 ```js
 var Tx = require('ethereumjs-tx');
+var Common = require('ethereumjs-common');
 var privateKey = new Buffer('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
 
 var rawTx = {
@@ -901,7 +902,16 @@ var rawTx = {
   data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057'
 }
 
-var tx = new Tx(rawTx);
+const customCommon = Common.default.forCustomChain(
+  'mainnet',
+  {
+    name: 'platon',
+    networkId: 1,
+    chainId: 101,
+  },
+  'petersburg'
+);
+var tx = new Tx.Transaction(rawTx, { common: customCommon }	);
 tx.sign(privateKey);
 
 var serializedTx = tx.serialize();
