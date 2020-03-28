@@ -51,7 +51,7 @@ Example:
 
 ```js
 web3.version;
-> "0.8.0"
+> "0.11.0"
 ```
 
 ***
@@ -890,6 +890,7 @@ Example:
 
 ```js
 var Tx = require('ethereumjs-tx');
+var Common = require('ethereumjs-common');
 var privateKey = new Buffer('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
 
 var rawTx = {
@@ -901,7 +902,16 @@ var rawTx = {
   data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057'
 }
 
-var tx = new Tx(rawTx);
+const customCommon = Common.default.forCustomChain(
+  'mainnet',
+  {
+    name: 'platon',
+    networkId: 1,
+    chainId: 101,
+  },
+  'petersburg'
+);
+var tx = new Tx.Transaction(rawTx, { common: customCommon }	);
 tx.sign(privateKey);
 
 var serializedTx = tx.serialize();
@@ -1421,6 +1431,7 @@ Parameter:
    * `gasPrice` - `String`: The gas price in von to use for transactions.
    * `gas` - `Number`: The maximum gas provided for a transaction (gas limit).
    * `data` - `String`: The byte code of the contract. Used when the contract gets deployed.
+   * `vmType` - `Number`: The contract type。0 means solidity contract, 1 means wasm contract. The default is the solidity contract. (New field)
 
 Returns:
 
@@ -1551,7 +1562,7 @@ Parameter:
 `options` - Object: The options used for deployment.
 
 * `data` - `String`: The byte code of the contract.
-* `arguments` - `Array`: (optional): The arguments which get passed to the constructor on deployment.
+* `arguments` - `Array`: (optional): The arguments which get passed to the constructor on deployment. If you deploy a wasm contract, you can refer to [wasm contract parameter passing reference](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
 
 Returns:
 
@@ -1625,6 +1636,8 @@ myContract.deploy({
 #### methods
 
 Creates a transaction object for that method, which then can be called, send, estimated.
+
+If it is a wasm contract, you can refer to [wasm contract parameter passing reference](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
 
 Method:
 
@@ -3681,6 +3694,7 @@ Parameters:
 
 * `intStr` - `String`: String decimal large integer.
   
+
 Returns:
 
 * `buffer` - `Buffer`: A cache area.
@@ -3703,6 +3717,7 @@ Parameters:
 
 * `hexStr` - `String`: A hex string.
   
+
 Returns:
 
 * `buffer` - `Buffer`: A cache area.
@@ -3728,6 +3743,7 @@ Parameters:
 
 * `params` - `Object|Array`: Call parameters.
   
+
 Returns:
 
 1. `reply` - `Object`: The result of the call. Note that I have turned the returned results into Object objects.
@@ -4426,6 +4442,52 @@ Returns a json format string with the following fields:
 | pledge    | string(Hex) | Pledge / mortgage amount|
 | debt  | string(Hex) | Amount due for release |
 | plans    | bytes           | Locked entry information, json array：[{"blockNumber":"","amount":""},...,{"blockNumber":"","amount":""}]. among:<br/>blockNumber：\*big.Int，Release blockNumber <br/>amount：\string(Hex string), Release amount |
+
+### Reward Interface
+
+#### Withdraw Delegate Reward
+
+Withdraw all currently available delegate rewards from the account and send the transaction.
+
+Parameters：
+
+| Field    | Type           | Remark                 |
+| -------- | -------------- | ---------------------- |
+| funcType | uint16(2bytes) | Method type code(5000) |
+
+Returns:
+
+Note: The transaction results are stored in the logs.data of the transaction receipt. If the transaction is successful, rlp.Encode (byte {[] byte (status code 0), rlp.Encode (`node income list`)}). If the transaction is unsuccessful, it is consistent with the previous method.
+
+The returned `node income list` is an array
+
+| Field      | Type                     | Remark                  |
+| ---------- | ------------------------ | ----------------------- |
+| NodeID     | discover.NodeID(64bytes) | Node ID                 |
+| StakingNum | uint64                   | Node stake block Number |
+| Reward     | *big.Int                 | Received reward         |
+
+#### Query Delegate Reward
+
+The query account did not withdraw the delegate reward at each node, and call query.
+
+Parameters：
+
+| Field    | Type              | Remark                                                       |
+| -------- | ----------------- | ------------------------------------------------------------ |
+| funcType | uint16(2bytes)    | Method type code(5100)                                       |
+| address  | 20bytes           | The address of the account to be queried                     |
+| nodeIDs  | []discover.NodeID | The node to be queried, if it is empty, all nodes entrusted by the account are queried |
+
+Returns：
+
+Is a []Reward array
+
+| Field      | Type                     | Remark                               |
+| ---------- | ------------------------ | ------------------------------------ |
+| nodeID     | discover.NodeID(64bytes) | Node ID                              |
+| stakingNum | uint64                   | Node stake block Number              |
+| reward     | string(0x hex string)    | Did not withdraw the delegate reward |
 
 ### Error Code Description
 
