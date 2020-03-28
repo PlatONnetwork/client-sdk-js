@@ -50,7 +50,7 @@ web3.version
 
 ```js
 web3.version;
-> "0.9.1"
+> "0.11.0"
 ```
 
 ***
@@ -1567,7 +1567,7 @@ myContract.deploy(options)
 `options` - Object: 用于部署的配置选项，包含以下字段：
 
 *  data - String: 合约的字节码
-*  arguments - Array : 可选，在部署时将传入合约的构造函数
+*  arguments - Array : 可选，在部署时将传入合约的构造函数。如果部署wasm合约，可以参考[wasm合约参数传递参考](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
 
 返回值：
 
@@ -1640,7 +1640,7 @@ myContract.deploy({
 
 #### methods - 为合约方法创建交易
 
-为指定的合约方法创建一个交易对象，以便使用该交易对象进行调用、发送或估算gas。
+为指定的合约方法创建一个交易对象，以便使用该交易对象进行调用、发送或估算gas。如果是wasm合约，可以参考[wasm合约参数传递参考](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
 
 调用：
 
