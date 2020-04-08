@@ -5,7 +5,7 @@ var Common = require('ethereumjs-common');
 var EthereumTx = require('ethereumjs-tx');
 var axios = require('axios');
 const paramsOrder = {
-    '1000': ['typ', 'benefitAddress', 'nodeId', 'externalId', 'nodeName', 'website', 'details', 'amount', 'programVersion', 'programVersionSign', 'blsPubKey', 'blsProof'],
+    '1000': ['typ', 'benefitAddress', 'nodeId', 'externalId', 'nodeName', 'website', 'details', 'amount', 'rewardPer', 'programVersion', 'programVersionSign', 'blsPubKey', 'blsProof'],
     '1001': ['benefitAddress', 'nodeId', 'rewardPer', 'externalId', 'nodeName', 'website', 'details'],
     '1002': ['nodeId', 'typ', 'amount'],
     '1003': ['nodeId'],
@@ -37,9 +37,6 @@ const paramsOrder = {
 
     '3000': ['typ', 'data'],
     '3001': ['typ', 'addr', 'blockNumber'],
-
-    '4000': ['account', 'plan'],
-    '4100': ['account'],
 
     '4000': ['account', 'plan'],
     '4100': ['account'],
@@ -218,8 +215,8 @@ PPOS.prototype.send = async function (params, other) {
         rawTx.data = paramsToData(params);
         rawTx.from = address;
         rawTx.to = funcTypeTo(params[0]);
-        rawTx.gas = (other && other.gas) || this.gas || '0x76c0000';
-        rawTx.gasPrice = (other && other.gasPrice) || this.gasPrice || '0x9184e72a000000';
+        rawTx.gas = (other && other.gas) || this.gas || '0xf4240';
+        rawTx.gasPrice = (other && other.gasPrice) || this.gasPrice || '0x746a528800';
         rawTx.nonce = nonce;
 
         let rawTransaction = signTx(privateKey, chainId, rawTx);

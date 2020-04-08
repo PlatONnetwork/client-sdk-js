@@ -375,7 +375,7 @@ web3.platon.getGasPrice([callback])
 
 返回值：
 
-一个Promise对象，其解析值为表示当前gas价格的字符串，单位为wei。
+一个Promise对象，其解析值为表示当前gas价格的字符串，单位为VON。
 
 示例代码：
 
@@ -450,7 +450,7 @@ web3.platon.getBalance(address [, defaultBlock] [, callback])
 
 返回值：
 
-一个Promise对象，其解析值为指定账户地址的余额字符串，以wei为单位。
+一个Promise对象，其解析值为指定账户地址的余额字符串，以VON为单位。
 
 示例代码：
 
@@ -649,8 +649,8 @@ web3.platon.getTransaction(transactionHash [, callback])
 *  transactionIndex - Number: 交易在块中的索引位置，如果交易处于pending状态，则该值为null
 *  from - String: 交易发送方的地址
 *  to - String: 交易接收方的地址。对于创建合约的交易，该值为null
-*  value - String: 以wei为单位的转账金额
-*  gasPrice - String: 发送方承诺的gas价格，以wei为单位
+*  value - String: 以VON为单位的转账金额
+*  gasPrice - String: 发送方承诺的gas价格，以VON为单位
 *  gas - Number: 发送方提供的gas用量
 *  input - String: 随交易发送的数据
 
@@ -805,9 +805,9 @@ web3.platon.sendTransaction(transactionObject [, callback])
 *  `transactionObject`：Object - 要发送的交易对象，包含以下字段：
    *  from - String|Number: 交易发送方账户地址，不设置该字段的话，则使用web3.platon.defaultAccount属性值。可设置为一个地址或本地钱包web3.platon.accounts.wallet中的索引序号
    *  to - String: 可选，消息的目标地址，对于合约创建交易该字段为null
-   *  value - Number|String|BN|BigNumber: (optional) The value transferred for the transaction in wei, also the endowment if it’s a contract-creation transaction.
+   *  value - Number|String|BN|BigNumber: (optional) The value transferred for the transaction in VON, also the endowment if it’s a contract-creation transaction.
    *  gas - Number: 可选，默认值：待定，用于交易的gas总量，未用完的gas会退还
-   *  gasPrice - Number|String|BN|BigNumber: 可选，该交易的gas价格，单位为wei，默认值为web3.platon.gasPrice属性值
+   *  gasPrice - Number|String|BN|BigNumber: 可选，该交易的gas价格，单位为VON，默认值为web3.platon.gasPrice属性值
    *  data - String: 可选，可以是包含合约方法数据的ABI字符串，或者是合约创建交易中的初始化代码
    *  nonce - Number: 可选，使用该字段覆盖使用相同nonce值的挂起交易
 *  callback - Function: 可选的回调函数，其第一个参数为错误对象，第二个参数为结果
@@ -1432,7 +1432,7 @@ new web3.platon.Contract(jsonInterface[, address][, options])
 *  address - String: 可选，要调用的合约的地址，也可以在之后使用 myContract.options.address = '0x1234..' 来指定该地址
 *  options - Object : 可选，合约的配置对象，其中某些字段用作调用和交易的回调：
    *  from - String: 交易发送方地址
-   *  gasPrice - String: 用于交易的gas价格，单位：wei
+   *  gasPrice - String: 用于交易的gas价格，单位：VON
    *  gas - Number: 交易可用的最大gas量，即gas limit
    *  data - String: 合约的字节码，部署合约时需要
    *  vmType - Number: 合约类型。0表示solidity合约，1表示wasm合约。不传默认是solidity合约。(新增字段)
@@ -1445,7 +1445,7 @@ new web3.platon.Contract(jsonInterface[, address][, options])
 ```js
 var myContract = new web3.platon.Contract([...], '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe', {
     from: '0x1234567890123456789012345678901234567891', // default from address
-    gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
+    gasPrice: '20000000000' // default gas price in VON, 20 GVON in this case
 });
 ```
 
@@ -1467,7 +1467,7 @@ myContract.options
 *  jsonInterface - Array: 合约的json接口
 *  data - String: 合约的字节码，合约部署时会用到
 *  from - String: 合约发送方账户地址
-*  gasPrice - String: 用于交易的gas价格，单位：wei
+*  gasPrice - String: 用于交易的gas价格，单位：VON
 *  gas - Number: 交易的gas用量上限，即gas limit
 
 示例代码：
@@ -1483,7 +1483,7 @@ myContract.options;
 }
 
 myContract.options.from = '0x1234567890123456789012345678901234567891'; // default from address
-myContract.options.gasPrice = '20000000000000'; // default gas price in wei
+myContract.options.gasPrice = '20000000000000'; // default gas price in VON
 myContract.options.gas = 5000000; // provide as fallback always 5M gas
 ```
 
@@ -1714,7 +1714,7 @@ myContract.methods.myMethod([param1[, param2[, ...]]]).call(options[, callback])
 
 *  `options` - Object : 选项，包含如下字段：
    *  `from` - String (optional): The address the call “transaction” should be made from.
-   *  gasPrice - String (optional): The gas price in wei to use for this call “transaction”.
+   *  gasPrice - String (optional): The gas price in VON to use for this call “transaction”.
    *  gas - Number (optional): The maximum gas provided for this call “transaction” (gas limit).
 *  `callback` - Function : 可选的回调函数，其第二个参数为合约方法的执行结果，第一个参数为错误对象
 
@@ -1802,9 +1802,9 @@ myContract.methods.myMethod([param1[, param2[, ...]]]).send(options[, callback])
 
 *  options - Object: 选项，包含如下字段：
    *  from - String: 交易发送方地址
-   *  gasPrice - String : 可选，用于本次交易的gas价格，单位：wei
+   *  gasPrice - String : 可选，用于本次交易的gas价格，单位：VON
    *  gas - Number : 可选，本次交易的gas用量上限，即gas limit
-   *  value - Number|String|BN|BigNumber: 可选，交易转账金额，单位：wei
+   *  value - Number|String|BN|BigNumber: 可选，交易转账金额，单位：VON
 *  callback - Function: 可选的回调参数，其参数为交易哈希值和错误对象
 
 返回值：
@@ -1901,7 +1901,7 @@ myContract.methods.myMethod([param1[, param2[, ...]]]).estimateGas(options[, cal
 *  `options` - Object : 选项，包括以下字段：
    *  from - String : 可选，交易发送方地址
    *  gas - Number : 可选，本次交易gas用量上限
-   *  value - Number|String|BN|BigNumber:  可选，交易转账金额，单位：wei
+   *  value - Number|String|BN|BigNumber:  可选，交易转账金额，单位：VON
    *  callback - Function : 可选的回调函数，触发时其第二个参数为gas估算量，第一个参数为错误对象。
 
 返回值：
@@ -3359,7 +3359,7 @@ Converts any von value into a lat value.
 
 参数：
 
-`number` - String|Number|BN: wei为单位的数值
+`number` - String|Number|BN: VON为单位的数值
 `unit` - String，可选，默认值为`lat`，可选的单位有：
 
 * von
@@ -3443,7 +3443,7 @@ web3.utils.padLeft('Hello', 20, 'x');
     // 由于在实例化web3的时候已传入了 provider, 可以不传入provider了。
     ppos.updateSetting({
         privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-        chainId: 100,
+        chainId: 101,
     })
 
     let data, reply;
@@ -3463,6 +3463,7 @@ web3.utils.padLeft('Hello', 20, 'x');
         website: 'www.platon.network',
         details: 'staking',
         amount: ppos.bigNumBuf(amount),
+        rewardPer: 500, //传500就是5%的奖励作为委托奖励
         programVersion: undefined, // rpc 获取
         programVersionSign: undefined, // rpc 获取
         blsPubKey: ppos.hexStrBuf(blsPubKey),
@@ -3487,6 +3488,7 @@ web3.utils.padLeft('Hello', 20, 'x');
         'www.platon.network',
         'staking',
         ppos.bigNumBuf(amount),
+        500,
         pv.Version,
         pv.Sign,
         ppos.hexStrBuf(blsPubKey),
@@ -3512,7 +3514,7 @@ web3.utils.padLeft('Hello', 20, 'x');
     const ppos1 = new web3.PPOS({
         provider: 'http://127.0.0.1:6789',
         privateKey: '9f9b18c72f8e5154a9c59af2a35f73d1bdad37b049387fc6cea2bac89804293b',
-        chainId: 100,
+        chainId: 101,
     })
     reply = await ppos1.call(data);
 })()
@@ -3619,8 +3621,8 @@ getCandidateList params array reply:  {
   * provider String 链接
   * privateKey String 私钥
   * chainId String 链id
-  * gas String 燃料最大消耗，请输入十六进制字符串，比如 '0x76c0000'
-  * gasPrice String 燃料价格，请输入十六进制字符串，比如 '0x9184e72a000000'
+  * gas String 燃料最大消耗，请输入十六进制字符串，比如 '0xf4240'
+  * gasPrice String 燃料价格，请输入十六进制字符串，比如 '0x746a528800'
   * retry Number 查询交易收据对象次数。
   * interval Number 查询交易收据对象的间隔，单位为ms。
 
@@ -3631,7 +3633,7 @@ getCandidateList params array reply:  {
 // 同时更新 privateKey，chainId
 ppos.updateSetting({
     privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-    chainId: 100,
+    chainId: 101,
 })
 
 // 只更新 privateKey
@@ -3780,8 +3782,8 @@ reply = await ppos.call(params);
 入参说明：
 * params Object|Array 调用参数。
 * other Object 其他参数
-  * gas String 燃油限制，默认 '0x76c0000'。
-  * gasPrice String 燃油价格，默认 '0x9184e72a000000'。
+  * gas String 燃油限制，默认 '0xf4240'。
+  * gasPrice String 燃油价格，默认 '0x746a528800'。
   * retry Number 查询交易收据对象次数，默认 600 次。
   * interval Number 查询交易收据对象的间隔，单位为ms。默认 100 ms。
 
@@ -3856,6 +3858,7 @@ reply = await ppos.send(params, other);
 |website|string|节点的第三方主页(有长度限制，表示该节点的主页)|
 |details|string|节点的描述(有长度限制，表示该节点的描述)|
 |amount|*big.Int(bytes)|质押的von|
+|rewardPer|uint16(2bytes)|委托所得到的奖励分成比例，采用BasePoint 1BP=0.01%|
 |programVersion|uint32|程序的真实版本，治理rpc获取|
 |programVersionSign|65bytes|程序的真实版本签名，治理rpc获取|
 |blsPubKey|96bytes|bls的公钥|
@@ -3868,6 +3871,7 @@ reply = await ppos.send(params, other);
 |funcType|uint16(2bytes)|代表方法类型码(1001)|
 |benefitAddress|20bytes|用于接受出块奖励和质押奖励的收益账户|
 |nodeId|64bytes|被质押的节点Id(也叫候选人的节点Id)|
+|rewardPer|uint16(2bytes)|委托所得到的奖励分成比例，采用BasePoint 1BP=0.01%，例：传500就是5%的奖励作为委托奖励|
 |externalId|string|外部Id(有长度限制，给第三方拉取节点描述的Id)|
 |nodeName|string|被质押节点的名称(有长度限制，表示该节点的名称)|
 |website|string|节点的第三方主页(有长度限制，表示该节点的主页)|
