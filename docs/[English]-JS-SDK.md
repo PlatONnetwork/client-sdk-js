@@ -3428,7 +3428,7 @@ Of course, in order to satisfy multiple ppos that can be instantiated arbitraril
     // Since the provider has been passed in when instantiating web3, it is not necessary to pass in the provider.
     ppos.updateSetting({
         privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-        chainId: 100,
+        chainId: 101,
     })
 
     let data, reply;
@@ -3448,6 +3448,7 @@ Of course, in order to satisfy multiple ppos that can be instantiated arbitraril
         website: 'www.platon.network',
         details: 'staking',
         amount: ppos.bigNumBuf(amount),
+        rewardPer: 500, //传500就是5%的奖励作为委托奖励
         programVersion: undefined, // rpc get
         programVersionSign: undefined, // rpc get 
         blsPubKey: ppos.hexStrBuf(blsPubKey),
@@ -3472,6 +3473,7 @@ Of course, in order to satisfy multiple ppos that can be instantiated arbitraril
         'www.platon.network',
         'staking',
         ppos.bigNumBuf(amount),
+        500,
         pv.Version,
         pv.Sign,
         ppos.hexStrBuf(blsPubKey),
@@ -3497,7 +3499,7 @@ Of course, in order to satisfy multiple ppos that can be instantiated arbitraril
     const ppos1 = new web3.PPOS({
         provider: 'http://127.0.0.1:6789',
         privateKey: '9f9b18c72f8e5154a9c59af2a35f73d1bdad37b049387fc6cea2bac89804293b',
-        chainId: 100,
+        chainId: 101,
     })
     reply = await ppos1.call(data);
 })()
@@ -3606,8 +3608,8 @@ Parameters:
   * `provider` - `String`: network link.
   * `privateKey` - `String`: pairvate key.
   * `chainId` - `String`: id of chain.
-  * `gas` - `String`: Maximum gas consumption value, please enter a hexadecimal string, such as '0x76c0000'.
-  * `gasPrice` - `String`: Fuel price, please enter a hexadecimal string, such as '0x9184e72a000000'.
+  * `gas` - `String`: Maximum gas consumption value, please enter a hexadecimal string, such as '0xf4240'.
+  * `gasPrice` - `String`: Fuel price, please enter a hexadecimal string, such as '0x746a528800'.
   * `retry` - `Number`: The number of times to query the receipt.
   * `interval` - `Number`: Time interval to query the transaction receipt, the unit is `ms`.
 
@@ -3620,7 +3622,7 @@ Example:
 ```JavaScript
 ppos.updateSetting({
     privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-    chainId: 100,
+    chainId: 101,
 })
 
 ppos.updateSetting({
@@ -3791,8 +3793,8 @@ Parameters:
 
 * `params` - `Object|Array`: Transaction parameters.
 * `other` - `Object`(Optional): 
-  * `gas` - `String`: Gas limit, default '0x76c0000'.
-  * `gasPrice` - `String`: Gas price, default '0x9184e72a000000'.
+  * `gas` - `String`: Gas limit, default '0xf4240'.
+  * `gasPrice` - `String`: Gas price, default '0x746a528800'.
   * `retry` - `Number`: Query the number of transaction receipt objects. The default is 600 times.
   * `interval` - `Number`: Query the interval of the transaction receipt object, the unit is ms. The default is 100 ms.
 
@@ -3867,6 +3869,7 @@ Pledge by sending transactions via send.
 |website|string|The third-party home page of the node (the length is limited, indicating the home page of the node)|
 |details|string|The description of the node (the length is limited, indicating the description of the node)|
 |amount|*big.Int(bytes)|Pledged von|
+|rewardPer|uint16(2bytes)|The percentage of rewards obtained from delegation is BasePoint 1BP = 0.01%|
 |programVersion|uint32|Real version of the program, governance rpc acquisition|
 |programVersionSign|65bytes|The true version signature of the program and the rpc interface of the governance module|
 |blsPubKey|96bytes|bls public key|
@@ -3881,6 +3884,7 @@ Modify the pledge information by sending the transaction.
 |funcType|uint16(2bytes)|Method type code(1001)|
 |benefitAddress|20bytes|Revenue account for receiving block rewards and pledged rewards|
 |nodeId|64bytes|The node ID of the pledged (also called the node ID of the candidate)|
+|rewardPer|uint16(2bytes)|The percentage of rewards obtained from delegation is BasePoint 1BP = 0.01%|
 |externalId|string| External Id (with a length limit, the Id described by the third-party pull node) |
 |nodeName|string| The name of the node being pledged (there is a length limitation, indicating the name of the node) |
 |website|string| The third-party home page of the node (the length is limited, indicating the home page of the node) |
