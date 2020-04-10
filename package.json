@@ -29,6 +29,8 @@
         "docs": "cd docs; make html;",
         "lint": "jshint *.js packages",
         "test": "mocha",
+        "wasm": "mocha ./test/1_platon_wasm.js",
+        "solc": "mocha ./test/1_platon_http.js",
         "test:unit": "nyc --no-clean --silent _mocha -- -R spec --grep E2E --invert",
         "dtslint": "lerna run dtslint",
         "depcheck": "lerna exec dependency-check -- --missing --verbose .",

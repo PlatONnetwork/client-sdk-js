@@ -50,7 +50,7 @@ web3.version
 
 ```js
 web3.version;
-> "0.8.0"
+> "0.11.0"
 ```
 
 ***
@@ -375,7 +375,7 @@ web3.platon.getGasPrice([callback])
 
 返回值：
 
-一个Promise对象，其解析值为表示当前gas价格的字符串，单位为wei。
+一个Promise对象，其解析值为表示当前gas价格的字符串，单位为VON。
 
 示例代码：
 
@@ -450,7 +450,7 @@ web3.platon.getBalance(address [, defaultBlock] [, callback])
 
 返回值：
 
-一个Promise对象，其解析值为指定账户地址的余额字符串，以wei为单位。
+一个Promise对象，其解析值为指定账户地址的余额字符串，以VON为单位。
 
 示例代码：
 
@@ -649,8 +649,8 @@ web3.platon.getTransaction(transactionHash [, callback])
 *  transactionIndex - Number: 交易在块中的索引位置，如果交易处于pending状态，则该值为null
 *  from - String: 交易发送方的地址
 *  to - String: 交易接收方的地址。对于创建合约的交易，该值为null
-*  value - String: 以wei为单位的转账金额
-*  gasPrice - String: 发送方承诺的gas价格，以wei为单位
+*  value - String: 以VON为单位的转账金额
+*  gasPrice - String: 发送方承诺的gas价格，以VON为单位
 *  gas - Number: 发送方提供的gas用量
 *  input - String: 随交易发送的数据
 
@@ -805,9 +805,9 @@ web3.platon.sendTransaction(transactionObject [, callback])
 *  `transactionObject`：Object - 要发送的交易对象，包含以下字段：
    *  from - String|Number: 交易发送方账户地址，不设置该字段的话，则使用web3.platon.defaultAccount属性值。可设置为一个地址或本地钱包web3.platon.accounts.wallet中的索引序号
    *  to - String: 可选，消息的目标地址，对于合约创建交易该字段为null
-   *  value - Number|String|BN|BigNumber: (optional) The value transferred for the transaction in wei, also the endowment if it’s a contract-creation transaction.
+   *  value - Number|String|BN|BigNumber: (optional) The value transferred for the transaction in VON, also the endowment if it’s a contract-creation transaction.
    *  gas - Number: 可选，默认值：待定，用于交易的gas总量，未用完的gas会退还
-   *  gasPrice - Number|String|BN|BigNumber: 可选，该交易的gas价格，单位为wei，默认值为web3.platon.gasPrice属性值
+   *  gasPrice - Number|String|BN|BigNumber: 可选，该交易的gas价格，单位为VON，默认值为web3.platon.gasPrice属性值
    *  data - String: 可选，可以是包含合约方法数据的ABI字符串，或者是合约创建交易中的初始化代码
    *  nonce - Number: 可选，使用该字段覆盖使用相同nonce值的挂起交易
 *  callback - Function: 可选的回调函数，其第一个参数为错误对象，第二个参数为结果
@@ -890,6 +890,7 @@ PromiEvent: 一个整合了事件发生器的Promise对象。当交易收据生�
 
 ```js
 var Tx = require('ethereumjs-tx');
+var Common = require('ethereumjs-common');
 var privateKey = new Buffer('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
 
 var rawTx = {
@@ -901,7 +902,16 @@ var rawTx = {
   data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057'
 }
 
-var tx = new Tx(rawTx);
+const customCommon = Common.default.forCustomChain(
+  'mainnet',
+  {
+    name: 'platon',
+    networkId: 1,
+    chainId: 101,
+  },
+  'petersburg'
+);
+var tx = new Tx.Transaction(rawTx, { common: customCommon }	);
 tx.sign(privateKey);
 
 var serializedTx = tx.serialize();
@@ -1422,10 +1432,10 @@ new web3.platon.Contract(jsonInterface[, address][, options])
 *  address - String: 可选，要调用的合约的地址，也可以在之后使用 myContract.options.address = '0x1234..' 来指定该地址
 *  options - Object : 可选，合约的配置对象，其中某些字段用作调用和交易的回调：
    *  from - String: 交易发送方地址
-   *  gasPrice - String: 用于交易的gas价格，单位：wei
+   *  gasPrice - String: 用于交易的gas价格，单位：VON
    *  gas - Number: 交易可用的最大gas量，即gas limit
    *  data - String: 合约的字节码，部署合约时需要
-
+   *  vmType - Number: 合约类型。0表示solidity合约，1表示wasm合约。不传默认是solidity合约。(新增字段)
 返回值：
 
 `Object`: The contract instance with all its methods and events.
@@ -1435,7 +1445,7 @@ new web3.platon.Contract(jsonInterface[, address][, options])
 ```js
 var myContract = new web3.platon.Contract([...], '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe', {
     from: '0x1234567890123456789012345678901234567891', // default from address
-    gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
+    gasPrice: '20000000000' // default gas price in VON, 20 GVON in this case
 });
 ```
 
@@ -1457,7 +1467,7 @@ myContract.options
 *  jsonInterface - Array: 合约的json接口
 *  data - String: 合约的字节码，合约部署时会用到
 *  from - String: 合约发送方账户地址
-*  gasPrice - String: 用于交易的gas价格，单位：wei
+*  gasPrice - String: 用于交易的gas价格，单位：VON
 *  gas - Number: 交易的gas用量上限，即gas limit
 
 示例代码：
@@ -1473,7 +1483,7 @@ myContract.options;
 }
 
 myContract.options.from = '0x1234567890123456789012345678901234567891'; // default from address
-myContract.options.gasPrice = '20000000000000'; // default gas price in wei
+myContract.options.gasPrice = '20000000000000'; // default gas price in VON
 myContract.options.gas = 5000000; // provide as fallback always 5M gas
 ```
 
@@ -1557,7 +1567,7 @@ myContract.deploy(options)
 `options` - Object: 用于部署的配置选项，包含以下字段：
 
 *  data - String: 合约的字节码
-*  arguments - Array : 可选，在部署时将传入合约的构造函数
+*  arguments - Array : 可选，在部署时将传入合约的构造函数。如果部署wasm合约，可以参考[wasm合约参数传递参考](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
 
 返回值：
 
@@ -1630,7 +1640,7 @@ myContract.deploy({
 
 #### methods - 为合约方法创建交易
 
-为指定的合约方法创建一个交易对象，以便使用该交易对象进行调用、发送或估算gas。
+为指定的合约方法创建一个交易对象，以便使用该交易对象进行调用、发送或估算gas。如果是wasm合约，可以参考[wasm合约参数传递参考](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
 
 调用：
 
@@ -1704,7 +1714,7 @@ myContract.methods.myMethod([param1[, param2[, ...]]]).call(options[, callback])
 
 *  `options` - Object : 选项，包含如下字段：
    *  `from` - String (optional): The address the call “transaction” should be made from.
-   *  gasPrice - String (optional): The gas price in wei to use for this call “transaction”.
+   *  gasPrice - String (optional): The gas price in VON to use for this call “transaction”.
    *  gas - Number (optional): The maximum gas provided for this call “transaction” (gas limit).
 *  `callback` - Function : 可选的回调函数，其第二个参数为合约方法的执行结果，第一个参数为错误对象
 
@@ -1792,9 +1802,9 @@ myContract.methods.myMethod([param1[, param2[, ...]]]).send(options[, callback])
 
 *  options - Object: 选项，包含如下字段：
    *  from - String: 交易发送方地址
-   *  gasPrice - String : 可选，用于本次交易的gas价格，单位：wei
+   *  gasPrice - String : 可选，用于本次交易的gas价格，单位：VON
    *  gas - Number : 可选，本次交易的gas用量上限，即gas limit
-   *  value - Number|String|BN|BigNumber: 可选，交易转账金额，单位：wei
+   *  value - Number|String|BN|BigNumber: 可选，交易转账金额，单位：VON
 *  callback - Function: 可选的回调参数，其参数为交易哈希值和错误对象
 
 返回值：
@@ -1891,7 +1901,7 @@ myContract.methods.myMethod([param1[, param2[, ...]]]).estimateGas(options[, cal
 *  `options` - Object : 选项，包括以下字段：
    *  from - String : 可选，交易发送方地址
    *  gas - Number : 可选，本次交易gas用量上限
-   *  value - Number|String|BN|BigNumber:  可选，交易转账金额，单位：wei
+   *  value - Number|String|BN|BigNumber:  可选，交易转账金额，单位：VON
    *  callback - Function : 可选的回调函数，触发时其第二个参数为gas估算量，第一个参数为错误对象。
 
 返回值：
@@ -3320,7 +3330,7 @@ web3.utils.toVon(number [, unit])
 
 *  `number` - String|Number|BN: 金额 
 *  `unit` - String，可选，默认值为`ether`
- 
+
 
 返回值：
 
@@ -3349,7 +3359,7 @@ Converts any von value into a lat value.
 
 参数：
 
-`number` - String|Number|BN: wei为单位的数值
+`number` - String|Number|BN: VON为单位的数值
 `unit` - String，可选，默认值为`lat`，可选的单位有：
 
 * von
@@ -3433,7 +3443,7 @@ web3.utils.padLeft('Hello', 20, 'x');
     // 由于在实例化web3的时候已传入了 provider, 可以不传入provider了。
     ppos.updateSetting({
         privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-        chainId: 100,
+        chainId: 101,
     })
 
     let data, reply;
@@ -3453,6 +3463,7 @@ web3.utils.padLeft('Hello', 20, 'x');
         website: 'www.platon.network',
         details: 'staking',
         amount: ppos.bigNumBuf(amount),
+        rewardPer: 500, //传500就是5%的奖励作为委托奖励
         programVersion: undefined, // rpc 获取
         programVersionSign: undefined, // rpc 获取
         blsPubKey: ppos.hexStrBuf(blsPubKey),
@@ -3477,6 +3488,7 @@ web3.utils.padLeft('Hello', 20, 'x');
         'www.platon.network',
         'staking',
         ppos.bigNumBuf(amount),
+        500,
         pv.Version,
         pv.Sign,
         ppos.hexStrBuf(blsPubKey),
@@ -3502,7 +3514,7 @@ web3.utils.padLeft('Hello', 20, 'x');
     const ppos1 = new web3.PPOS({
         provider: 'http://127.0.0.1:6789',
         privateKey: '9f9b18c72f8e5154a9c59af2a35f73d1bdad37b049387fc6cea2bac89804293b',
-        chainId: 100,
+        chainId: 101,
     })
     reply = await ppos1.call(data);
 })()
@@ -3609,8 +3621,8 @@ getCandidateList params array reply:  {
   * provider String 链接
   * privateKey String 私钥
   * chainId String 链id
-  * gas String 燃料最大消耗，请输入十六进制字符串，比如 '0x76c0000'
-  * gasPrice String 燃料价格，请输入十六进制字符串，比如 '0x9184e72a000000'
+  * gas String 燃料最大消耗，请输入十六进制字符串，比如 '0xf4240'
+  * gasPrice String 燃料价格，请输入十六进制字符串，比如 '0x746a528800'
   * retry Number 查询交易收据对象次数。
   * interval Number 查询交易收据对象的间隔，单位为ms。
 
@@ -3621,7 +3633,7 @@ getCandidateList params array reply:  {
 // 同时更新 privateKey，chainId
 ppos.updateSetting({
     privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-    chainId: 100,
+    chainId: 101,
 })
 
 // 只更新 privateKey
@@ -3661,6 +3673,7 @@ let setting = ppos.getSetting();
 * method String 方法名
 * params Array 调用rpc接口需要的参数，如果调用此rpc端口不需要参数，则此参数可以省略。
   
+
 出参
 * reply rpc调用返回的结果
 
@@ -3684,6 +3697,7 @@ let reply = await ppos.rpc('platon_getBalance', ["0x714de266a0effa39fcaca1442b92
 入参说明：
 * intStr String 字符串十进制大整数。
   
+
 出参
 * buffer Buffer 一个缓存区。
 
@@ -3702,6 +3716,7 @@ let buffer = ppos.bigNumBuf('1000000000000000000000000000000000000000000');
 入参说明：
 * hexStr String 一个十六进制的字符串。
   
+
 出参
 * buffer Buffer 一个缓存区。
 
@@ -3723,6 +3738,7 @@ let buffer = ppos.hexStrBuf(nodeId);
 入参说明：
 * params Object | Array 调用参数。
   
+
 出参
 * reply Object call调用的返回的结果。注意，我已将将返回的结果转为了Object对象。
   * Code Number 调用返回码，0表示调用结果正常。
@@ -3766,8 +3782,8 @@ reply = await ppos.call(params);
 入参说明：
 * params Object|Array 调用参数。
 * other Object 其他参数
-  * gas String 燃油限制，默认 '0x76c0000'。
-  * gasPrice String 燃油价格，默认 '0x9184e72a000000'。
+  * gas String 燃油限制，默认 '0xf4240'。
+  * gasPrice String 燃油价格，默认 '0x746a528800'。
   * retry Number 查询交易收据对象次数，默认 600 次。
   * interval Number 查询交易收据对象的间隔，单位为ms。默认 100 ms。
 
@@ -3842,6 +3858,7 @@ reply = await ppos.send(params, other);
 |website|string|节点的第三方主页(有长度限制，表示该节点的主页)|
 |details|string|节点的描述(有长度限制，表示该节点的描述)|
 |amount|*big.Int(bytes)|质押的von|
+|rewardPer|uint16(2bytes)|委托所得到的奖励分成比例，采用BasePoint 1BP=0.01%|
 |programVersion|uint32|程序的真实版本，治理rpc获取|
 |programVersionSign|65bytes|程序的真实版本签名，治理rpc获取|
 |blsPubKey|96bytes|bls的公钥|
@@ -3854,6 +3871,7 @@ reply = await ppos.send(params, other);
 |funcType|uint16(2bytes)|代表方法类型码(1001)|
 |benefitAddress|20bytes|用于接受出块奖励和质押奖励的收益账户|
 |nodeId|64bytes|被质押的节点Id(也叫候选人的节点Id)|
+|rewardPer|uint16(2bytes)|委托所得到的奖励分成比例，采用BasePoint 1BP=0.01%，例：传500就是5%的奖励作为委托奖励|
 |externalId|string|外部Id(有长度限制，给第三方拉取节点描述的Id)|
 |nodeName|string|被质押节点的名称(有长度限制，表示该节点的名称)|
 |website|string|节点的第三方主页(有长度限制，表示该节点的主页)|
@@ -4343,9 +4361,50 @@ reply = await ppos.send(params, other);
 | debt  | string(0x十六进制字符串)            | 欠释放金额                                                 |
 | plans    | bytes           | 锁仓分录信息，json数组：[{"blockNumber":"","amount":""},...,{"blockNumber":"","amount":""}]。其中：<br/>blockNumber：\*big.Int，释放区块高度<br/>amount：\string(0x十六进制字符串)，释放金额 |
 
+#### 奖励接口
+
+* 提取账户当前所有的可提取的委托奖励，send 发送交易。
+
+入参：
+
+| 参数     | 类型           | 说明                 |
+| -------- | -------------- | -------------------- |
+| funcType | uint16(2bytes) | 代表方法类型码(5000) |
+
+注:交易结果存储在交易回执的logs.data中，如交易成功，存储 rlp.Encode([][]byte{[]byte(状态码0)， rlp.Encode(`节点收益列表`) })，如交易不成功，与之前方式一致。
+
+返回的`节点收益列表`为数组
+
+| 参数       | 类型                     | 说明           |
+| ---------- | ------------------------ | -------------- |
+| NodeID     | discover.NodeID(64bytes) | 节点ID         |
+| StakingNum | uint64                   | 节点的质押块高 |
+| Reward     | *big.Int                 | 领取到的收益   |
+
+* 查询账户在各节点未提取委托奖励，call 查询。
+
+入参：
+
+| 参数     | 类型              | 说明                                             |
+| -------- | ----------------- | ------------------------------------------------ |
+| funcType | uint16(2bytes)    | 代表方法类型码(5100)                             |
+| address  | 20bytes           | `要查询账户的地址`                               |
+| nodeIDs  | []discover.NodeID | `要查询的节点，如果为空则查询账户委托的所有节点` |
+
+返参：
+
+是个[]Reward数组
+
+| 名称       | 类型                     | 说明             |
+| ---------- | ------------------------ | ---------------- |
+| nodeID     | discover.NodeID(64bytes) | 节点ID           |
+| stakingNum | uint64                   | 节点的质押块高   |
+| reward     | string(0x十六进制字符串) | 未领取的委托收益 |
+
 ### 内置合约错误码说明
+
 | 错误码    | 说明            |
-| ------- | --------------- | 
+| ------- | --------------- |
 |301000  | Wrong bls public key|
 |301001  | Wrong bls public key proof|
 |301002  | The Description length is wrong|
