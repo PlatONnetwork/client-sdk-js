@@ -32,7 +32,7 @@
     "gulp-uglify": ">=1.2.0",
     "istanbul": "^0.4.4",
     "jshint": ">=2.5.0",
-    "mocha": ">=2.3.3",
+    "mocha": "^7.1.2",
     "sandboxed-module": "^2.0.2",
     "vinyl-source-stream": "^1.1.0"
   },
