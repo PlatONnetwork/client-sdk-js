@@ -26,7 +26,7 @@ var numberToBN = require('number-to-bn');
 var utf8 = require('utf8');
 var Hash = require("eth-lib/lib/hash");
 var ethereumBloomFilters = require('ethereum-bloom-filters');
-
+var segwit_addr = require('./segwit_addr.js');
 
 
 /**
@@ -98,7 +98,45 @@ var isAddress = function (address) {
     }
 };
 
+/**
+ * Checks if the given string is an bech32 address
+ *
+ * @method isBech32Address
+ * @param {String} address the given bech32 adress
+ * @return {Boolean}
+*/
+var isBech32Address = function (address) {
+    var hrp = "lat";
+    var ret = segwit_addr.decode(hrp, address);
+    if (ret === null) {
+        hrp = "lax";
+        ret = segwit_addr.decode(hrp, address);
+    }
+    else {
+        return true;
+    }
 
+    if (ret === null) {
+        return false;
+    }
+    return true;
+};
+
+/**
+ * Transforms given string to bech32 addres
+ *
+ * @method toBech32Address
+ * @param {String} address
+ * @param {String} hrp
+ * @return {String} formatted bech32 address
+ */
+var toBech32Address = function (hrp, address) {
+    if (isAddress(address) || checkAddressChecksum(address)) {
+        return segwit_addr.EncodeAddress(hrp, address);
+    }
+
+    return ''
+};
 
 /**
  * Checks if the given string is a checksummed address
@@ -517,6 +555,8 @@ module.exports = {
     isBigNumber: isBigNumber,
     toBN: toBN,
     isAddress: isAddress,
+    isBech32Address: isBech32Address,
+    toBech32Address: toBech32Address,
     isBloom: isBloom,
     isUserEthereumAddressInBloom: isUserEthereumAddressInBloom,
     isContractAddressInBloom: isContractAddressInBloom,

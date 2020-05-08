@@ -76,7 +76,7 @@ var Accounts = function Accounts() {
             call: 'platon_getTransactionCount',
             params: 2,
             inputFormatter: [function(address) {
-                if (utils.isAddress(address)) {
+                if (utils.isBech32Address(address)) {
                     return address;
                 } else {
                     throw new Error('Address ' + address + ' is not a valid address to get the "transactionCount".');
@@ -99,7 +99,9 @@ var Accounts = function Accounts() {
 
 Accounts.prototype._addAccountFunctions = function(account) {
     var _this = this;
-
+    var mainnetAddress = utils.toBech32Address("lat", account.address)
+    var testnetAddress = utils.toBech32Address("lax", account.address)
+    account.address = {"mainnet":mainnetAddress, "testnet": testnetAddress}
     // add sign functions
     account.signTransaction = function signTransaction(tx, callback) {
         return _this.signTransaction(tx, account.privateKey, callback);
@@ -259,10 +261,18 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
     }
 
     // Otherwise, get the missing info from the Ethereum Node
+    var netType = "mainnet"
+    var bech32Address = ""
+    if(tx.chainId == 100) {
+        bech32Address = _this.privateKeyToAccount(privateKey).address.mainnet
+    } else {
+        bech32Address = _this.privateKeyToAccount(privateKey).address.testnet
+    }
     return Promise.all([
         isNot(tx.chainId) ? _this._ethereumCall.getChainId() : tx.chainId,
         isNot(tx.gasPrice) ? _this._ethereumCall.getGasPrice() : tx.gasPrice,
-        isNot(tx.nonce) ? _this._ethereumCall.getTransactionCount(_this.privateKeyToAccount(privateKey).address) : tx.nonce,
+        //isNot(tx.nonce) ? _this._ethereumCall.getTransactionCount(_this.privateKeyToAccount(privateKey).address) : tx.nonce,
+        isNot(tx.nonce) ? _this._ethereumCall.getTransactionCount(bech32Address) : tx.nonce,
         isNot(hasTxSigningOptions) ? _this._ethereumCall.getNetworkId() : 1
     ]).then(function(args) {
         if (isNot(args[0]) || isNot(args[1]) || isNot(args[2]) || isNot(args[3])) {
@@ -415,7 +425,8 @@ Accounts.prototype.encrypt = function(privateKey, password, options) {
     return {
         version: 3,
         id: uuid.v4({random: options.uuid || cryp.randomBytes(16)}),
-        address: account.address.toLowerCase().replace('0x', ''),
+        //address: account.address.toLowerCase().replace('0x', ''),
+        address: account.address,
         crypto: {
             ciphertext: ciphertext.toString('hex'),
             cipherparams: {
@@ -478,9 +489,8 @@ Wallet.prototype.add = function(account) {
         account.index = this._findSafeIndex();
 
         this[account.index] = account;
+        //this[account.address.toLowerCase()] = account;
         this[account.address] = account;
-        this[account.address.toLowerCase()] = account;
-
         this.length++;
 
         return account;
@@ -497,8 +507,10 @@ Wallet.prototype.remove = function(addressOrIndex) {
         this[account.address].privateKey = null;
         delete this[account.address];
         // address lowercase
-        this[account.address.toLowerCase()].privateKey = null;
-        delete this[account.address.toLowerCase()];
+        //this[account.address.toLowerCase()].privateKey = null;
+        //delete this[account.address.toLowerCase()];
+        this[account.address].privateKey = null;
+        delete this[account.address];
         // index
         this[account.index].privateKey = null;
         delete this[account.index];

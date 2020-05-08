@@ -143,5 +143,8 @@
         "underscore": "^1.9.1",
         "vinyl-source-stream": "^2.0.0",
         "wait-port": "^0.2.6"
+    },
+    "dependencies": {
+        "bech32": "^1.1.4"
     }
 }

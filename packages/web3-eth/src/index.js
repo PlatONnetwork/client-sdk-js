@@ -211,7 +211,8 @@ var Eth = function Eth() {
         },
         set: function (val) {
             if(val) {
-                defaultAccount = utils.toChecksumAddress(formatter.inputAddressFormatter(val));
+                //defaultAccount = utils.toChecksumAddress(formatter.inputAddressFormatter(val));
+                defaultAccount = formatter.inputAddressFormatter(val);
             }
 
             // also set on the Contract object
@@ -333,8 +334,8 @@ var Eth = function Eth() {
         new Method({
             name: 'getAccounts',
             call: 'platon_accounts',
-            params: 0,
-            outputFormatter: utils.toChecksumAddress
+            params: 0
+            //outputFormatter: utils.toChecksumAddress
         }),
         new Method({
             name: 'getBlockNumber',
@@ -462,8 +463,8 @@ var Eth = function Eth() {
         new Method({
             name: 'requestAccounts',
             call: 'platon_requestAccounts',
-            params: 0,
-            outputFormatter: utils.toChecksumAddress
+            params: 0
+        //    outputFormatter: utils.toChecksumAddress
         }),
         new Method({
             name: 'getPendingTransactions',
