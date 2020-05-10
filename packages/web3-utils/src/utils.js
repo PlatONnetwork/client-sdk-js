@@ -126,12 +126,12 @@ var isBech32Address = function (address) {
  * Transforms given string to bech32 addres
  *
  * @method toBech32Address
- * @param {String} address
  * @param {String} hrp
+ * @param {String} address
  * @return {String} formatted bech32 address
  */
 var toBech32Address = function (hrp, address) {
-    if (isAddress(address) || checkAddressChecksum(address)) {
+    if (isAddress(address)) {
         return segwit_addr.EncodeAddress(hrp, address);
     }
 
