@@ -476,6 +476,8 @@ var inputAddressFormatter = function (address) {
     }*/
     if (utils.isBech32Address(address)) {
         return address;
+    } else if (utils.isAddress(address)) {
+        return '0x' + address.toLowerCase().replace('0x', '');
     }
     
     throw new Error('Provided address "' + address + '" is invalid, the capitalization checksum test failed.');

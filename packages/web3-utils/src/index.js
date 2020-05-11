@@ -337,6 +337,7 @@ module.exports = {
     isAddress: utils.isAddress,
     isBech32Address: utils.isBech32Address,
     toBech32Address: utils.toBech32Address,
+    decodeBech32Address: utils.decodeBech32Address,
     checkAddressChecksum: utils.checkAddressChecksum,
     toChecksumAddress: toChecksumAddress,
     toHex: utils.toHex,

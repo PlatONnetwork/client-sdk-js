@@ -123,7 +123,7 @@ var isBech32Address = function (address) {
 };
 
 /**
- * Transforms given string to bech32 addres
+ * Transforms given string to bech32 address
  *
  * @method toBech32Address
  * @param {String} hrp
@@ -133,6 +133,25 @@ var isBech32Address = function (address) {
 var toBech32Address = function (hrp, address) {
     if (isAddress(address)) {
         return segwit_addr.EncodeAddress(hrp, address);
+    }
+
+    return ''
+};
+
+/**
+ * Resolve the bech32 address
+ *
+ * @method decodeBech32Address
+ * @param {String} hrp
+ * @param {String} bech32Address
+ * @return {String} formatted address
+ */
+var decodeBech32Address = function (hrp, bech32Address) {
+    if (isBech32Address(bech32Address)) {
+        address = segwit_addr.DecodeAddress(hrp, bech32Address);
+        if (address !== null) {
+            return "0x" + address
+        }
     }
 
     return ''
@@ -557,6 +576,7 @@ module.exports = {
     isAddress: isAddress,
     isBech32Address: isBech32Address,
     toBech32Address: toBech32Address,
+    decodeBech32Address: decodeBech32Address,
     isBloom: isBloom,
     isUserEthereumAddressInBloom: isUserEthereumAddressInBloom,
     isContractAddressInBloom: isContractAddressInBloom,

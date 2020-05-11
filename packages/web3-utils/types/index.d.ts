@@ -75,6 +75,7 @@ export function toTwosComplement(value: number | string | BN): string;
 export function isAddress(address: string, chainId?: number): boolean;
 export function isBech32Address(address: string, chainId?: number): boolean;
 export function toBech32Address(address: string, chainId?: number): string;
+export function decodeBech32Address(address: string, chainId?: number): string;
 export function isHex(hex: Hex): boolean;
 export function isHexStrict(hex: Hex): boolean;
 export function asciiToHex(string: string, length?: number): string;
@@ -133,6 +134,7 @@ export interface Utils {
     isAddress(address: string, chainId?: number): boolean;
     isBech32Address(address: string, chainId?: number): boolean;
     toBech32Address(address: string, chainId?: number): string;
+    decodeBech32Address(address: string, chainId?: number): string;
     isHex(hex: Hex): boolean;
     isHexStrict(hex: Hex): boolean;
     asciiToHex(string: string, length?: number): string;
