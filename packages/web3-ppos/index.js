@@ -85,7 +85,15 @@ function paramsToData(params) {
 }
 
 // 根据函数类型，选择对应的 to 地址。
-function funcTypeTo(hrp, funcType) {
+function funcTypeToAddress(funcType) {
+    if (funcType >= 1000 && funcType < 2000) return '0x1000000000000000000000000000000000000002';
+    if (funcType >= 2000 && funcType < 3000) return '0x1000000000000000000000000000000000000005';
+    if (funcType >= 3000 && funcType < 4000) return '0x1000000000000000000000000000000000000004';
+    if (funcType >= 4000 && funcType < 5000) return '0x1000000000000000000000000000000000000001';
+    if (funcType >= 5000 && funcType < 6000) return '0x1000000000000000000000000000000000000006';
+}
+
+function funcTypeToBech32(hrp, funcType) {
     if (funcType >= 1000 && funcType < 2000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000002');
     if (funcType >= 2000 && funcType < 3000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000005');
     if (funcType >= 3000 && funcType < 4000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000004');
@@ -198,7 +206,7 @@ PPOS.prototype.call = async function (params) {
         if (this.chainId === undefined || this.chainId !== 100){
             hrp = "lax"
         }
-        rawTx.to = funcTypeTo(hrp, params[0]);
+        rawTx.to = funcTypeToBech32(hrp, params[0]);
         let data = await this.rpc("platon_call", [rawTx, "latest"]);
         return Promise.resolve(pposHexToObj(data));
     } catch (error) {
@@ -224,8 +232,8 @@ PPOS.prototype.send = async function (params, other) {
         params = objToParams(params);
         rawTx.data = paramsToData(params);
         
-        rawTx.from = bech32Address;
-        rawTx.to = funcTypeTo(hrp, params[0]);
+        rawTx.from = address;
+        rawTx.to = funcTypeToAddress(params[0]);
         rawTx.gas = (other && other.gas) || this.gas || '0xf4240';
         rawTx.gasPrice = (other && other.gasPrice) || this.gasPrice || '0x746a528800';
         rawTx.nonce = nonce;
