@@ -484,18 +484,18 @@ Wallet.prototype.add = function(account) {
     if (_.isString(account)) {
         account = this._accounts.privateKeyToAccount(account);
     }
-    if (!this[account.address]) {
+    if (!this[account.address.testnet]) {
         account = this._accounts.privateKeyToAccount(account.privateKey);
         account.index = this._findSafeIndex();
 
         this[account.index] = account;
         //this[account.address.toLowerCase()] = account;
-        this[account.address] = account;
+        this[account.address.testnet] = account;
         this.length++;
 
         return account;
     } else {
-        return this[account.address];
+        return this[account.address.testnet];
     }
 };
 
@@ -504,13 +504,12 @@ Wallet.prototype.remove = function(addressOrIndex) {
 
     if (account && account.address) {
         // address
-        this[account.address].privateKey = null;
-        delete this[account.address];
+        this[account.address.testnet].privateKey = null;
+        delete this[account.address.testnet];
         // address lowercase
         //this[account.address.toLowerCase()].privateKey = null;
         //delete this[account.address.toLowerCase()];
-        this[account.address].privateKey = null;
-        delete this[account.address];
+        
         // index
         this[account.index].privateKey = null;
         delete this[account.index];

@@ -1,19 +1,20 @@
 var Web3 = require("../packages/web3/src");
+var web3 = undefined;
 var RLP = require("rlp");
 var _ = require('underscore');
 var fs = require("fs-extra");
 
 var chai = require("chai");
 var assert = chai.assert;
-var Web3 = require("../packages/web3/src");
 var abi = require("../packages/web3-eth-abi/src");
+var utils = require("../packages/web3-utils/src");
 
-
-const provider = "http://10.1.1.6:8806"; // 请更新成自己的 http 节点
-const chainId = 100; // 请更新成自己的节点id
+const provider = "http://127.0.0.1:6789"; // 请更新成自己的 http 节点
+web3 = new Web3(provider);
+const chainId = 102; // 请更新成自己的节点id
 const privateKey = "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557"; // 请更新成自己的私钥(必须有十六进制前缀0x)
-const from = "0xe03887881e1e0CD6CdBFc82BC3292b8AD9A683f2"; // 请更新成上面私钥对应的地址
-const address = "0x27E74FbD0d11eDeD263e8eC25dBb2670B82b8EF8"; // 合约地址(如果不测试部署就更换)
+const from = web3.platon.accounts.privateKeyToAccount(privateKey).address.testnet;  // 请更新成上面私钥对应的地址
+const address = utils.toBech32Address("lax","0x27E74FbD0d11eDeD263e8eC25dBb2670B82b8EF8"); // 合约地址(如果不测试部署就更换)
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';
 const abiFilePath = './test/wasm/js_contracttest.abi.json';
@@ -21,13 +22,12 @@ const abiFilePath = './test/wasm/js_contracttest.abi.json';
 let gas = undefined;
 let gasPrice = undefined;
 
-let web3 = undefined;
 let contract = undefined;
 
 let ret;
 
 const contractSend = async (method, arguments) => {
-    let to = contract.options.address;
+    let to = utils.decodeBech32Address("lax", contract.options.address);
     let data = contract.methods[method].apply(contract.methods, arguments).encodeABI();
     let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
     let tx = { gasPrice, gas, nonce, chainId, data, to };

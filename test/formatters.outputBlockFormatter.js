@@ -35,7 +35,7 @@ describe("formatters", function() {
                         "0xd6960376d6c6dea93647383ffb245cfced97ccc5c7525397a543a72fdaea5265",
                     parentHash:
                         "0x83ffb245cfced97ccc5c75253d6960376d6c6dea93647397a543a72fdaea5265",
-                    miner: "0xDCc6960376d6C6dEa93647383FfB245CfCed97Cf",
+                    miner: "0xDCc6960376d6C6dEa93647383FfB245CfCed97Cf".toLowerCase(),
                     stateRoot:
                         "0x54dda68af07643f68739a6e9612ad157a26ae7e2ce81f77842bb5835fbcde583",
                     sha3Uncles:

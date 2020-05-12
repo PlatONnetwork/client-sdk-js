@@ -1,6 +1,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var Platon = require('../packages/web3-eth');
+var utils = require("../packages/web3-utils/src");
 
 var address = '0x1234567890123456789012345678901234567890';
 var signature = '0xffff';

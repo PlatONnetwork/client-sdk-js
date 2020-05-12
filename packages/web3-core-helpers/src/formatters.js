@@ -246,10 +246,20 @@ var outputTransactionFormatter = function (tx) {
 
     if (tx.from) {
         tx.from = utils.toChecksumAddress(tx.from);
-    }*/
+    }
 
     if (!(tx.to && utils.isBech32Address(tx.to))) { // tx.to could be bech32 address
         tx.to = null; // set to `null` if invalid address
+    }*/
+
+    if (tx.to) {
+        if(!utils.isBech32Address(tx.to))
+            tx.to = utils.toChecksumAddress(tx.to);
+    }
+
+    if (tx.from) {
+        if(!utils.isBech32Address(tx.from))
+            tx.from = utils.toChecksumAddress(tx.from);
     }
     return tx;
 };

@@ -104,12 +104,12 @@ var _solidityPack = function (type, value, arraySize) {
             size = 40;
         }
 
-        if(!utils.isBech32Address(value)) {
+        if(!utils.isAddress(value)) {
             throw new Error(value +' is not a valid address, or the checksum is invalid.');
         }
 
-        return value;
-     //   return utils.leftPad(value.toLowerCase(), size);
+    //    return value;
+        return utils.leftPad(value.toLowerCase(), size);
     }
 
     size = _parseTypeN(type);

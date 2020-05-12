@@ -485,11 +485,10 @@ Contract.prototype._encodeEventABI = function (event, options) {
         if (!result.topics.length)
             delete result.topics;
     }
-
-    /*
+    
     if (this.options.address) {
         result.address = this.options.address.toLowerCase();
-    }*/
+    }
 
     return result;
 };

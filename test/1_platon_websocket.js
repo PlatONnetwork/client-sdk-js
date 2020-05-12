@@ -2,11 +2,11 @@ var chai = require("chai");
 var assert = chai.assert;
 var Web3 = require("../packages/web3");
 var web3 = undefined;
-
+var utils = require("../packages/web3-utils/src");
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
-    provider: "ws://10.1.1.6:6606", // 请更新成自己的 ws 节点
-    chainId: 100, // 请更新成自己的节点id
+    provider: "ws://127.0.0.1:5789", // 请更新成自己的 ws 节点
+    chainId: 102, // 请更新成自己的节点id
     privateKey: "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
     gas: undefined,
@@ -32,7 +32,7 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
         let gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit / 10));
         cfg.gasPrice = gasPrice;
         cfg.gas = gas;
-        cfg.address = web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address;
+        cfg.address = web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address.testnet;
 
         web3.platon.subscribe('pendingTransactions', function () { }).on("data", function () {
             console.log("subscribe pendingTransactions come");
@@ -146,22 +146,23 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
 
         let contract = new web3.platon.Contract(JSON.parse(cfg.myToken.abiStr), cfg.myToken.txReceipt.contractAddress, null);
         let from = cfg.address;
+        let to = utils.decodeBech32Address("lax", cfg.myToken.txReceipt.contractAddress);
         let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
         let transferBalance = "1000";
-
+    
         let data = contract.methods["transfer"].apply(contract.methods, [toAccount, transferBalance]).encodeABI();
-        let gasPrice = cfg.gasPrice;
-        let gas = cfg.gas;
+        console.log('data=', data);
+        let gasPrice = web3.utils.numberToHex(await web3.platon.getGasPrice());
+        let gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit / 10));
         let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
         let chainId = cfg.chainId;
-        let to = cfg.myToken.txReceipt.contractAddress;
-
         let tx = { gasPrice, gas, nonce, chainId, data, to };
+        console.log("tx=",tx);
         let signTx = await web3.platon.accounts.signTransaction(tx, cfg.privateKey);
-        await web3.platon.sendSignedTransaction(signTx.rawTransaction);
+        let ret = await web3.platon.sendSignedTransaction(signTx.rawTransaction);
 
         let balanceOfMethod = contract.methods["balanceOf"].apply(contract.methods, [toAccount]);
-        let balance = await balanceOfMethod.call({ "from": toAccount });
+        let balance = await balanceOfMethod.call({ "from": utils.toBech32Address("lax", toAccount) });
         assert.deepEqual(balance, transferBalance);
     });
 
