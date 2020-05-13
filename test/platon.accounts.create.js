@@ -1,5 +1,6 @@
 var Accounts = require("./../packages/web3-eth-accounts");
 var ethers = require('ethers');
+var utils = require("../packages/web3-utils")
 var chai = require('chai');
 var assert = chai.assert;
 var Web3 = require('../packages/web3');
@@ -25,7 +26,8 @@ describe("eth", function () {
                 var ethWall = new ethers.Wallet(acc.privateKey);
 
                 // compare addresses and private keys
-                assert.equal(acc.address, ethWall.address);
+                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
+                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
 

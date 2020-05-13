@@ -1,4 +1,5 @@
 var Accounts = require("./../packages/web3-eth-accounts");
+var utils = require("../packages/web3-utils")
 var chai = require("chai");
 var assert = chai.assert;
 var Web3 = require("../packages/web3");
@@ -43,9 +44,9 @@ describe("platon", function() {
                 assert.equal(ethAccounts.wallet.length, 5);
                 assert.equal(wallet.length, 5);
 
-                assert.isTrue(web3.utils.isAddress(wallet[1].address));
+                assert.isTrue(utils.isBech32Address(wallet[1].address.testnet));
                 assert.isTrue(
-                    web3.utils.isAddress(ethAccounts.wallet[2].address)
+                    utils.isBech32Address(ethAccounts.wallet[2].address.testnet)
                 );
             });
 
@@ -54,7 +55,7 @@ describe("platon", function() {
                 assert.equal(ethAccounts.wallet.length, 0);
 
                 var wallet = ethAccounts.wallet.add(test.privateKey);
-                assert.equal(wallet.address, test.address);
+                assert.equal(wallet.address.testnet, utils.toBech32Address("lax", test.address));
                 assert.equal(wallet.privateKey, test.privateKey);
                 assert.isFunction(wallet.signTransaction);
                 assert.isFunction(wallet.sign);
@@ -62,14 +63,13 @@ describe("platon", function() {
 
                 // test if its retrievabe via address and index
                 assert.equal(
-                    ethAccounts.wallet[test.address].address,
-                    test.address
+                    ethAccounts.wallet[wallet.address.testnet].address.testnet,
+                    utils.toBech32Address("lax", test.address)
                 );
                 assert.equal(
-                    ethAccounts.wallet[test.address.toLowerCase()].address,
-                    test.address
+                    ethAccounts.wallet[wallet.address.testnet].address.mainnet,
+                    utils.toBech32Address("lat", test.address)
                 );
-                assert.equal(ethAccounts.wallet[0].address, test.address);
 
                 assert.equal(ethAccounts.wallet.length, 1);
             });
@@ -82,7 +82,7 @@ describe("platon", function() {
                     address: test.address,
                     privateKey: test.privateKey
                 });
-                assert.equal(wallet.address, test.address);
+                assert.equal(wallet.address.testnet, utils.toBech32Address("lax",test.address));
                 assert.equal(wallet.privateKey, test.privateKey);
                 assert.isFunction(wallet.signTransaction);
                 assert.isFunction(wallet.sign);
@@ -90,14 +90,13 @@ describe("platon", function() {
 
                 // test if its retrievabe via address and index
                 assert.equal(
-                    ethAccounts.wallet[test.address].address,
-                    test.address
+                    ethAccounts.wallet[wallet.address.testnet].address.testnet,
+                    utils.toBech32Address("lax", test.address)
                 );
                 assert.equal(
-                    ethAccounts.wallet[test.address.toLowerCase()].address,
-                    test.address
+                    ethAccounts.wallet[wallet.address.testnet].address.mainnet,
+                    utils.toBech32Address("lat", test.address)
                 );
-                assert.equal(ethAccounts.wallet[0].address, test.address);
 
                 assert.equal(ethAccounts.wallet.length, 1);
             });
@@ -106,17 +105,11 @@ describe("platon", function() {
                 var ethAccounts = new Accounts();
                 assert.equal(ethAccounts.wallet.length, 0);
 
-                var wallet = ethAccounts.wallet.add({
-                    address: test.address,
-                    privateKey: test.privateKey
-                });
-                wallet = ethAccounts.wallet.add({
-                    address: test.address,
-                    privateKey: test.privateKey
-                });
+                var wallet = ethAccounts.wallet.add(test.privateKey);
+                wallet = ethAccounts.wallet.add(test.privateKey);
                 wallet = ethAccounts.wallet.add(test.privateKey);
 
-                assert.equal(wallet.address, test.address);
+                assert.equal(wallet.address.testnet, utils.toBech32Address("lax",test.address));
                 assert.equal(wallet.privateKey, test.privateKey);
                 assert.isFunction(wallet.signTransaction);
                 assert.isFunction(wallet.sign);
@@ -124,14 +117,13 @@ describe("platon", function() {
 
                 // test if its retrievabe via address and index
                 assert.equal(
-                    ethAccounts.wallet[test.address].address,
-                    test.address
+                    ethAccounts.wallet[wallet.address.testnet].address.testnet,
+                    utils.toBech32Address("lax", test.address)
                 );
                 assert.equal(
-                    ethAccounts.wallet[test.address.toLowerCase()].address,
-                    test.address
+                    ethAccounts.wallet[wallet.address.testnet].address.mainnet,
+                    utils.toBech32Address("lat", test.address)
                 );
-                assert.equal(ethAccounts.wallet[0].address, test.address);
 
                 assert.equal(ethAccounts.wallet.length, 1);
             });
@@ -146,10 +138,7 @@ describe("platon", function() {
                 ethAccounts.wallet.remove(0);
 
                 assert.isUndefined(ethAccounts.wallet[0]);
-                assert.isUndefined(ethAccounts.wallet[wallet.address]);
-                assert.isUndefined(
-                    ethAccounts.wallet[wallet.address.toLowerCase()]
-                );
+                assert.isUndefined(ethAccounts.wallet[wallet.address.testnet]);
 
                 assert.equal(ethAccounts.wallet.length, 0);
             });
@@ -161,31 +150,25 @@ describe("platon", function() {
                 var wallet = ethAccounts.wallet.add(test.privateKey);
                 assert.equal(ethAccounts.wallet.length, 1);
 
-                ethAccounts.wallet.remove(test.address);
+                ethAccounts.wallet.remove(wallet.address.testnet);
 
                 assert.isUndefined(ethAccounts.wallet[0]);
-                assert.isUndefined(ethAccounts.wallet[wallet.address]);
-                assert.isUndefined(
-                    ethAccounts.wallet[wallet.address.toLowerCase()]
-                );
+                assert.isUndefined(ethAccounts.wallet[wallet.address.testnet]);
 
                 assert.equal(ethAccounts.wallet.length, 0);
             });
 
-            it("remove wallet using an lowercase address", function() {
+            it("remove wallet using an bech32 address", function() {
                 var ethAccounts = new Accounts();
                 assert.equal(ethAccounts.wallet.length, 0);
 
                 var wallet = ethAccounts.wallet.add(test.privateKey);
                 assert.equal(ethAccounts.wallet.length, 1);
 
-                ethAccounts.wallet.remove(test.address.toLowerCase());
+                ethAccounts.wallet.remove(utils.toBech32Address("lax", test.address));
 
                 assert.isUndefined(ethAccounts.wallet[0]);
-                assert.isUndefined(ethAccounts.wallet[wallet.address]);
-                assert.isUndefined(
-                    ethAccounts.wallet[wallet.address.toLowerCase()]
-                );
+                assert.isUndefined(ethAccounts.wallet[wallet.address.testnet]);
 
                 assert.equal(ethAccounts.wallet.length, 0);
             });
@@ -201,8 +184,8 @@ describe("platon", function() {
                 });
                 assert.equal(ethAccounts.wallet.length, count);
 
-                var thirdAddress = ethAccounts.wallet[2].address;
-                var lastAddress = ethAccounts.wallet[4].address;
+                var thirdAddress = ethAccounts.wallet[2].address.testnet;
+                var lastAddress = ethAccounts.wallet[4].address.testnet;
                 var remainingAddresses = [0, 1, 3];
                 var beforeRemoval = remainingAddresses.map(function(n) {
                     return wallet[n].address;
@@ -213,14 +196,9 @@ describe("platon", function() {
 
                 assert.isUndefined(ethAccounts.wallet[2]);
                 assert.isUndefined(ethAccounts.wallet[thirdAddress]);
-                assert.isUndefined(
-                    ethAccounts.wallet[thirdAddress.toLowerCase()]
-                );
+
                 assert.isUndefined(ethAccounts.wallet[4]);
                 assert.isUndefined(ethAccounts.wallet[lastAddress]);
-                assert.isUndefined(
-                    ethAccounts.wallet[lastAddress.toLowerCase()]
-                );
 
                 var afterRemoval = remainingAddresses.map(function(n) {
                     return wallet[n].address;
@@ -230,8 +208,8 @@ describe("platon", function() {
                 assert.equal(ethAccounts.wallet.length, 3);
 
                 ethAccounts.wallet.create(2);
-                assert.isTrue(web3.utils.isAddress(wallet[2].address));
-                assert.isTrue(web3.utils.isAddress(wallet[4].address));
+                assert.isTrue(utils.isBech32Address(wallet[2].address.testnet));
+                assert.isTrue(utils.isBech32Address(wallet[4].address.testnet));
                 assert.isUndefined(ethAccounts.wallet[5]);
 
                 var afterMoreCreation = remainingAddresses.map(function(n) {
@@ -271,7 +249,7 @@ describe("platon", function() {
 
                 var addresses = [];
                 for (var i = 0; i < count; i++) {
-                    addresses.push(wallet[i].address);
+                    addresses.push(wallet[i].address.testnet);
                 }
 
                 ethAccounts.wallet.clear();
@@ -280,7 +258,7 @@ describe("platon", function() {
                     assert.isUndefined(ethAccounts.wallet[i]);
                     assert.isUndefined(ethAccounts.wallet[addresses[i]]);
                     assert.isUndefined(
-                        ethAccounts.wallet[addresses[i].toLowerCase()]
+                        ethAccounts.wallet[addresses[i]]
                     );
                 }
 
@@ -288,6 +266,7 @@ describe("platon", function() {
             });
 
             it("remove accounts then clear wallet", function(done) {
+                var count = 10;
                 var count = 10;
                 var ethAccounts = new Accounts();
                 assert.equal(ethAccounts.wallet.length, 0);
@@ -311,9 +290,6 @@ describe("platon", function() {
                     for (var i = 0; i < count; i++) {
                         assert.isUndefined(ethAccounts.wallet[i]);
                         assert.isUndefined(ethAccounts.wallet[addresses[i]]);
-                        assert.isUndefined(
-                            ethAccounts.wallet[addresses[i].toLowerCase()]
-                        );
                     }
 
                     assert.equal(ethAccounts.wallet.length, 0);
@@ -345,7 +321,8 @@ describe("platon", function() {
                 assert.equal(ethAccounts.wallet.length, 4);
 
                 var addressFromKeystore = ethAccounts.wallet[0].address;
-                assert.equal(addressFromKeystore, addressFromWallet);
+                assert.equal(addressFromKeystore.testnet, addressFromWallet.testnet);
+                assert.equal(addressFromKeystore.mainnet, addressFromWallet.mainnet);
             });
         });
     });

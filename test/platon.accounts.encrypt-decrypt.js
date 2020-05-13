@@ -1,5 +1,6 @@
 var Accounts = require("./../packages/web3-eth-accounts/src/index.js");
 var ethers = require('ethers');
+var utils = require("../packages/web3-utils")
 var chai = require('chai');
 var assert = chai.assert;
 var Web3 = require('../packages/web3');
@@ -125,7 +126,8 @@ describe("eth", function () {
                 var ethWall = new ethers.Wallet(acc.privateKey);
 
                 // compare addresses and private keys
-                assert.equal(acc.address, ethWall.address);
+                assert.equal(acc.address.testnet, utils.toBech32Address("lax",ethWall.address));
+                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
 
                 var encrypt = acc.encrypt(
@@ -144,6 +146,9 @@ describe("eth", function () {
                         uuid: '0x' + uuid.toString('hex')
                     }
                 )).toLowerCase());
+                
+                ethWallEncrypt.address = {"testnet":utils.toBech32Address("lax", ethWallEncrypt.address),
+                    "mainnet":utils.toBech32Address("lat", ethWallEncrypt.address)};
 
                 assert.deepEqual(encrypt, ethWallEncrypt);
             });
@@ -154,12 +159,14 @@ describe("eth", function () {
                 // create account
                 var acc = ethAccounts.create();
                 var encrypt = acc.encrypt(pw, { n: n });
-
+                var eth_encrypt = encrypt
+                eth_encrypt.address = utils.decodeBech32Address("lax", encrypt.address.testnet)
                 // create ethers wallet
-                var ethWall = await ethers.Wallet.fromEncryptedJson(JSON.stringify(encrypt), pw);
+                var ethWall = await ethers.Wallet.fromEncryptedJson(JSON.stringify(eth_encrypt), pw);
 
                 // compare addresses and private keys
-                assert.equal(acc.address, ethWall.address);
+                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
+                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
 
@@ -174,7 +181,8 @@ describe("eth", function () {
                 var acc = ethAccounts.decrypt(encrypt, pw, true);
 
                 // compare addresses and private keys
-                assert.equal(acc.address, ethWall.address);
+                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
+                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
 
@@ -204,14 +212,15 @@ describe("eth", function () {
                 };
 
                 var acc = ethAccounts.decrypt(encrypt, pw);
+
                 var ethWall = await ethers.Wallet.fromEncryptedJson(JSON.stringify(encrypt), pw);
 
+                assert.equal('0x143f8913e0417997304fc179b531ff4cb9cab582', ethWall.address.toLowerCase());
                 // compare addresses
-                assert.equal(acc.address, ethWall.address);
-                assert.equal(web3.utils.toChecksumAddress('0x143f8913e0417997304fc179b531ff4cb9cab582'), acc.address);
-                assert.equal(web3.utils.toChecksumAddress('0x143f8913e0417997304fc179b531ff4cb9cab582'), ethWall.address);
-                assert.equal(ethers.utils.getAddress('0x143f8913e0417997304fc179b531ff4cb9cab582'), acc.address);
-                assert.equal(ethers.utils.getAddress('0x143f8913e0417997304fc179b531ff4cb9cab582'), ethWall.address);
+                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
+                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
+                assert.equal('0x143f8913e0417997304fc179b531ff4cb9cab582', utils.decodeBech32Address("lax", acc.address.testnet));
+                assert.equal('0x143f8913e0417997304fc179b531ff4cb9cab582',  utils.decodeBech32Address("lat", acc.address.mainnet));
 
                 // compare private keys
                 assert.equal(acc.privateKey, ethWall.privateKey);

@@ -11,6 +11,7 @@ var method = 'sendTransaction';
 
 
 var tests = [
+    /*
     {
         args: [{
             from: '0xdbdbdB2cBD23b783741e8d7fcF51e459b497e4a6', // checksum address
@@ -150,7 +151,7 @@ var tests = [
             }
         },
         call: 'platon_sendRawTransaction'
-    },
+    },*/
     {
         useLocalWallet: function (web3) {
             web3.platon.accounts.wallet.add('0xa1d364e720c129acb940439a84a99185dd55af6f6d105018a8acfb7f8c008142');
@@ -192,7 +193,7 @@ var tests = [
         call: 'platon_' + method
     }];
 
-testMethod.runTests('platon', method, tests);
+//testMethod.runTests('platon', method, tests);
 
 
 // Test HTTPProvider with interval
@@ -251,11 +252,8 @@ describe(method, function () {
             var args = clone(test.args);
 
             if (test.error) {
-
                 assert.throws(function () { web3.platon[method].apply(web3, args); });
                 done();
-
-
             } else {
 
 

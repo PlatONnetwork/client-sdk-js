@@ -2,11 +2,11 @@ var chai = require("chai");
 var assert = chai.assert;
 var Web3 = require("../packages/web3/src");
 var web3 = undefined;
-
+var utils = require("../packages/web3-utils/src");
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
     provider: "/home/platon/network/data/platon.ipc", // 请更新成自己的 ws 节点
-    chainId: 100, // 请更新成自己的节点id
+    chainId: 102, // 请更新成自己的节点id
     privateKey: "0x053f34a1962467d2ff589b970883e9827f9b8a0fe5d2113d71c638db4d0b5616", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
     gas: undefined,
@@ -33,7 +33,8 @@ describe.skip("web3.platon by websocket(you must update cfg variable before run 
         let gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit / 10));
         cfg.gasPrice = gasPrice;
         cfg.gas = gas;
-        cfg.address = web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address;
+        cfg.address = utils.toBech32Address("lax", web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address)
+        ;
     });
 
     it("web3.platon.getProtocolVersion", async function () {
@@ -133,7 +134,8 @@ describe.skip("web3.platon by websocket(you must update cfg variable before run 
 
         let contract = new web3.platon.Contract(JSON.parse(cfg.myToken.abiStr), cfg.myToken.txReceipt.contractAddress, null);
         let from = cfg.address;
-        let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
+        
+        let toAccount = utils.toBech32Address("lax", "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3");
         let transferBalance = "1000";
 
         let data = contract.methods["transfer"].apply(contract.methods, [toAccount, transferBalance]).encodeABI();

@@ -2,6 +2,7 @@ var FakeHttpProvider = require('./helpers/FakeIpcProvider');
 var Web3 = require('../packages/web3');
 var Accounts = require("./../packages/web3-eth-accounts");
 var ethjsSigner = require("ethjs-signer");
+var utils = require("../packages/web3-utils")
 var chai = require('chai');
 var _ = require('underscore');
 var assert = chai.assert;
@@ -53,8 +54,8 @@ describe("platon", function () {
                     var ethAccounts = new Accounts();
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
-
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
                     testAccount.signTransaction(test.transaction).catch(function (err) {
                         assert.instanceOf(err, Error);
                         done();
@@ -67,7 +68,8 @@ describe("platon", function () {
                     var ethAccounts = new Accounts();
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
 
                     testAccount.signTransaction(test.transaction).then(function (tx) {
                         assert.equal(tx.messageHash, test.messageHash);
@@ -85,13 +87,14 @@ describe("platon", function () {
                     provider.injectValidation(function (payload) {
                         assert.equal(payload.jsonrpc, '2.0');
                         assert.equal(payload.method, 'platon_getTransactionCount');
-                        assert.deepEqual(payload.params, [test.address, "latest"]);
+                        assert.deepEqual(payload.params, [utils.toBech32Address("lax",test.address), "latest"]);
                     });
 
                     var ethAccounts = new Accounts(web3);
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
 
                     var transaction = clone(test.transaction);
                     delete transaction.nonce;
@@ -118,7 +121,8 @@ describe("platon", function () {
                     var ethAccounts = new Accounts(web3);
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
 
                     var transaction = clone(test.transaction);
                     delete transaction.gasPrice;
@@ -145,7 +149,8 @@ describe("platon", function () {
                     var ethAccounts = new Accounts(web3);
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
 
                     var transaction = clone(test.transaction);
                     delete transaction.chainId;
@@ -172,7 +177,8 @@ describe("platon", function () {
                     var ethAccounts = new Accounts(web3);
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
 
                     var transaction = clone(test.transaction);
                     delete transaction.common;
@@ -205,7 +211,7 @@ describe("platon", function () {
                     provider.injectValidation(function (payload) {
                         assert.equal(payload.jsonrpc, '2.0');
                         assert.equal(payload.method, 'platon_getTransactionCount');
-                        assert.deepEqual(payload.params, [test.address, "latest"]);
+                        assert.deepEqual(payload.params, [utils.toBech32Address("lax", test.address), "latest"]);
                     });
                     provider.injectResult(1);
                     provider.injectValidation(function (payload) {
@@ -217,7 +223,8 @@ describe("platon", function () {
                     var ethAccounts = new Accounts(web3);
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
 
                     var transaction = clone(test.transaction);
                     delete transaction.chainId;
@@ -237,7 +244,8 @@ describe("platon", function () {
                     var ethAccounts = new Accounts();
 
                     var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
-                    assert.equal(testAccount.address, test.address);
+                    assert.equal(testAccount.address.testnet, utils.toBech32Address("lax", test.address));
+                    assert.equal(testAccount.address.mainnet, utils.toBech32Address("lat", test.address));
 
                     testAccount.signTransaction(test.transaction).then(function (tx) {
                         assert.equal(ethAccounts.recoverTransaction(tx.rawTransaction), test.address);
