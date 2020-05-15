@@ -174,10 +174,18 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
 
         try {
             var transaction = helpers.formatters.inputCallFormatter(_.clone(tx));
-            transaction.to = transaction.to || '0x';
+        //    transaction.to = transaction.to || '0x';
             transaction.data = transaction.data || '0x';
             transaction.value = transaction.value || '0x';
             transaction.chainId = utils.numberToHex(transaction.chainId);
+
+            if(transaction.to && utils.isBech32Address(transaction.to)){
+                let hrp = "lax"
+                if(tx.chainId === 100){
+                    hrp = "lat"
+                }
+                transaction.to = utils.decodeBech32Address(hrp, transaction.to)
+            }
 
             // Because tx has no ethereumjs-tx signing options we use fetched vals.
             if (!hasTxSigningOptions) {

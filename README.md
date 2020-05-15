@@ -50,7 +50,7 @@ web3.version
 
 ```js
 web3.version;
-> "0.11.0"
+> "0.13.0"
 ```
 
 ***
@@ -247,7 +247,7 @@ web3.platon.defaultAccount
 
 属性：
 
-`String` - 20 Bytes: 以太坊地址，你应当在节点或keystore中存有该地址的私钥。默认值为`undefined`
+`String` - 以太坊地址对应的bech32编码地址，你应当在节点或keystore中存有该地址的私钥。默认值为`undefined`
 
 示例代码：
 
@@ -256,7 +256,7 @@ web3.platon.defaultAccount;
 > undefined
 
 // set the default account
-web3.platon.defaultAccount = '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe';
+web3.platon.defaultAccount = 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6';
 ```
 
 ***
@@ -404,7 +404,7 @@ web3.platon.getAccounts([callback])
 
 ```js
 web3.platon.getAccounts().then(console.log);
-> ["0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe", "0xDCc6960376d6C6dEa93647383FfB245CfCed97Cf"]
+> ["lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6", "lax1kg7y7wfwzqsyxppyxcdvhkkkwlf64ccl8x93ut"]
 ```
 
 ***
@@ -444,7 +444,7 @@ web3.platon.getBalance(address [, defaultBlock] [, callback])
 
 参数：
 
-*  `address`：String - 要检查余额的账户地址
+*  `address`：String - 要检查余额的账户地址，bech32 address格式，lax开头的为测试网，lat开头的为主网
 *  `defaultBlock`：Number|String - 可选，使用该参数覆盖web3.platon.defaultBlock属性值
 *  `callback`：Function - 可选的回调函数，该回调的第一个参数为error对象，第二个参数为结果值
 
@@ -455,7 +455,7 @@ web3.platon.getBalance(address [, defaultBlock] [, callback])
 示例代码：
 
 ```js
-web3.platon.getBalance("0x407d73d8a49eeb85d32cf465507dd71d507100c1")
+web3.platon.getBalance("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
 .then(console.log);
 > "1000000000000"
 ```
@@ -486,7 +486,7 @@ web3.platon.getStorageAt(address, position [, defaultBlock] [, callback])
 示例代码：
 
 ```js
-web3.platon.getStorageAt("0x407d73d8a49eeb85d32cf465507dd71d507100c1", 0)
+web3.platon.getStorageAt("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6", 0)
 .then(console.log);
 > "0x033456732123ffff2342342dd12342434324234234fd234fd23fd4f23d4234"
 ```
@@ -516,7 +516,7 @@ web3.platon.getCode(address [, defaultBlock] [, callback])
 示例代码：
 
 ```js
-web3.platon.getCode("0xd5677cf67b5aa051bb40496e68ad359eb97cfbf8")
+web3.platon.getCode("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
 .then(console.log);
 > "0x600160008035811a818181146012578301005b601b6001356025565b8060005260206000f25b600060078202905091905056"
 ```
@@ -577,7 +577,7 @@ web3.platon.getBlock(3150)
     "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "transactionsRoot": "0x3a1b03875115b79539e5bd33fb00d8f7b7cd61929d5a3c574f507b8acf415bee",
     "stateRoot": "0xf1133199d44695dfa8fd1bcfe424d82854b5cebef75bddd7e40ea94cda515bcb",
-    "miner": "0x8888f1f195afa192cfee860698584c030f4c9db1",
+    "miner": "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6",
     "difficulty": '21345678965432',
     "totalDifficulty": '324567845321',
     "size": 616,
@@ -616,7 +616,7 @@ web3.platon.getBlockTransactionCount(blockHashOrBlockNumber [, callback])
 示例代码：
 
 ```js
-web3.platon.getBlockTransactionCount("0x407d73d8a49eeb85d32cf465507dd71d507100c1")
+web3.platon.getBlockTransactionCount("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
 .then(console.log);
 > 1
 ```
@@ -665,8 +665,8 @@ web3.platon.getTransaction('0x9fc76417374aa880d4449a1f7f31ec597f00b1f6f3dd2d66f4
     "blockHash": "0xef95f2f1ed3ca60b048b4bf67cde2195961e0bba6f70bcbea9a2c4e133e34b46",
     "blockNumber": 3,
     "transactionIndex": 0,
-    "from": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b",
-    "to": "0x6295ee1b4f6dd65047762f924ecd367c17eabf8f",
+    "from": "lax14984xa8uuhkmer32s6tuz5e3valxa0ct68a0c5",
+    "to": "lax1v227ux60dht9q3mk97fyanfk0st740u0x25f88",
     "value": '123450000000000000',
     "gas": 314159,
     "gasPrice": '2000000000000',
@@ -749,7 +749,7 @@ var receipt = web3.platon.getTransactionReceipt('0x9fc76417374aa880d4449a1f7f31e
   "transactionIndex": 0,
   "blockHash": "0xef95f2f1ed3ca60b048b4bf67cde2195961e0bba6f70bcbea9a2c4e133e34b46",
   "blockNumber": 3,
-  "contractAddress": "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe",
+  "contractAddress": "lax1z86dpg7p96rtfd0nnvsn7lse6pyzwmdwnyana2",
   "cumulativeGasUsed": 314159,
   "gasUsed": 30234,
   "logs": [{
@@ -783,7 +783,7 @@ web3.platon.getTransactionCount(address [, defaultBlock] [, callback])
 示例代码：
 
 ```js
-web3.platon.getTransactionCount("0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe")
+web3.platon.getTransactionCount("lax1z86dpg7p96rtfd0nnvsn7lse6pyzwmdwnyana2")
 .then(console.log);
 > 1
 ```
