@@ -14,7 +14,8 @@ web3 = new Web3(provider);
 const chainId = 102; // 请更新成自己的节点id
 const privateKey = "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const from = web3.platon.accounts.privateKeyToAccount(privateKey).address.testnet;  // 请更新成上面私钥对应的地址
-const address = utils.toBech32Address("lax","0x27E74FbD0d11eDeD263e8eC25dBb2670B82b8EF8"); // 合约地址(如果不测试部署就更换)
+//const address = utils.toBech32Address("lax","0x27E74FbD0d11eDeD263e8eC25dBb2670B82b8EF8"); // 合约地址(如果不测试部署就更换)
+const address = "lax1yln5l0gdz8k76f373mp9mwexwzuzhrhcvud82x"
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';
 const abiFilePath = './test/wasm/js_contracttest.abi.json';
@@ -27,7 +28,8 @@ let contract = undefined;
 let ret;
 
 const contractSend = async (method, arguments) => {
-    let to = utils.decodeBech32Address("lax", contract.options.address);
+//    let to = utils.decodeBech32Address("lax", contract.options.address);
+    let to = contract.options.address;
     let data = contract.methods[method].apply(contract.methods, arguments).encodeABI();
     let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
     let tx = { gasPrice, gas, nonce, chainId, data, to };
