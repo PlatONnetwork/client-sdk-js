@@ -71,9 +71,13 @@ var Contract = function Contract(jsonInterface, address, options) {
     }
 
     abi.setVmType(0); // 默认是solidity
-
-    // create the options object
-    this.options = {};
+    if(options === undefined || options === null) {
+        // create the options object
+        this.options = {};
+    } else {
+        this.options = options
+        abi.setNetType(this.options.net_type)
+    }
 
     var lastArg = args[args.length - 1];
     if (_.isObject(lastArg) && !_.isArray(lastArg)) {
@@ -586,7 +590,6 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
             if (inputLength !== args.length) {
                 throw new Error('The number of arguments is not matching the methods required number. You need to pass ' + inputLength + ' arguments.');
             }
-
             if (json.type === 'function') {
                 signature = json.signature;
             }
