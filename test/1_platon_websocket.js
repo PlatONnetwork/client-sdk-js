@@ -146,8 +146,9 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
 
         let contract = new web3.platon.Contract(JSON.parse(cfg.myToken.abiStr), cfg.myToken.txReceipt.contractAddress, null);
         let from = cfg.address;
-        let to = utils.decodeBech32Address("lax", cfg.myToken.txReceipt.contractAddress);
-        let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
+        let to = cfg.myToken.txReceipt.contractAddress;
+        //let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
+        let toAccount = "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35";
         let transferBalance = "1000";
     
         let data = contract.methods["transfer"].apply(contract.methods, [toAccount, transferBalance]).encodeABI();
@@ -162,7 +163,7 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
         let ret = await web3.platon.sendSignedTransaction(signTx.rawTransaction);
 
         let balanceOfMethod = contract.methods["balanceOf"].apply(contract.methods, [toAccount]);
-        let balance = await balanceOfMethod.call({ "from": utils.toBech32Address("lax", toAccount) });
+        let balance = await balanceOfMethod.call({ "from": toAccount });
         assert.deepEqual(balance, transferBalance);
     });
 

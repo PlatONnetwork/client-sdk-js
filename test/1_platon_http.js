@@ -142,7 +142,8 @@ describe("web3.platon by http(you must update cfg variable before run this test)
         let from = cfg.address;
         let to = cfg.myToken.txReceipt.contractAddress;
 
-        let toAccount = utils.decodeBech32Address("lax", "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35");
+        //let toAccount = utils.decodeBech32Address("lax", "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35");
+        let toAccount = "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35";
         let transferBalance = "1000";
     
         let data = contract.methods["transfer"].apply(contract.methods, [toAccount, transferBalance]).encodeABI();
@@ -157,7 +158,8 @@ describe("web3.platon by http(you must update cfg variable before run this test)
         let ret = await web3.platon.sendSignedTransaction(signTx.rawTransaction);
 
         let balanceOfMethod = contract.methods["balanceOf"].apply(contract.methods, [toAccount]);
-        let balance = await balanceOfMethod.call({ "from": utils.toBech32Address("lax", toAccount) });
+    //    let balance = await balanceOfMethod.call({ "from": utils.toBech32Address("lax", toAccount) });
+        let balance = await balanceOfMethod.call({ "from":toAccount });
         assert.deepEqual(balance, transferBalance);
     });
 
