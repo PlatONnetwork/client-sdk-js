@@ -1124,7 +1124,7 @@ EventEmitter -  A Subscription instance:
 * `subscription.subscribe([callback])`: Can be used to re-subscribe with the same parameters.
 * `subscription.unsubscribe([callback])`: Unsubscribes the subscription and returns TRUE in the callback if successfull.
 * `subscription.arguments`: The subscription arguments, used when re-subscribing.
-* `on("data")` returns Object: 	Fires on each incoming log with the log object as argument.
+	 `on("data")` returns Object: 	Fires on each incoming log with the log object as argument.
 * `on("changed")` returns Object: Fires on each log which was removed from the blockchain. The log will have the additional property `"removed: true"`.
 * `on("error")` returns Object: Fires when an error in the subscription occurs.
 * `on("connected")` returns String: Fires once after the subscription successfully connected. Returns the subscription id.
@@ -1648,8 +1648,8 @@ myContract.methods.myMethod([param1[, param2[, ...]]])
 The methods of this smart contract are available through:
 
 * The name: myContract.methods.myMethod(123)
-* The name with parameters: myContract.methods['myMethod(uint256)'](123)
-* The signature: myContract.methods['0x58cf5f10'](123)
+* The name with parameters: myContract.methods\['myMethod(uint256)'\](123)
+* The signature: myContract.methods\['0x58cf5f10'\](123)
 
 This allows calling functions with same name but different parameters from the JavaScript contract object.
 

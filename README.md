@@ -1651,8 +1651,8 @@ myContract.methods.myMethod([param1[, param2[, ...]]])
 可以使用以下语法获得指定方法的交易对象：
 
 *  名称: myContract.methods.myMethod(123)
-*  带参名称: myContract.methods['myMethod(uint256)'](123)
-*  签名: myContract.methods['0x58cf5f10'](123)
+*  带参名称: myContract.methods\['myMethod(uint256)'\](123)
+*  签名: myContract.methods\['0x58cf5f10'\](123)
 
 这样就可以支持从javascript合约对象调用同名但参数不同的合约方法。
 
