@@ -286,7 +286,11 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                     arrRlp.push(this.encodeParameters(structType.inputs, param));
                 }
             } else if (type.startsWith("FixedHash")) {
-                arrRlp = [Buffer.from(param, "hex")];
+		var p = param;
+                if(utils.isBech32Address(param)) {
+                    p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
+                }
+                arrRlp = [Buffer.from(p, "hex")];
             } else {
                 // 剩下往结构体靠
                 let structType = this.abi.find(item => item.name === type);
