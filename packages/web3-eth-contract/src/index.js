@@ -76,6 +76,9 @@ var Contract = function Contract(jsonInterface, address, options) {
         this.options = {};
     } else {
         this.options = options
+        if(this.options.net_type === undefined || this.options.net_type === null){
+            this.options.net_type = "lax"
+        }
         abi.setNetType(this.options.net_type)
     }
 
