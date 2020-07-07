@@ -198,7 +198,7 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 // vector(即数组) uint16[]
                 let vecType = type.split("[")[0];
                 if (vecType === "uint8") {
-                    return [param]; // uint8 直接送进去
+                    arrRlp.push(Buffer.from(param)); // uint8 直接送进去
                 } else {
                     let data = [];
                     // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
@@ -285,12 +285,14 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 } else {
                     arrRlp.push(this.encodeParameters(structType.inputs, param));
                 }
-            } else if (type.startsWith("FixedHash")) {
-		var p = param;
+            } else if (type === "FixedHash<20>") {
+		        var p = param;
                 if(utils.isBech32Address(param)) {
                     p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
                 }
-                arrRlp = [Buffer.from(p, "hex")];
+                arrRlp.push(Buffer.from(p, "hex"));
+            } else if(type.startsWith("FixedHash")){
+                arrRlp.push(Buffer.from(param));
             } else {
                 // 剩下往结构体靠
                 let structType = this.abi.find(item => item.name === type);
@@ -503,7 +505,8 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             data = buf.readDoubleBE();
         } else if (type.endsWith("]")) {
             // vector(即数组)
-            let vecType = type.split("[")[0];
+            var lastEnd = type.lastIndexOf("[");
+            let vecType = type.substring(0, lastEnd);
             if (Buffer.isBuffer(data)) {
                 // 说明他是一个bytes，不要处理
             } else {
