@@ -71,9 +71,16 @@ var Contract = function Contract(jsonInterface, address, options) {
     }
 
     abi.setVmType(0); // 默认是solidity
-
-    // create the options object
-    this.options = {};
+    if(options === undefined || options === null) {
+        // create the options object
+        this.options = {};
+    } else {
+        this.options = options
+        if(this.options.net_type === undefined || this.options.net_type === null){
+            this.options.net_type = "lax"
+        }
+        abi.setNetType(this.options.net_type)
+    }
 
     var lastArg = args[args.length - 1];
     if (_.isObject(lastArg) && !_.isArray(lastArg)) {
@@ -152,7 +159,8 @@ var Contract = function Contract(jsonInterface, address, options) {
     Object.defineProperty(this.options, 'address', {
         set: function (value) {
             if (value) {
-                _this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
+                //_this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
+                _this._address = formatters.inputAddressFormatter(value);
             }
         },
         get: function () {
@@ -331,7 +339,8 @@ var Contract = function Contract(jsonInterface, address, options) {
         },
         set: function (val) {
             if (val) {
-                defaultAccount = utils.toChecksumAddress(formatters.inputAddressFormatter(val));
+            //    defaultAccount = utils.toChecksumAddress(formatters.inputAddressFormatter(val));
+                defaultAccount = formatters.inputAddressFormatter(val);
             }
 
             return val;
@@ -407,7 +416,8 @@ Contract.prototype._checkListener = function (type, event) {
  */
 Contract.prototype._getOrSetDefaultOptions = function getOrSetDefaultOptions(options) {
     var gasPrice = options.gasPrice ? String(options.gasPrice) : null;
-    var from = options.from ? utils.toChecksumAddress(formatters.inputAddressFormatter(options.from)) : null;
+    //var from = options.from ? utils.toChecksumAddress(formatters.inputAddressFormatter(options.from)) : null;
+    var from = options.from ? formatters.inputAddressFormatter(options.from) : null;
 
     options.data = options.data || this.options.data;
 
@@ -482,7 +492,7 @@ Contract.prototype._encodeEventABI = function (event, options) {
         if (!result.topics.length)
             delete result.topics;
     }
-
+    
     if (this.options.address) {
         result.address = this.options.address.toLowerCase();
     }
@@ -583,7 +593,6 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
             if (inputLength !== args.length) {
                 throw new Error('The number of arguments is not matching the methods required number. You need to pass ' + inputLength + ' arguments.');
             }
-
             if (json.type === 'function') {
                 signature = json.signature;
             }
@@ -720,7 +729,11 @@ Contract.prototype._generateEventOptions = function () {
         throw new Error('Event "' + eventName + '" doesn\'t exist in this contract.');
     }
 
+    /*
     if (!utils.isAddress(this.options.address)) {
+        throw new Error('This contract object doesn\'t have address set yet, please set an address first.');
+    }*/
+    if (!utils.isBech32Address(this.options.address)) {
         throw new Error('This contract object doesn\'t have address set yet, please set an address first.');
     }
 
@@ -921,7 +934,7 @@ Contract.prototype._processExecuteArguments = function _processExecuteArguments(
     processedArgs.options.data = this.encodeABI();
 
     // add contract address
-    if (!this._deployData && !utils.isAddress(this._parent.options.address))
+    if (!this._deployData && !utils.isBech32Address(this._parent.options.address))
         throw new Error('This contract object doesn\'t have address set yet, please set an address first.');
 
     if (!this._deployData)
@@ -1010,7 +1023,7 @@ Contract.prototype._executeMethod = function _executeMethod() {
             case 'send':
 
                 // return error, if no "from" is specified
-                if (!utils.isAddress(args.options.from)) {
+                if (!utils.isBech32Address(args.options.from)) {
                     return utils._fireError(new Error('No "from" address specified in neither the given options, nor the default options.'), defer.eventEmitter, defer.reject, args.callback);
                 }
 

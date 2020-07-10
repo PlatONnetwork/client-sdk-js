@@ -108,6 +108,7 @@ var _solidityPack = function (type, value, arraySize) {
             throw new Error(value +' is not a valid address, or the checksum is invalid.');
         }
 
+    //    return value;
         return utils.leftPad(value.toLowerCase(), size);
     }
 

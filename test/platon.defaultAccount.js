@@ -18,10 +18,10 @@ describe("web3.platon", function() {
         it("should set defaultAccount for all sub packages is set to proper value, if Platon package is changed", function() {
             platon.defaultAccount = setValue;
 
-            assert.equal(platon.defaultAccount, setValue);
+            assert.equal(platon.defaultAccount, setValue.toLowerCase());
             assert.equal(platon.personal.defaultAccount, setValue);
-            assert.equal(platon.Contract.defaultAccount, setValue);
-            assert.equal(platon.getCode.method.defaultAccount, setValue);
+            assert.equal(platon.Contract.defaultAccount, setValue.toLowerCase());
+            assert.equal(platon.getCode.method.defaultAccount, setValue.toLowerCase());
         });
         it("should fail if address is invalid, wich is to be set to defaultAccount", function() {
             assert.throws(function() {
@@ -32,7 +32,7 @@ describe("web3.platon", function() {
         it("should have different values for two Platon instances", function() {
             var platon1 = new Platon();
             platon1.defaultAccount = setValue;
-            assert.equal(platon1.defaultAccount, setValue);
+            assert.equal(platon1.defaultAccount, setValue.toLowerCase());
 
             var platon2 = new Platon();
             assert.equal(platon2.defaultAccount, null);
@@ -40,7 +40,7 @@ describe("web3.platon", function() {
         it("should have different values for two Web3 instances", function() {
             var web31 = new Web3();
             web31.platon.defaultAccount = setValue;
-            assert.equal(web31.platon.defaultAccount, setValue);
+            assert.equal(web31.platon.defaultAccount, setValue.toLowerCase());
 
             var web32 = new Web3();
             assert.equal(web32.platon.defaultAccount, null);

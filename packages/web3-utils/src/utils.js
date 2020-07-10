@@ -26,7 +26,7 @@ var numberToBN = require('number-to-bn');
 var utf8 = require('utf8');
 var Hash = require("eth-lib/lib/hash");
 var ethereumBloomFilters = require('ethereum-bloom-filters');
-
+var segwit_addr = require('./segwit_addr.js');
 
 
 /**
@@ -98,7 +98,64 @@ var isAddress = function (address) {
     }
 };
 
+/**
+ * Checks if the given string is an bech32 address
+ *
+ * @method isBech32Address
+ * @param {String} address the given bech32 adress
+ * @return {Boolean}
+*/
+var isBech32Address = function (address) {
+    var hrp = "lat";
+    var ret = segwit_addr.decode(hrp, address);
+    if (ret === null) {
+        hrp = "lax";
+        ret = segwit_addr.decode(hrp, address);
+    }
+    else {
+        return true;
+    }
 
+    if (ret === null) {
+        return false;
+    }
+    return true;
+};
+
+/**
+ * Transforms given string to bech32 address
+ *
+ * @method toBech32Address
+ * @param {String} hrp
+ * @param {String} address
+ * @return {String} formatted bech32 address
+ */
+var toBech32Address = function (hrp, address) {
+    if (isAddress(address)) {
+        return segwit_addr.EncodeAddress(hrp, address);
+    }
+
+    return ''
+};
+
+/**
+ * Resolve the bech32 address
+ *
+ * @method decodeBech32Address
+ * @param {String} hrp
+ * @param {String} bech32Address
+ * @return {String} formatted address
+ */
+var decodeBech32Address = function (hrp, bech32Address) {
+    if (isBech32Address(bech32Address)) {
+        address = segwit_addr.DecodeAddress(hrp, bech32Address);
+        if (address !== null) {
+            return "0x" + address
+        }
+    }
+
+    return ''
+};
 
 /**
  * Checks if the given string is a checksummed address
@@ -517,6 +574,9 @@ module.exports = {
     isBigNumber: isBigNumber,
     toBN: toBN,
     isAddress: isAddress,
+    isBech32Address: isBech32Address,
+    toBech32Address: toBech32Address,
+    decodeBech32Address: decodeBech32Address,
     isBloom: isBloom,
     isUserEthereumAddressInBloom: isUserEthereumAddressInBloom,
     isContractAddressInBloom: isContractAddressInBloom,

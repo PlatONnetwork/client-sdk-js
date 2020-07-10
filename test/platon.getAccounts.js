@@ -10,19 +10,19 @@ var tests = [
             "0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae"
         ],
         formattedResult: [
-            "0x47D33b27Bb249a2DBab4C0612BF9CaF4C1950855",
-            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe"
+            "0x47D33b27Bb249a2DBab4C0612BF9CaF4C1950855".toLowerCase(),
+            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe".toLowerCase()
         ],
         call: call
     },
     {
         result: [
-            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe",
-            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe"
+            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe".toLowerCase(),
+            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe".toLowerCase()
         ],
         formattedResult: [
-            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe",
-            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe"
+            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe".toLowerCase(),
+            "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe".toLowerCase()
         ],
         call: call
     }

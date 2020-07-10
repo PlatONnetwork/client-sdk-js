@@ -47,7 +47,8 @@ var Personal = function Personal() {
         },
         set: function (val) {
             if(val) {
-                defaultAccount = utils.toChecksumAddress(formatters.inputAddressFormatter(val));
+            //    defaultAccount = utils.toChecksumAddress(formatters.inputAddressFormatter(val));
+                defaultAccount = formatters.inputAddressFormatter(val);
             }
 
             // update defaultBlock
@@ -82,14 +83,14 @@ var Personal = function Personal() {
             name: 'getAccounts',
             call: 'personal_listAccounts',
             params: 0,
-            outputFormatter: utils.toChecksumAddress
+        //    outputFormatter: utils.toChecksumAddress
         }),
         new Method({
             name: 'newAccount',
             call: 'personal_newAccount',
             params: 1,
             inputFormatter: [null],
-            outputFormatter: utils.toChecksumAddress
+        //    outputFormatter: utils.toChecksumAddress
         }),
         new Method({
             name: 'unlockAccount',

@@ -42,7 +42,7 @@ var formattedBlockResult = {
         "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
     stateRoot:
         "0xd5855eb08b3387c0af375e9cdb6acfc05eb8f519e419b874b6ff2ffda7ed1dff",
-    miner: "0x4E65FDa2159562a496F9f3522f89122A3088497a",
+    miner: "0x4E65FDa2159562a496F9f3522f89122A3088497a".toLowerCase(),
     difficulty: "163591",
     totalDifficulty: "163591",
     size: 163591,
@@ -110,7 +110,7 @@ var formattedBlockResultWithTx = {
         "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
     stateRoot:
         "0xd5855eb08b3387c0af375e9cdb6acfc05eb8f519e419b874b6ff2ffda7ed1dff",
-    miner: "0x4E65FDa2159562a496F9f3522f89122A3088497a",
+    miner: "0x4E65FDa2159562a496F9f3522f89122A3088497a".toLowerCase(),
     difficulty: "163591",
     totalDifficulty: "163591",
     size: 163591,

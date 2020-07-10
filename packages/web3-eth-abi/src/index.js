@@ -44,6 +44,7 @@ function Result() {
 var ABICoder = function () {
     this.vmType = 0; // 默认是solidity
     this.abi = []; // 因为要对结构体编解码，需要将所有的 abi 数据都传进来
+    this.netType = "lax"; // 网络类型，需要根据此值进行对返回的address进行bech32编码
 };
 
 /**
@@ -54,6 +55,16 @@ var ABICoder = function () {
  */
 ABICoder.prototype.setVmType = function (vmType_) {
     this.vmType = vmType_;
+};
+
+/**
+ * 设置网络类型，testnet 是测试网（默认），mainnet是主网
+ *
+ * @method setNetType
+ * @param {String} type
+ */
+ABICoder.prototype.setNetType = function (netType_) {
+    this.netType = netType_;
 };
 
 /**
@@ -187,7 +198,7 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 // vector(即数组) uint16[]
                 let vecType = type.split("[")[0];
                 if (vecType === "uint8") {
-                    return [param]; // uint8 直接送进去
+                    arrRlp.push(Buffer.from(param)); // uint8 直接送进去
                 } else {
                     let data = [];
                     // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
@@ -274,8 +285,14 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 } else {
                     arrRlp.push(this.encodeParameters(structType.inputs, param));
                 }
-            } else if (type.startsWith("FixedHash")) {
-                arrRlp = [Buffer.from(param, "hex")];
+            } else if (type === "FixedHash<20>") {
+		        var p = param;
+                if(utils.isBech32Address(param)) {
+                    p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
+                }
+                arrRlp.push(Buffer.from(p, "hex"));
+            } else if(type.startsWith("FixedHash")){
+                arrRlp.push(Buffer.from(param));
             } else {
                 // 剩下往结构体靠
                 let structType = this.abi.find(item => item.name === type);
@@ -289,6 +306,13 @@ ABICoder.prototype.encodeParameters = function (types, params) {
         }
         return arrRlp;
     } else {
+        for (let i = 0; i < params.length; i++) {
+            const param = params[i];
+            const type = types[i].type;
+            if (type === "address") {
+                params[i] = utils.decodeBech32Address(this.netType, param)
+            }
+        }
         return ethersAbiCoder.encode(
             this.mapTypes(types),
             params.map(function (param) {
@@ -481,7 +505,8 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             data = buf.readDoubleBE();
         } else if (type.endsWith("]")) {
             // vector(即数组)
-            let vecType = type.split("[")[0];
+            var lastEnd = type.lastIndexOf("[");
+            let vecType = type.substring(0, lastEnd);
             if (Buffer.isBuffer(data)) {
                 // 说明他是一个bytes，不要处理
             } else {
@@ -568,6 +593,9 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             }
         } else if (type.startsWith("FixedHash")) {
             data = data.toString("hex");
+            if (type.endsWith("<20>")) {
+                data = utils.toBech32Address(this.netType, data);
+            }
         } else {
             // 剩下往结构体靠
             let structType = this.abi.find(item => item.name === type);
@@ -598,12 +626,15 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         var res = ethersAbiCoder.decode(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
         var returnValue = new Result();
         returnValue.__length__ = 0;
-
+        netType = this.netType
         outputs.forEach(function (output, i) {
             var decodedValue = res[returnValue.__length__];
             decodedValue = (decodedValue === '0x') ? null : decodedValue;
 
-            returnValue[i] = decodedValue;
+            if(output.type === "address")
+                returnValue[i] = utils.toBech32Address(netType, decodedValue);
+            else
+                returnValue[i] = decodedValue;
 
             if (_.isObject(output) && output.name) {
                 returnValue[output.name] = decodedValue;

@@ -50,7 +50,8 @@ var inputStorageKeysFormatter = function (keys) {
  * @returns {object}
  */
 var outputProofFormatter = function (proof) {
-    proof.address = utils.toChecksumAddress(proof.address);
+    //proof.address = utils.toChecksumAddress(proof.address);
+    proof.address = proof.address;
     proof.nonce = utils.hexToNumberString(proof.nonce);
     proof.balance = utils.hexToNumberString(proof.balance);
 
@@ -236,7 +237,7 @@ var outputTransactionFormatter = function (tx) {
     tx.gas = utils.hexToNumber(tx.gas);
     tx.gasPrice = outputBigNumberFormatter(tx.gasPrice);
     tx.value = outputBigNumberFormatter(tx.value);
-
+/*
     if (tx.to && utils.isAddress(tx.to)) { // tx.to could be `0x0` or `null` while contract creation
         tx.to = utils.toChecksumAddress(tx.to);
     } else {
@@ -247,6 +248,19 @@ var outputTransactionFormatter = function (tx) {
         tx.from = utils.toChecksumAddress(tx.from);
     }
 
+    if (!(tx.to && utils.isBech32Address(tx.to))) { // tx.to could be bech32 address
+        tx.to = null; // set to `null` if invalid address
+    }*/
+
+    if (tx.to) {
+        if(!utils.isBech32Address(tx.to))
+            tx.to = utils.toChecksumAddress(tx.to);
+    }
+
+    if (tx.from) {
+        if(!utils.isBech32Address(tx.from))
+            tx.from = utils.toChecksumAddress(tx.from);
+    }
     return tx;
 };
 
@@ -273,9 +287,11 @@ var outputTransactionReceiptFormatter = function (receipt) {
         receipt.logs = receipt.logs.map(outputLogFormatter);
     }
 
+    // return bech32 address
+    /*
     if (receipt.contractAddress) {
         receipt.contractAddress = utils.toChecksumAddress(receipt.contractAddress);
-    }
+    }*/
 
     if (typeof receipt.status !== 'undefined' && receipt.status !== null) {
         receipt.status = Boolean(parseInt(receipt.status));
@@ -312,9 +328,10 @@ var outputBlockFormatter = function (block) {
                 return outputTransactionFormatter(item);
         });
     }
-
+    // return bech32 address
+    /*
     if (block.miner)
-        block.miner = utils.toChecksumAddress(block.miner);
+        block.miner = utils.toChecksumAddress(block.miner);*/
 
     return block;
 };
@@ -390,9 +407,11 @@ var outputLogFormatter = function (log) {
     if (log.logIndex !== null)
         log.logIndex = utils.hexToNumber(log.logIndex);
 
+    // return bech32 address
+    /*
     if (log.address) {
         log.address = utils.toChecksumAddress(log.address);
-    }
+    }*/
 
     return log;
 };
@@ -461,9 +480,16 @@ var outputPostFormatter = function (post) {
 };
 
 var inputAddressFormatter = function (address) {
+    /*
     if (utils.isAddress(address)) {
         return '0x' + address.toLowerCase().replace('0x', '');
+    }*/
+    if (utils.isBech32Address(address)) {
+        return address;
+    } else if (utils.isAddress(address)) {
+        return '0x' + address.toLowerCase().replace('0x', '');
     }
+    
     throw new Error('Provided address "' + address + '" is invalid, the capitalization checksum test failed.');
 };
 
