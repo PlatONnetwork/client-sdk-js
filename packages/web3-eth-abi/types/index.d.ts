@@ -30,6 +30,8 @@ export class AbiCoder {
 
     encodeParameters(types: any[], paramaters: any[]): string;
 
+    encodeEventParameters(types: any[], paramaters: any[]): string;
+
     encodeFunctionCall(abiItem: AbiItem, params: string[]): string;
 
     decodeParameter(type: any, hex: string): { [key: string]: any };
