@@ -841,7 +841,7 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         var res = ethersAbiCoder.decode(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
         var returnValue = new Result();
         returnValue.__length__ = 0;
-        netType = this.netType
+        var netType = this.netType
         outputs.forEach(function (output, i) {
             var decodedValue = res[returnValue.__length__];
             decodedValue = (decodedValue === '0x') ? null : decodedValue;
