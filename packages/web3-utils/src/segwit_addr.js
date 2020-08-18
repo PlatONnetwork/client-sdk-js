@@ -130,7 +130,7 @@ function DecodeAddress(hrp, address){
 
 // 
 function EncodeAddress(hrp, strAddress) {
-  program = Str2Bytes(strAddress)
+  var program = Str2Bytes(strAddress)
   var ret = encode(hrp, program);
   //console.log("encode result ==> " + ret);
   return ret;
