@@ -148,7 +148,7 @@ var toBech32Address = function (hrp, address) {
  */
 var decodeBech32Address = function (hrp, bech32Address) {
     if (isBech32Address(bech32Address)) {
-        address = segwit_addr.DecodeAddress(hrp, bech32Address);
+        var address = segwit_addr.DecodeAddress(hrp, bech32Address);
         if (address !== null) {
             return "0x" + address
         }
