@@ -300,7 +300,11 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             const type = types[i].type;
             if (type === "address") {
                 params[i] = utils.decodeBech32Address(this.netType, param)
-            }
+            } else if (type === "address[]") {
+                for(let j=0; j < param.length; j++) {
+                    params[i][j] = utils.decodeBech32Address(this.netType, param[j])
+                }
+            } 
         }
         return ethersAbiCoder.encode(
             this.mapTypes(types),
@@ -848,6 +852,13 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
 
             if(output.type === "address")
                 returnValue[i] = utils.toBech32Address(netType, decodedValue);
+            else if(output.type === "address[]") {
+                let value = [];
+                for(let j=0; j < decodedValue.length; j++) {
+                    value[j] = utils.toBech32Address(netType, decodedValue[j]);
+                }
+                returnValue[i] = value;
+            }
             else
                 returnValue[i] = decodedValue;
 
