@@ -6,33 +6,33 @@ const negative1 = new BN(-1);
 
 // complete ethereum unit map
 const unitMap = {
-    'nolat':    '0',
+    'noatp':    '0',
     'von':      '1',
     'kvon':     '1000',
     'Kvon':     '1000',
     'babbage':  '1000',
-    'femtolat': '1000',
+    'femtoatp': '1000',
     'mvon':     '1000000',
     'Mvon':     '1000000',
     'lovelace': '1000000',
-    'picolat':  '1000000',
+    'picoatp':  '1000000',
     'gvon':     '1000000000',
     'Gvon':     '1000000000',
     'shannon':  '1000000000',
-    'nanolat':  '1000000000',
+    'nanoatp':  '1000000000',
     'nano':     '1000000000',
     'szabo':    '1000000000000',
-    'microlat': '1000000000000',
+    'microatp': '1000000000000',
     'micro':    '1000000000000',
     'finney':   '1000000000000000',
-    'millilat': '1000000000000000',
+    'milliatp': '1000000000000000',
     'milli':    '1000000000000000',
-    'lat':      '1000000000000000000',
-    'klat':     '1000000000000000000000',
+    'atp':      '1000000000000000000',
+    'katp':     '1000000000000000000000',
     'grand':    '1000000000000000000000',
-    'mlat':     '1000000000000000000000000',
-    'glat':     '1000000000000000000000000000',
-    'tlat':     '1000000000000000000000000000000'
+    'matp':     '1000000000000000000000000',
+    'gatp':     '1000000000000000000000000000',
+    'tatp':     '1000000000000000000000000000000'
 };
 
 /**
@@ -44,7 +44,7 @@ const unitMap = {
  * @throws error if the unit is not correct:w
  */
 function getValueOfUnit(unitInput) {
-    const unit = unitInput ? unitInput.toLowerCase() : 'lat';
+    const unit = unitInput ? unitInput.toLowerCase() : 'atp';
     var unitValue = unitMap[unit]; // eslint-disable-line
 
     if (typeof unitValue !== 'string') {

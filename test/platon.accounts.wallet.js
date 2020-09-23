@@ -4,7 +4,8 @@ var chai = require("chai");
 var assert = chai.assert;
 var Web3 = require("../packages/web3");
 var web3 = new Web3();
-
+let main_net_hrp = "atp";
+let test_net_hrp = "atx";
 var tests = [
     {
         address: "0xEB014f8c8B418Db6b45774c326A0E64C78914dC0",
@@ -55,7 +56,7 @@ describe("platon", function() {
                 assert.equal(ethAccounts.wallet.length, 0);
 
                 var wallet = ethAccounts.wallet.add(test.privateKey);
-                assert.equal(wallet.address.testnet, utils.toBech32Address("lax", test.address));
+                assert.equal(wallet.address.testnet, utils.toBech32Address(test_net_hrp, test.address));
                 assert.equal(wallet.privateKey, test.privateKey);
                 assert.isFunction(wallet.signTransaction);
                 assert.isFunction(wallet.sign);
@@ -64,11 +65,11 @@ describe("platon", function() {
                 // test if its retrievabe via address and index
                 assert.equal(
                     ethAccounts.wallet[wallet.address.testnet].address.testnet,
-                    utils.toBech32Address("lax", test.address)
+                    utils.toBech32Address(test_net_hrp, test.address)
                 );
                 assert.equal(
                     ethAccounts.wallet[wallet.address.testnet].address.mainnet,
-                    utils.toBech32Address("lat", test.address)
+                    utils.toBech32Address(main_net_hrp, test.address)
                 );
 
                 assert.equal(ethAccounts.wallet.length, 1);
@@ -82,7 +83,7 @@ describe("platon", function() {
                     address: test.address,
                     privateKey: test.privateKey
                 });
-                assert.equal(wallet.address.testnet, utils.toBech32Address("lax",test.address));
+                assert.equal(wallet.address.testnet, utils.toBech32Address(test_net_hrp,test.address));
                 assert.equal(wallet.privateKey, test.privateKey);
                 assert.isFunction(wallet.signTransaction);
                 assert.isFunction(wallet.sign);
@@ -91,11 +92,11 @@ describe("platon", function() {
                 // test if its retrievabe via address and index
                 assert.equal(
                     ethAccounts.wallet[wallet.address.testnet].address.testnet,
-                    utils.toBech32Address("lax", test.address)
+                    utils.toBech32Address(test_net_hrp, test.address)
                 );
                 assert.equal(
                     ethAccounts.wallet[wallet.address.testnet].address.mainnet,
-                    utils.toBech32Address("lat", test.address)
+                    utils.toBech32Address(main_net_hrp, test.address)
                 );
 
                 assert.equal(ethAccounts.wallet.length, 1);
@@ -109,7 +110,7 @@ describe("platon", function() {
                 wallet = ethAccounts.wallet.add(test.privateKey);
                 wallet = ethAccounts.wallet.add(test.privateKey);
 
-                assert.equal(wallet.address.testnet, utils.toBech32Address("lax",test.address));
+                assert.equal(wallet.address.testnet, utils.toBech32Address(test_net_hrp,test.address));
                 assert.equal(wallet.privateKey, test.privateKey);
                 assert.isFunction(wallet.signTransaction);
                 assert.isFunction(wallet.sign);
@@ -118,11 +119,11 @@ describe("platon", function() {
                 // test if its retrievabe via address and index
                 assert.equal(
                     ethAccounts.wallet[wallet.address.testnet].address.testnet,
-                    utils.toBech32Address("lax", test.address)
+                    utils.toBech32Address(test_net_hrp, test.address)
                 );
                 assert.equal(
                     ethAccounts.wallet[wallet.address.testnet].address.mainnet,
-                    utils.toBech32Address("lat", test.address)
+                    utils.toBech32Address(main_net_hrp, test.address)
                 );
 
                 assert.equal(ethAccounts.wallet.length, 1);
@@ -165,7 +166,7 @@ describe("platon", function() {
                 var wallet = ethAccounts.wallet.add(test.privateKey);
                 assert.equal(ethAccounts.wallet.length, 1);
 
-                ethAccounts.wallet.remove(utils.toBech32Address("lax", test.address));
+                ethAccounts.wallet.remove(utils.toBech32Address(test_net_hrp, test.address));
 
                 assert.isUndefined(ethAccounts.wallet[0]);
                 assert.isUndefined(ethAccounts.wallet[wallet.address.testnet]);

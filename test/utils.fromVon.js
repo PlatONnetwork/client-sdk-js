@@ -28,9 +28,9 @@ describe("lib/utils/utils", function() {
                 utils.fromVon("1000000000000000000", "finney"),
                 "1000"
             );
-            assert.equal(utils.fromVon("1000000000000000000", "lat"), "1");
+            assert.equal(utils.fromVon("1000000000000000000", "atp"), "1");
             assert.equal(
-                utils.fromVon("1000000000000000000", "klat"),
+                utils.fromVon("1000000000000000000", "katp"),
                 "0.001"
             );
             assert.equal(
@@ -38,15 +38,15 @@ describe("lib/utils/utils", function() {
                 "0.001"
             );
             assert.equal(
-                utils.fromVon("1000000000000000000", "mlat"),
+                utils.fromVon("1000000000000000000", "matp"),
                 "0.000001"
             );
             assert.equal(
-                utils.fromVon("1000000000000000000", "glat"),
+                utils.fromVon("1000000000000000000", "gatp"),
                 "0.000000001"
             );
             assert.equal(
-                utils.fromVon("1000000000000000000", "tlat"),
+                utils.fromVon("1000000000000000000", "tatp"),
                 "0.000000000001"
             );
         });

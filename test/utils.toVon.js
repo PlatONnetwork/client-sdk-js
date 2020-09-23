@@ -18,34 +18,34 @@ describe("lib/utils/utils", function() {
             assert.equal(utils.toVon("1", "shannon"), "1000000000");
             assert.equal(utils.toVon("1", "szabo"), "1000000000000");
             assert.equal(utils.toVon("1", "finney"), "1000000000000000");
-            assert.equal(utils.toVon("1", "lat"), "1000000000000000000");
-            assert.equal(utils.toVon("1", "klat"), "1000000000000000000000");
+            assert.equal(utils.toVon("1", "atp"), "1000000000000000000");
+            assert.equal(utils.toVon("1", "katp"), "1000000000000000000000");
             assert.equal(utils.toVon("1", "grand"), "1000000000000000000000");
-            assert.equal(utils.toVon("1", "mlat"), "1000000000000000000000000");
+            assert.equal(utils.toVon("1", "matp"), "1000000000000000000000000");
             assert.equal(
-                utils.toVon("1", "glat"),
+                utils.toVon("1", "gatp"),
                 "1000000000000000000000000000"
             );
             assert.equal(
-                utils.toVon("1", "tlat"),
+                utils.toVon("1", "tatp"),
                 "1000000000000000000000000000000"
             );
 
             assert.equal(
                 utils.toVon("1", "kvon"),
-                utils.toVon("1", "femtolat")
+                utils.toVon("1", "femtoatp")
             );
             assert.equal(
                 utils.toVon("1", "szabo"),
-                utils.toVon("1", "microlat")
+                utils.toVon("1", "microatp")
             );
             assert.equal(
                 utils.toVon("1", "finney"),
-                utils.toVon("1", "millilat")
+                utils.toVon("1", "milliatp")
             );
             assert.equal(
                 utils.toVon("1", "milli"),
-                utils.toVon("1", "millilat")
+                utils.toVon("1", "milliatp")
             );
             assert.equal(
                 utils.toVon("1", "milli"),

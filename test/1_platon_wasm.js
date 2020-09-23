@@ -11,24 +11,31 @@ var utils = require("../packages/web3-utils/src");
 
 const provider = "http://127.0.0.1:6789"; // 请更新成自己的 http 节点
 web3 = new Web3(provider);
-const chainId = 102; // 请更新成自己的节点id
+var chainId = 100; // 请更新成自己的节点id
 const privateKey = "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557"; // 请更新成自己的私钥(必须有十六进制前缀0x)
-const from = web3.platon.accounts.privateKeyToAccount(privateKey).address.testnet;  // 请更新成上面私钥对应的地址
-//const address = utils.toBech32Address("lax","0x27E74FbD0d11eDeD263e8eC25dBb2670B82b8EF8"); // 合约地址(如果不测试部署就更换)
-const address = "lax1yln5l0gdz8k76f373mp9mwexwzuzhrhcvud82x"
+let from = "";  // 请更新成上面私钥对应的地址
+let address = ""
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/js_contracttest.wasm';
 const abiFilePath = './test/wasm/js_contracttest.abi.json';
 
-let gas = undefined;
-let gasPrice = undefined;
+var hrp = "atx";
+let addList = web3.platon.accounts.privateKeyToAccount(privateKey).address
+if(100 === chainId) {
+    hrp = "atp";
+    from = addList.mainnet;
+} else {
+    from = addList.testnet;
+}
+
+let gasPrice = 1000000000;
+let gas = 4700000;
 
 let contract = undefined;
 
 let ret;
 
 const contractSend = async (method, arguments) => {
-//    let to = utils.decodeBech32Address("lax", contract.options.address);
     let to = contract.options.address;
     let data = contract.methods[method].apply(contract.methods, arguments).encodeABI();
     let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
@@ -57,23 +64,15 @@ const randomString = (len) => {
 
 describe("wasm unit test (you must update config before run this test)", function () {
     before(async function () {
-        web3 = new Web3(provider);
-        gasPrice = web3.utils.numberToHex(await web3.platon.getGasPrice());
-        gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit - 1));
-
         let abi = JSON.parse((await fs.readFile(abiFilePath)).toString());
-        contract = new web3.platon.Contract(abi, address, { vmType: 1 }); // 默认一个address，如果要是部署合约，可以替换掉
+        contract = new web3.platon.Contract(abi, "", { vmType: 1 }); // 默认一个address，如果要是部署合约，可以替换掉
     });
 
     it("wasm deploy", async function () {
         this.timeout(waitTime);
 
-        /*let strs = ["init", "setString", "getString", "setUint32", "getUint32"];
-        for (const str of strs) {
-            console.log("hash=", abi.fnvOne64Hash(str).toString(10));
-        }*/
-
         let bin = (await fs.readFile(binFilePath)).toString("hex");
+        
         let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
         let data = contract.deploy({
             data: bin,
@@ -90,16 +89,17 @@ describe("wasm unit test (you must update config before run this test)", functio
 
         // 更新合约地址
         contract.options.address = ret.contractAddress;
-    });
+        let abi = JSON.parse((await fs.readFile(abiFilePath)).toString());
+        contract = new web3.platon.Contract(abi, contract.options.address, { vmType: 1 }); // 默认一个address，如果要是部署合约，可以替换掉
 
+    });
+    
     it("wasm call setUint8 getUint8", async function () {
         let nums = [0, 255, _.random(0, 255)]; // 两个边界值，一个中间的随机数
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
             ret = await contractSend("setUint8", [num]);
-
-            ret = (await contract.getPastEvents("transfer", { fromBlock: ret.blockNumber, toBlock: ret.blockNumber }))[0].returnValues;
-            assert.strictEqual(ret.arg1, "event");
+            assert.isObject(ret);
 
             ret = await contractCall("getUint8", []);
             assert.strictEqual(ret, num);
@@ -111,10 +111,7 @@ describe("wasm unit test (you must update config before run this test)", functio
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
             ret = await contractSend("setUint16", [num]);
-
-            ret = (await contract.getPastEvents("setUint16Evt", { fromBlock: ret.blockNumber, toBlock: ret.blockNumber }))[0].returnValues;
-            assert.strictEqual(ret.arg2, "data1");
-            assert.strictEqual(ret.arg1, num);
+            assert.isObject(ret);
 
             ret = await contractCall("getUint16", []);
             assert.strictEqual(ret, num);
@@ -126,12 +123,7 @@ describe("wasm unit test (you must update config before run this test)", functio
         this.timeout(waitTime * nums.length);
         for (const num of nums) {
             ret = await contractSend("setUint32", [num]);
-
-            ret = (await contract.getPastEvents("setUint32Evt", { fromBlock: ret.blockNumber, toBlock: ret.blockNumber }))[0].returnValues;
-            assert.strictEqual(ret.topic2, num);
-            assert.strictEqual(ret.arg1, num);
-            assert.strictEqual(ret.arg2, num);
-            assert.strictEqual(ret.arg3, "data1");
+            assert.isObject(ret);
 
             ret = await contractCall("getUint32", []);
             assert.strictEqual(ret, num);
@@ -151,36 +143,6 @@ describe("wasm unit test (you must update config before run this test)", functio
         }
     });
 
-    /*it("wasm call setU160 getU160", async function () {
-        let nums = ["0", web3.utils.hexToNumberString("0x" + "ff".repeat(20)), web3.utils.hexToNumberString(web3.utils.randomHex(parseInt(Math.random() * 19) + 1))]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setU160", [num]);
-            ret = await contractCall("getU160", []);
-            assert.strictEqual(ret, num);
-        }
-    });
-
-    it("wasm call setU256new getU256new", async function () {
-        let nums = ["0", web3.utils.hexToNumberString("0x" + "ff".repeat(32)), web3.utils.hexToNumberString(web3.utils.randomHex(parseInt(Math.random() * 31) + 1))]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setU256new", [num]);
-            ret = await contractCall("getU256new", []);
-            assert.strictEqual(ret, num);
-        }
-    });
-
-    it("wasm call setBigInt getBigInt (512 bytes)", async function () {
-        let nums = ["0", web3.utils.hexToNumberString("0x" + "ff".repeat(64)), web3.utils.hexToNumberString(web3.utils.randomHex(parseInt(Math.random() * 63) + 1))]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setBigInt", [num]);
-            ret = await contractCall("getBigInt", []);
-            assert.strictEqual(ret, num);
-        }
-    });*/
-
     it("wasm call setBool getBool", async function () {
         let nums = [true, false];
         this.timeout(waitTime * nums.length);
@@ -188,57 +150,6 @@ describe("wasm unit test (you must update config before run this test)", functio
             await contractSend("setBool", [num]);
             ret = await contractCall("getBool", []);
             assert.strictEqual(ret, num);
-        }
-    });
-
-    // C++ 的 char 类型编译出来之后是 int8 类型
-    it("wasm call setChar(setInt8) getChar", async function () {
-        let nums = [-128, 127, _.random(-128, 127)]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setChar", [num]);
-            ret = await contractCall("getChar", []);
-            assert.strictEqual(ret, num);
-        }
-    });
-
-    it("wasm call setInt8 getInt8", async function () {
-        let nums = [-128, 127, _.random(-128, 127)]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setInt8", [num]);
-            ret = await contractCall("getInt8", []);
-            assert.strictEqual(ret, num);
-        }
-    });
-
-    it("wasm call setInt16 getInt16", async function () {
-        let nums = [-32767, 32767, _.random(-32767, 32768)]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setInt16", [num]);
-            ret = await contractCall("getInt16", []);
-            assert.strictEqual(ret, num);
-        }
-    });
-
-    it("wasm call setInt32 getInt32", async function () {
-        let nums = [-2147483648, 2147483647, _.random(-2147483648, 2147483647)]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setInt32", [num]);
-            ret = await contractCall("getInt32", []);
-            assert.strictEqual(ret, num);
-        }
-    });
-
-    it("wasm call setInt64 getInt64", async function () {
-        let nums = ["-9223372036854775808", "9223372036854775807", _.random(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)]; // 两个边界值，一个中间的随机数
-        this.timeout(waitTime * nums.length);
-        for (const num of nums) {
-            await contractSend("setInt64", [num]);
-            ret = await contractCall("getInt64", []);
-            assert.strictEqual(ret, num.toString());
         }
     });
 
@@ -293,7 +204,7 @@ describe("wasm unit test (you must update config before run this test)", functio
         ret = _.sortBy(ret, '0');
         assert.deepEqual(maps, ret);
     });
-
+    /*
     it("wasm call testMultiParams(message, int32_t, bool)", async function () {
         this.timeout(waitTime);
         let message = [randomString()];
@@ -310,7 +221,7 @@ describe("wasm unit test (you must update config before run this test)", functio
 
         ret = await contractCall("getBool", []);
         assert.strictEqual(ret, flag);
-    });
+    });*/
 
     it.skip("wasm call setFloat getFloat", async function () {
         let nums = [-1.68, 0, 1.68];
@@ -344,14 +255,14 @@ describe("wasm unit test (you must update config before run this test)", functio
         ret = await contractCall("getArray", []);
         assert.deepEqual(ret, strs);
     });
-
+    /*
     it("wasm call setPair getPair (pair<std::string, int32_t>)", async function () {
         this.timeout(waitTime);
         let pair = [randomString(), _.random(-2147483648, 2147483647)]
         await contractSend("setPair", [pair]);
         ret = await contractCall("getPair", []);
         assert.deepEqual(ret, pair);
-    });
+    });*/
 
     it("wasm call setSet getSet (set<string>)", async function () {
         this.timeout(waitTime);
@@ -371,7 +282,7 @@ describe("wasm unit test (you must update config before run this test)", functio
         ret = await contractCall("getBytes", []);
         assert.strictEqual(Buffer.compare(bytes, ret), 0); // 他们两个buffer应该要等于
     });
-
+/*
     it("wasm call setFixedHash getFixedHash", async function () {
         this.timeout(waitTime);
         let hexStr = web3.utils.randomHex(256).replace("0x", ""); //定义的256
@@ -379,7 +290,7 @@ describe("wasm unit test (you must update config before run this test)", functio
         ret = await contractCall("getFixedHash", []);
 
         assert.strictEqual(ret, hexStr); // 他们两个buffer应该要等于
-    });
+    });*/
 
     // list 跟 vector 一样的编码
     // 底层暂时还不支持整个合约测试，先注释掉

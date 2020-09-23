@@ -11,23 +11,25 @@ for (var i = 0; i < 10; i++) {
     tests.push(i);
 }
 
+let main_net_hrp = "atp";
+let test_net_hrp = "atx";
 
-describe("eth", function () {
+describe("platon", function () {
     describe("accounts", function () {
 
         tests.forEach(function (test, i) {
-            it("create eth.account, and compare to ethers wallet", function () {
-                var ethAccounts = new Accounts();
+            it("create platon.account, and compare to platon wallet", function () {
+                var platonAccounts = new Accounts();
 
                 // create account
-                var acc = ethAccounts.create();
+                var acc = platonAccounts.create();
 
                 // create ethers wallet
                 var ethWall = new ethers.Wallet(acc.privateKey);
 
                 // compare addresses and private keys
-                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
-                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
+                assert.equal(acc.address.testnet, utils.toBech32Address(test_net_hrp, ethWall.address));
+                assert.equal(acc.address.mainnet, utils.toBech32Address(main_net_hrp, ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
 

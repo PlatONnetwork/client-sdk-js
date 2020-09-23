@@ -213,7 +213,7 @@ var asciiToHex = function(str) {
  * @throws error if the unit is not correct:w
  */
 var getUnitValue = function (unit) {
-    unit = unit ? unit.toLowerCase() : 'lat';
+    unit = unit ? unit.toLowerCase() : 'atp';
     if (!ethjsUnit.unitMap[unit]) {
         throw new Error('This unit "'+ unit +'" doesn\'t exist, please use the one of the following units' + JSON.stringify(ethjsUnit.unitMap, null, 2));
     }
