@@ -11,7 +11,7 @@ var utils = require("../packages/web3-utils/src");
 
 const provider = "http://127.0.0.1:6789"; // 请更新成自己的 http 节点
 web3 = new Web3(provider);
-var chainId = 100; // 请更新成自己的节点id
+var chainId = 201018; // 请更新成自己的节点id
 const privateKey = "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 let from = "";  // 请更新成上面私钥对应的地址
 let address = ""
@@ -21,7 +21,7 @@ const abiFilePath = './test/wasm/js_contracttest.abi.json';
 
 var hrp = "atx";
 let addList = web3.platon.accounts.privateKeyToAccount(privateKey).address
-if(100 === chainId) {
+if(201018 === chainId) {
     hrp = "atp";
     from = addList.mainnet;
 } else {

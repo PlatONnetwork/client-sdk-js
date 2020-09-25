@@ -44,7 +44,7 @@ var RLP = require('rlp');
 
 const main_net_hrp = "atp";
 const test_net_hrp = "atx";
-const main_net_chainid = 100;
+const main_net_chainid = 201018;
 /**
  * Should be called to create new contract instance
  *

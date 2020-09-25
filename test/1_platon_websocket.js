@@ -6,7 +6,7 @@ var utils = require("../packages/web3-utils/src");
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
     provider: "ws://127.0.0.1:5789", // 请更新成自己的 ws 节点
-    chainId: 100, // 请更新成自己的节点id
+    chainId: 201018, // 请更新成自己的节点id
     privateKey: "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
     gas: undefined,
@@ -33,7 +33,7 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
         web3 = new Web3(cfg.provider);
 
         hrp = "atx";
-        if(100 === cfg.chainId) {
+        if(201018 === cfg.chainId) {
             hrp = "atp";
             cfg.address = web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address.mainnet;
         } else {

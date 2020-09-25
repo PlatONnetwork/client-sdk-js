@@ -40,7 +40,7 @@ var Common = require('ethereumjs-common').default;
 
 const main_net_hrp = "atp";
 const test_net_hrp = "atx";
-const main_net_chainid = 100;
+const main_net_chainid = 201018;
 
 var isNot = function(value) {
     return (_.isUndefined(value) || _.isNull(value));
@@ -274,7 +274,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
     // Otherwise, get the missing info from the Ethereum Node
     var netType = "mainnet"
     var bech32Address = ""
-    if(tx.chainId == 100) {
+    if(tx.chainId == 201018) {
         bech32Address = _this.privateKeyToAccount(privateKey).address.mainnet
     } else {
         bech32Address = _this.privateKeyToAccount(privateKey).address.testnet

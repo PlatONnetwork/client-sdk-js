@@ -8,7 +8,7 @@ var utils = require('web3-utils');
 
 const main_net_hrp = "atp";
 const test_net_hrp = "atx";
-const main_net_chainid = 100;
+const main_net_chainid = 201018;
 
 const paramsOrder = {
     '1000': ['typ', 'benefitAddress', 'nodeId', 'externalId', 'nodeName', 'website', 'details', 'amount', 'rewardPer', 'programVersion', 'programVersionSign', 'blsPubKey', 'blsProof'],
