@@ -3,7 +3,7 @@ var abi = require("../packages/web3-eth-abi/src");
 var web3 = new Web3('http://10.1.1.6:8806');
 var RLP = require("rlp");
 
-const chainId = 100; // 请更新成自己的节点id
+const chainId = 201018; // 请更新成自己的节点id
 const privateKey = "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const from = "0xe03887881e1e0CD6CdBFc82BC3292b8AD9A683f2";
 

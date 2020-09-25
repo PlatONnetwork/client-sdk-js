@@ -11,7 +11,7 @@ var utils = require("../packages/web3-utils/src");
 
 const provider = "http://127.0.0.1:6789"; // 请更新成自己的 http 节点
 web3 = new Web3(provider);
-const chainId = 100; // 请更新成自己的节点id
+const chainId = 201018; // 请更新成自己的节点id
 const privateKey = "0x29345764fe154f68d788072f11b5124e16f2cb770713e946511a507f4d51043e"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const from = web3.platon.accounts.privateKeyToAccount(privateKey).address.mainnet;  // 请更新成上面私钥对应的地址
 const contractAddress = ""

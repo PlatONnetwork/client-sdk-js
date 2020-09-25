@@ -6,7 +6,7 @@ var utils = require("../packages/web3-utils/src");
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
     provider: "/home/platon/network/data/platon.ipc", // 请更新成自己的 ws 节点
-    chainId: 102, // 请更新成自己的节点id
+    chainId: 201018, // 请更新成自己的节点id
     privateKey: "0x053f34a1962467d2ff589b970883e9827f9b8a0fe5d2113d71c638db4d0b5616", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
     gas: undefined,

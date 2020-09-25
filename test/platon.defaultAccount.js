@@ -19,7 +19,7 @@ describe("web3.platon", function() {
             platon.defaultAccount = setValue;
 
             assert.equal(platon.defaultAccount, setValue.toLowerCase());
-            assert.equal(platon.personal.defaultAccount, setValue);
+            assert.equal(platon.personal.defaultAccount, setValue.toLowerCase());
             assert.equal(platon.Contract.defaultAccount, setValue.toLowerCase());
             assert.equal(platon.getCode.method.defaultAccount, setValue.toLowerCase());
         });

@@ -42,6 +42,9 @@ var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
 var RLP = require('rlp');
 
+const main_net_hrp = "atp";
+const test_net_hrp = "atx";
+const main_net_chainid = 201018;
 /**
  * Should be called to create new contract instance
  *
@@ -77,7 +80,7 @@ var Contract = function Contract(jsonInterface, address, options) {
     } else {
         this.options = options
         if(this.options.net_type === undefined || this.options.net_type === null){
-            this.options.net_type = "lax"
+            this.options.net_type = test_net_hrp;
         }
         abi.setNetType(this.options.net_type)
     }

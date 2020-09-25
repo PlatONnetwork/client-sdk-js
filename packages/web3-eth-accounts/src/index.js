@@ -38,6 +38,9 @@ var helpers = require('web3-core-helpers');
 var Transaction = require('ethereumjs-tx').Transaction;
 var Common = require('ethereumjs-common').default;
 
+const main_net_hrp = "atp";
+const test_net_hrp = "atx";
+const main_net_chainid = 201018;
 
 var isNot = function(value) {
     return (_.isUndefined(value) || _.isNull(value));
@@ -99,8 +102,8 @@ var Accounts = function Accounts() {
 
 Accounts.prototype._addAccountFunctions = function(account) {
     var _this = this;
-    var mainnetAddress = utils.toBech32Address("lat", account.address)
-    var testnetAddress = utils.toBech32Address("lax", account.address)
+    var mainnetAddress = utils.toBech32Address(main_net_hrp, account.address)
+    var testnetAddress = utils.toBech32Address(test_net_hrp, account.address)
     account.address = {"mainnet":mainnetAddress, "testnet": testnetAddress}
     // add sign functions
     account.signTransaction = function signTransaction(tx, callback) {
@@ -180,11 +183,11 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             transaction.chainId = utils.numberToHex(transaction.chainId);
 
             if(transaction.to && utils.isBech32Address(transaction.to)){
-                let hrp = "lax"
-                if(tx.chainId === 100){
-                    hrp = "lat"
+                let hrp = test_net_hrp;
+                if(tx.chainId === main_net_chainid) {
+                    hrp = main_net_hrp
                 }
-                transaction.to = utils.decodeBech32Address(hrp, transaction.to)
+                transaction.to = utils.decodeBech32Address(transaction.to)
             }
 
             // Because tx has no ethereumjs-tx signing options we use fetched vals.
@@ -271,7 +274,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
     // Otherwise, get the missing info from the Ethereum Node
     var netType = "mainnet"
     var bech32Address = ""
-    if(tx.chainId == 100) {
+    if(tx.chainId == 201018) {
         bech32Address = _this.privateKeyToAccount(privateKey).address.mainnet
     } else {
         bech32Address = _this.privateKeyToAccount(privateKey).address.testnet

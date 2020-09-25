@@ -5,6 +5,11 @@ var Common = require('ethereumjs-common');
 var EthereumTx = require('ethereumjs-tx');
 var axios = require('axios');
 var utils = require('web3-utils');
+
+const main_net_hrp = "atp";
+const test_net_hrp = "atx";
+const main_net_chainid = 201018;
+
 const paramsOrder = {
     '1000': ['typ', 'benefitAddress', 'nodeId', 'externalId', 'nodeName', 'website', 'details', 'amount', 'rewardPer', 'programVersion', 'programVersionSign', 'blsPubKey', 'blsProof'],
     '1001': ['benefitAddress', 'nodeId', 'rewardPer', 'externalId', 'nodeName', 'website', 'details'],
@@ -202,9 +207,9 @@ PPOS.prototype.call = async function (params) {
         let rawTx = {};
         params = objToParams(params);
         rawTx.data = paramsToData(params);
-        var hrp = "lat"
-        if (this.chainId === undefined || this.chainId !== 100){
-            hrp = "lax"
+        var hrp = main_net_hrp;
+        if (this.chainId === undefined || this.chainId !== main_net_chainid){
+            hrp = test_net_hrp
         }
         rawTx.to = funcTypeToBech32(hrp, params[0]);
         let data = await this.rpc("platon_call", [rawTx, "latest"]);
@@ -219,9 +224,9 @@ PPOS.prototype.send = async function (params, other) {
     try {
         let privateKey = this.privateKey;
         let chainId = this.chainId;
-        var hrp = "lat"
-        if (this.chainId === undefined || chainId !== 100){
-            hrp = "lax"
+        var hrp = main_net_hrp;
+        if (this.chainId === undefined || chainId !== main_net_chainid){
+            hrp = test_net_hrp
         }
 
         let address = EU.bufferToHex(EU.privateToAddress('0x' + privateKey));

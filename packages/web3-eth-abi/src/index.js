@@ -44,7 +44,7 @@ function Result() {
 var ABICoder = function () {
     this.vmType = 0; // 默认是solidity
     this.abi = []; // 因为要对结构体编解码，需要将所有的 abi 数据都传进来
-    this.netType = "lax"; // 网络类型，需要根据此值进行对返回的address进行bech32编码
+    this.netType = "atx"; // 网络类型，需要根据此值进行对返回的address进行bech32编码
 };
 
 /**
@@ -277,7 +277,7 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             } else if (type === "FixedHash<20>") {
 		        var p = param;
                 if(utils.isBech32Address(param)) {
-                    p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
+                    p = utils.decodeBech32Address(param).replace("0x", "");
                 }
                 arrRlp.push(Buffer.from(p, "hex"));
             } else if(type.startsWith("FixedHash")){
@@ -299,10 +299,10 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             const param = params[i];
             const type = types[i].type;
             if (type === "address") {
-                params[i] = utils.decodeBech32Address(this.netType, param)
+                params[i] = utils.decodeBech32Address(param)
             } else if (type === "address[]") {
                 for(let j=0; j < param.length; j++) {
-                    params[i][j] = utils.decodeBech32Address(this.netType, param[j])
+                    params[i][j] = utils.decodeBech32Address(param[j])
                 }
             } 
         }
@@ -519,7 +519,7 @@ ABICoder.prototype.encodeEventParameters = function (types, params) {
     } else if (type === "FixedHash<20>") {
         var p = param;
         if(utils.isBech32Address(param)) {
-            p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
+            p = utils.decodeBech32Address(param).replace("0x", "");
         }
         let data = [];
         data.push(Buffer.from(p, "hex"));
