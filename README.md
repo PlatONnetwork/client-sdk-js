@@ -8,14 +8,14 @@
 
 然后你就可以通过 npm 包管理工具或者 yarn 包管理工具将client-sdk-js引入到项目工程中，通过如下步骤：
 
-- npm: `npm i PlatONnetwork/client-sdk-js`
-- yarn: `yarn add PlatONnetwork/client-sdk-js`
+- npm: `npm i PlatONnetwork/client-sdk-js#df-dev`
+- yarn: `yarn add PlatONnetwork/client-sdk-js#df-dev`
 
 然后需要创建web3的实例，设置一个provider。可参考如下代码：
 
 ```js
 // in node.js
-var Web3 = require('web3');
+var Web3 = require('web3a');
 
 var web3 = new Web3('http://127.0.0.1:6789');
 console.log(web3);
