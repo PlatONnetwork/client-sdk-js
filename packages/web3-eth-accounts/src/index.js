@@ -490,23 +490,27 @@ Wallet.prototype.create = function(numberOfAccounts, entropy) {
     return this;
 };
 
-Wallet.prototype.add = function(account) {
+Wallet.prototype.add = function(account, hrp_type) {
 
     if (_.isString(account)) {
         account = this._accounts.privateKeyToAccount(account);
     }
-    if (!this[account.address.testnet]) {
+    let address_key = account.address.testnet;
+    if('atp' == hrp_type)
+        address_key = account.address.mainnet;
+
+    if (!this[address_key]) {
         account = this._accounts.privateKeyToAccount(account.privateKey);
         account.index = this._findSafeIndex();
 
         this[account.index] = account;
         //this[account.address.toLowerCase()] = account;
-        this[account.address.testnet] = account;
+        this[address_key] = account;
         this.length++;
 
         return account;
     } else {
-        return this[account.address.testnet];
+        return this[address_key];
     }
 };
 
