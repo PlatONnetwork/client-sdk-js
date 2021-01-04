@@ -158,8 +158,9 @@ var Contract = function Contract(jsonInterface, address, options) {
         // console.log(JSON.stringify(jsonInterface));
     }
 
-    // set address
-    if(_.isUndefined('address')) {
+    if (_.isUndefined(this.options.isDefineOnce)) {
+        this.options.isDefineOnce = true; 
+        // set address
         Object.defineProperty(this.options, 'address', {
             set: function (value) {
                 if (value) {
@@ -172,9 +173,7 @@ var Contract = function Contract(jsonInterface, address, options) {
             },
             enumerable: true
         });
-    }
 
-    if(_.isUndefined('jsonInterface')) {
         // add method and event signatures, when the jsonInterface gets set
         Object.defineProperty(this.options, 'jsonInterface', {
             set: function (value) {
@@ -256,7 +255,7 @@ var Contract = function Contract(jsonInterface, address, options) {
             enumerable: true
         });
     }
-    
+
     // get default account from the Class
     var defaultAccount = this.constructor.defaultAccount;
     var defaultBlock = this.constructor.defaultBlock || 'latest';
