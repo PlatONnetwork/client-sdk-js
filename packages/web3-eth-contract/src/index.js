@@ -159,100 +159,104 @@ var Contract = function Contract(jsonInterface, address, options) {
     }
 
     // set address
-    Object.defineProperty(this.options, 'address', {
-        set: function (value) {
-            if (value) {
-                //_this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
-                _this._address = formatters.inputAddressFormatter(value);
-            }
-        },
-        get: function () {
-            return _this._address;
-        },
-        enumerable: true
-    });
-
-    // add method and event signatures, when the jsonInterface gets set
-    Object.defineProperty(this.options, 'jsonInterface', {
-        set: function (value) {
-            _this.methods = {};
-            _this.events = {};
-
-            _this._jsonInterface = value.map(function (method) {
-                var func,
-                    funcName;
-
-                // make constant and payable backwards compatible
-                method.constant = (method.stateMutability === "view" || method.stateMutability === "pure" || method.constant);
-                method.payable = (method.stateMutability === "payable" || method.payable);
-
-
-                if (method.name && method.type !== "struct") {
-                    funcName = utils._jsonInterfaceMethodToString(method);
+    if(_.isUndefined('address')) {
+        Object.defineProperty(this.options, 'address', {
+            set: function (value) {
+                if (value) {
+                    //_this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
+                    _this._address = formatters.inputAddressFormatter(value);
                 }
+            },
+            get: function () {
+                return _this._address;
+            },
+            enumerable: true
+        });
+    }
+
+    if(_.isUndefined('jsonInterface')) {
+        // add method and event signatures, when the jsonInterface gets set
+        Object.defineProperty(this.options, 'jsonInterface', {
+            set: function (value) {
+                _this.methods = {};
+                _this.events = {};
+
+                _this._jsonInterface = value.map(function (method) {
+                    var func,
+                        funcName;
+
+                    // make constant and payable backwards compatible
+                    method.constant = (method.stateMutability === "view" || method.stateMutability === "pure" || method.constant);
+                    method.payable = (method.stateMutability === "payable" || method.payable);
 
 
-                // function
-                if (method.type === 'function') {
-                    method.signature = abi.encodeFunctionSignature(funcName);
-                    func = _this._createTxObject.bind({
-                        method: method,
-                        parent: _this
-                    });
-
-
-                    // add method only if not one already exists
-                    if (!_this.methods[method.name]) {
-                        _this.methods[method.name] = func;
-                    } else {
-                        var cascadeFunc = _this._createTxObject.bind({
-                            method: method,
-                            parent: _this,
-                            nextMethod: _this.methods[method.name]
-                        });
-                        _this.methods[method.name] = cascadeFunc;
+                    if (method.name && method.type !== "struct") {
+                        funcName = utils._jsonInterfaceMethodToString(method);
                     }
 
-                    // definitely add the method based on its signature
-                    _this.methods[method.signature] = func;
 
-                    // add method by name
-                    _this.methods[funcName] = func;
-
-
-                    // event
-                } else if (method.type === 'event') {
-                    method.signature = abi.encodeEventSignature(funcName);
-                    var event = _this._on.bind(_this, method.signature);
-
-                    // add method only if not already exists
-                    if (!_this.events[method.name] || _this.events[method.name].name === 'bound ')
-                        _this.events[method.name] = event;
-
-                    // definitely add the method based on its signature
-                    _this.events[method.signature] = event;
-
-                    // add event by name
-                    _this.events[funcName] = event;
-                } else if (method.type === 'type') {
-                    // 对 wasm 的结构体处理
-                }
+                    // function
+                    if (method.type === 'function') {
+                        method.signature = abi.encodeFunctionSignature(funcName);
+                        func = _this._createTxObject.bind({
+                            method: method,
+                            parent: _this
+                        });
 
 
-                return method;
-            });
+                        // add method only if not one already exists
+                        if (!_this.methods[method.name]) {
+                            _this.methods[method.name] = func;
+                        } else {
+                            var cascadeFunc = _this._createTxObject.bind({
+                                method: method,
+                                parent: _this,
+                                nextMethod: _this.methods[method.name]
+                            });
+                            _this.methods[method.name] = cascadeFunc;
+                        }
 
-            // add allEvents
-            _this.events.allEvents = _this._on.bind(_this, 'allevents');
+                        // definitely add the method based on its signature
+                        _this.methods[method.signature] = func;
 
-            return _this._jsonInterface;
-        },
-        get: function () {
-            return _this._jsonInterface;
-        },
-        enumerable: true
-    });
+                        // add method by name
+                        _this.methods[funcName] = func;
 
+
+                        // event
+                    } else if (method.type === 'event') {
+                        method.signature = abi.encodeEventSignature(funcName);
+                        var event = _this._on.bind(_this, method.signature);
+
+                        // add method only if not already exists
+                        if (!_this.events[method.name] || _this.events[method.name].name === 'bound ')
+                            _this.events[method.name] = event;
+
+                        // definitely add the method based on its signature
+                        _this.events[method.signature] = event;
+
+                        // add event by name
+                        _this.events[funcName] = event;
+                    } else if (method.type === 'type') {
+                        // 对 wasm 的结构体处理
+                    }
+
+
+                    return method;
+                });
+
+                // add allEvents
+                _this.events.allEvents = _this._on.bind(_this, 'allevents');
+
+                return _this._jsonInterface;
+            },
+            get: function () {
+                return _this._jsonInterface;
+            },
+            enumerable: true
+        });
+    }
+    
     // get default account from the Class
     var defaultAccount = this.constructor.defaultAccount;
     var defaultBlock = this.constructor.defaultBlock || 'latest';
