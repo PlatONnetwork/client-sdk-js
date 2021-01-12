@@ -58,7 +58,7 @@ ABICoder.prototype.setVmType = function (vmType_) {
 };
 
 /**
- * 设置网络类型，testnet 是测试网（默认），mainnet是主网
+ * 设置网络类型/bech32地址前缀
  *
  * @method setNetType
  * @param {String} type
@@ -277,7 +277,7 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             } else if (type === "FixedHash<20>") {
 		        var p = param;
                 if(utils.isBech32Address(param)) {
-                    p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
+                    p = utils.decodeBech32Address(param).replace("0x", "");
                 }
                 arrRlp.push(Buffer.from(p, "hex"));
             } else if(type.startsWith("FixedHash")){
@@ -299,10 +299,10 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             const param = params[i];
             const type = types[i].type;
             if (type === "address") {
-                params[i] = utils.decodeBech32Address(this.netType, param)
+                params[i] = utils.decodeBech32Address(param)
             } else if (type === "address[]") {
                 for(let j=0; j < param.length; j++) {
-                    params[i][j] = utils.decodeBech32Address(this.netType, param[j])
+                    params[i][j] = utils.decodeBech32Address(param[j])
                 }
             } 
         }
@@ -519,7 +519,7 @@ ABICoder.prototype.encodeEventParameters = function (types, params) {
     } else if (type === "FixedHash<20>") {
         var p = param;
         if(utils.isBech32Address(param)) {
-            p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
+            p = utils.decodeBech32Address(param).replace("0x", "");
         }
         let data = [];
         data.push(Buffer.from(p, "hex"));

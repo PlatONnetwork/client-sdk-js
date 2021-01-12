@@ -17,7 +17,8 @@ describe("eth", function () {
 
         tests.forEach(function (test, i) {
             it("create eth.account, and compare to ethers wallet", function () {
-                var ethAccounts = new Accounts();
+                var hrp = 'lat'
+                var ethAccounts = new Accounts("", hrp);
 
                 // create account
                 var acc = ethAccounts.create();
@@ -26,8 +27,7 @@ describe("eth", function () {
                 var ethWall = new ethers.Wallet(acc.privateKey);
 
                 // compare addresses and private keys
-                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
-                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
+                assert.equal(acc.address, utils.toBech32Address(hrp, ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
 

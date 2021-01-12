@@ -33,8 +33,9 @@ describe.skip("web3.platon by websocket(you must update cfg variable before run 
         let gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit / 10));
         cfg.gasPrice = gasPrice;
         cfg.gas = gas;
-        cfg.address = utils.toBech32Address("lax", web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address)
-        ;
+        var hrp = await web3.platon.getAddressHrp()
+        var ethAccounts = new Accounts(web3, hrp);
+        cfg.address = ethAccounts.privateKeyToAccount(cfg.privateKey).address;
     });
 
     it("web3.platon.getProtocolVersion", async function () {
