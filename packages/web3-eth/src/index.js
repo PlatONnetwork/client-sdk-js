@@ -338,6 +338,11 @@ var Eth = function Eth() {
             //outputFormatter: utils.toChecksumAddress
         }),
         new Method({
+            name: 'getAddressHrp',
+            call: 'platon_getAddressHrp',
+            params: 0
+        }),
+        new Method({
             name: 'getBlockNumber',
             call: 'platon_blockNumber',
             params: 0,

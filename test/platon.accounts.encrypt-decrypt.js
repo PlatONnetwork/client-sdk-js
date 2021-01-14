@@ -17,7 +17,7 @@ var salt = '3a1012583f8be138537bc7cf8a50c925b6fcc01a9f7744c85a18fbdc07999f10';
 var iv = Buffer.from('653195c3e2791ac53f3f19b125c18f8c', 'hex');
 var uuid = Buffer.from('ff31ddc3e2791ac53f3f19b125c18fff', 'hex');
 var pw = 'test';
-
+var hrp = 'lat'
 // tests from https://github.com/Gustav-Simonsson/go-ethereum/blob/7cc6b801e0967e5ebfa26b9f670675acea6e3a20/accounts/testdata/v3_test_vector.json
 var staticTests = [{
     "json": {
@@ -117,7 +117,7 @@ describe("eth", function () {
 
         tests.forEach(function (test, i) {
             it("encrypt eth.account, and compare to ethers wallet", async () => {
-                var ethAccounts = new Accounts();
+                var ethAccounts = new Accounts("", hrp);
 
                 // create account
                 var acc = ethAccounts.create();
@@ -126,8 +126,7 @@ describe("eth", function () {
                 var ethWall = new ethers.Wallet(acc.privateKey);
 
                 // compare addresses and private keys
-                assert.equal(acc.address.testnet, utils.toBech32Address("lax",ethWall.address));
-                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
+                assert.equal(acc.address, utils.toBech32Address(hrp, ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
 
                 var encrypt = acc.encrypt(
@@ -147,31 +146,29 @@ describe("eth", function () {
                     }
                 )).toLowerCase());
                 
-                ethWallEncrypt.address = {"testnet":utils.toBech32Address("lax", ethWallEncrypt.address),
-                    "mainnet":utils.toBech32Address("lat", ethWallEncrypt.address)};
+                ethWallEncrypt.address = utils.toBech32Address(hrp, ethWallEncrypt.address);
 
                 assert.deepEqual(encrypt, ethWallEncrypt);
             });
 
             it("encrypt eth.account, and decrypt with ethers wallet", async () => {
-                var ethAccounts = new Accounts();
+                var ethAccounts = new Accounts("", hrp);
 
                 // create account
                 var acc = ethAccounts.create();
                 var encrypt = acc.encrypt(pw, { n: n });
                 var eth_encrypt = encrypt
-                eth_encrypt.address = utils.decodeBech32Address("lax", encrypt.address.testnet)
+                eth_encrypt.address = utils.decodeBech32Address(encrypt.address)
                 // create ethers wallet
                 var ethWall = await ethers.Wallet.fromEncryptedJson(JSON.stringify(eth_encrypt), pw);
 
                 // compare addresses and private keys
-                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
-                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
+                assert.equal(acc.address, utils.toBech32Address(hrp, ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
 
             it("encrypt ethers wallet, and decrypt with eth.account", async () => {
-                var ethAccounts = new Accounts();
+                var ethAccounts = new Accounts("", hrp);
 
                 // create ethers wallet
                 var ethWall = ethers.Wallet.createRandom();
@@ -181,13 +178,12 @@ describe("eth", function () {
                 var acc = ethAccounts.decrypt(encrypt, pw, true);
 
                 // compare addresses and private keys
-                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
-                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
+                assert.equal(acc.address, utils.toBech32Address(hrp, ethWall.address));
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
 
             it("decrypt static signature using ethers wallet and eth.account and compare", async () => {
-                var ethAccounts = new Accounts();
+                var ethAccounts = new Accounts("", hrp);
 
                 var encrypt = {
                     version: 3,
@@ -217,11 +213,9 @@ describe("eth", function () {
 
                 assert.equal('0x143f8913e0417997304fc179b531ff4cb9cab582', ethWall.address.toLowerCase());
                 // compare addresses
-                assert.equal(acc.address.testnet, utils.toBech32Address("lax", ethWall.address));
-                assert.equal(acc.address.mainnet, utils.toBech32Address("lat", ethWall.address));
-                assert.equal('0x143f8913e0417997304fc179b531ff4cb9cab582', utils.decodeBech32Address("lax", acc.address.testnet));
-                assert.equal('0x143f8913e0417997304fc179b531ff4cb9cab582',  utils.decodeBech32Address("lat", acc.address.mainnet));
-
+                assert.equal(acc.address, utils.toBech32Address(hrp, ethWall.address));
+                assert.equal('0x143f8913e0417997304fc179b531ff4cb9cab582', utils.decodeBech32Address(acc.address));
+         
                 // compare private keys
                 assert.equal(acc.privateKey, ethWall.privateKey);
             });
@@ -232,7 +226,7 @@ describe("eth", function () {
                 // disable the test timeout
                 this.timeout(0);
 
-                var ethAccounts = new Accounts();
+                var ethAccounts = new Accounts("", hrp);
 
                 // create account
                 var acc = ethAccounts.decrypt(test.json, test.password);

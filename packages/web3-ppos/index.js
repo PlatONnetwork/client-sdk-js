@@ -146,6 +146,12 @@ function PPOS(setting) {
     if (setting.privateKey) this.privateKey = setting.privateKey.toLowerCase().startsWith('0x') ? setting.privateKey.substring(2) : setting.privateKey;
     if (setting.gas) this.gas = setting.gas;
     if (setting.gasPrice) this.gasPrice = setting.gasPrice;
+    if (setting.hrp) {
+        this.hrp = setting.hrp;
+    } else {
+        this.hrp = "lat"
+    }
+
 }
 
 PPOS.prototype.updateSetting = function (setting) {
@@ -156,6 +162,11 @@ PPOS.prototype.updateSetting = function (setting) {
     if (setting.gasPrice) this.gasPrice = setting.gasPrice;
     if (setting.retry) this.retry = setting.retry;
     if (setting.interval) this.interval = setting.interval;
+    if (setting.hrp) {
+        this.hrp = setting.hrp;
+    } else {
+        this.hrp = "lat"
+    }
 };
 
 PPOS.prototype.getSetting = function () {
@@ -166,7 +177,8 @@ PPOS.prototype.getSetting = function () {
         gas: this.gas,
         gasPrice: this.gasPrice,
         retry: this.retry,
-        interval: this.interval
+        interval: this.interval,
+        hrp: this.hrp,
     };
 };
 
@@ -202,11 +214,7 @@ PPOS.prototype.call = async function (params) {
         let rawTx = {};
         params = objToParams(params);
         rawTx.data = paramsToData(params);
-        var hrp = "lat"
-        if (this.chainId === undefined || this.chainId !== 100){
-            hrp = "lax"
-        }
-        rawTx.to = funcTypeToBech32(hrp, params[0]);
+        rawTx.to = funcTypeToBech32(this.hrp, params[0]);
         let data = await this.rpc("platon_call", [rawTx, "latest"]);
         return Promise.resolve(pposHexToObj(data));
     } catch (error) {
@@ -219,13 +227,9 @@ PPOS.prototype.send = async function (params, other) {
     try {
         let privateKey = this.privateKey;
         let chainId = this.chainId;
-        var hrp = "lat"
-        if (this.chainId === undefined || chainId !== 100){
-            hrp = "lax"
-        }
-
+        
         let address = EU.bufferToHex(EU.privateToAddress('0x' + privateKey));
-        var bech32Address = utils.toBech32Address(hrp, address)
+        var bech32Address = utils.toBech32Address(this.hrp, address)
         let nonce = await this.rpc("platon_getTransactionCount", [bech32Address, 'latest']);
 
         let rawTx = {};
