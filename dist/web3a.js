@@ -62921,7 +62921,7 @@ PPOS.prototype.send = async function (params, other, privateKey) {
 PPOS.prototype.buildTransaction = async function (params, other) {
     try {
         let address = (other && other.from) ||
-            (this._platon && this.this._platon.currentProvider && this._platon.currentProvider.selectedAddress);
+            (this._platon && this._platon.currentProvider && this._platon.currentProvider.selectedAddress);
         let nonce = (other && other.nonce) ||
             (address && await this._platon.getTransactionCount(address));
         let rawTx = {};
