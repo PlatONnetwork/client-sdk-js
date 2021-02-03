@@ -29,6 +29,25 @@ console.log(web3);
 
 成功引入后，现在可以使用web3的相关API了。
 
+### 在浏览器中使用js sdk
+
+nodeJS库无法直接在浏览器中使用，为了解决此问题，我们可以使用webpack或browerify等库对nodeJS库进行打包，然后在浏览器中使用。经测试，Web3.js（包括platon及alaya版本的）无法直接用最新版的webpack进行打包，所以本项目选择browerify进行打包。
+
+另外，为了避免因同时使用ethereum的Web3.js及platon(alaya)的Web3.js，在进行打包的时候将文件名称更改为web3a.js(web3a.min.js)。基于同样的考虑，在构建web3a.js时，将浏览器中注入的库名为PW3而非之前的Web3。
+
+大家可以使用`npm run web3a`或`npm run web3a-min`来构建自己的本地文件，也可以用jsdelivr使用本项目已经打包完成的文件。
+
+使用下面的代码，就可以生成全局的变量`pw3`(对应于详细使用章节中的`web3`)
+
+```javascript
+<script type="text/javascript" src="dist/web3a.js"></script>
+<script type="text/javascript">
+    window.pw3 = new PW3('https://openapi.alaya.network/rpc');
+</script>
+```
+
+当然，你也可以使用`window.pw3 = new PW3(window.alaya);`来使用Samurai钱包。
+
 
 ### 详细使用
 #### web3.version
@@ -3526,286 +3545,117 @@ web3.utils.padLeft('Hello', 20, 'x');
 通过对调用对象 ppos（经济模型相关内置合约） 的 call 或者 send 函数将传进来的参数转换为 rpc 接口 platon_call 或者 platon_sendRawTransaction 调用所需要的参数，然后将交易发送至链上。以及完成 call 与 send 调用入参需要的一些辅助函数。
 
 ### 简要使用
-在调用`const web3 = new Web3('http://127.0.0.1:6789');`实例化一个web3的时候，系统会自动在 web3 后面附加一个 ppos 对象。也就是说你可以直接使用web3.ppos 调用 ppos 有的一些方法。但是如果要使用ppos对象发送上链的交易，那么除了在实例化`web3`的时候传进去的 provider，还至少需要发送交易签名需要的私钥以及链id，其中的链id可通过rpc接口`admin_nodeInfo`返回的`'chainId': xxx`获取。
+在调用`const web3 = new Web3('http://127.0.0.1:6789');`实例化一个web3的时候，系统会自动在 web3 后面附加一个 ppos 对象。`ppos`对象会直接调用`web3.platon`对象进行`call`和`send`操作，也就是说你可以直接使用web3.ppos 调用 ppos 有的一些方法。`ppos`主要有以下方法：
 
-当然，为了满足在能任意实例多个ppos(比如我要实例3个ppos给不同的链上同时发送交易调用)，我还会在web3对象上附上一个PPOS对象(注意全部是大写)。你可以调用`new PPOS(setting)`实例化一个ppos对象。一个调用示例如下：
+- call(params): 使用call的方式调用内置合约，params的构建方法详见“内置合约入参详细说明”。
+- buildTransaction(params, other): 使用params和other构建事件的信息，params的构建方法详见“内置合约入参详细说明”。other中可以设置gas、gasPrice、from和nonce。使用Samurai钱包时from和nonce会自动设定，不使用钱包时必须手动设定from值。在from值已经设定的前提下，nonce可以自动设定。详见下面例子。
+- send(params, other, privateKey): 使用send方式调用内置合约，params的构建方法详见“内置合约入参详细说明”。other的设定同`buildTransaction(params, other)`中other的设定方式。在不使用Samurai时，可能需要使用privateKey直接调用alaya的内置合约，此时请设置privateKey。详见下面例子。
+- estimateGasThenSend(params, other, privateKey): 使用params和other构建事件的信息，并自动估算所需要的gas，最终将事件发送至网络。params的构建方法详见“内置合约入参详细说明”。other的设定基本同`buildTransaction(params, other)`，但不需要设定gas值。privateKey的用法请参照`send(params, other, privateKey)`。详见下面例子。
+- estimateGasGaspriceThenSend(params, other, privateKey): 使用params构建事件的信息，并自动估算所需要的gas和gasPrice，最终将事件发送至网络。params的构建方法详见“内置合约入参详细说明”。other的设定基本同`buildTransaction(params, other)`，但不需要设定gas值及gasPrice值。privateKey的用法请参照`send(params, other, privateKey)`。详见下面例子。
 
 ```JavaScript
 (async () => {
-    const Web3 = require('web3');
-    const web3 = new Web3('http://192.168.120.164:6789');
+    const Web3 = require('../packages/web3/src/index');
+    const web3 = new Web3(new Web3.providers.HttpProvider('https://openapi.alaya.network/rpc'));
     const ppos = web3.ppos; // 后面例子我都以 ppos 为对象。就不写成 web3.ppos 了。
-
-    // 更新 ppos 的配置，发送上链交易必须要做这一步
-    // 由于在实例化web3的时候已传入了 provider, 可以不传入provider了。
-    ppos.updateSetting({
-        privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-        chainId: 101,
-    })
+    ppos.setChainId(201018); //如果使用Samurai不需要此步骤。由于很多网络开放接口的问题，chainId无法自动设置，帮加入此功能
+    const privateKey = '0x+your private key'; //注：一定要以0x开头
+    const address = web3.platon.accounts.privateKeyToAccount(privateKey).address.mainnet;
 
     let data, reply;
 
-    // 传参以对象形式发送交易： 1000. createStaking() : 发起质押
-    const benefitAddress = 'lax1umevux40n6ljlclm4pmrh2ad7f0rld06hkzx3u';
-    const nodeId = '80f1fcee54de74dbf7587450f31c31c0e057bedd4faaa2a10c179d52c900ca01f0fb255a630c49d83b39f970d175c42b12a341a37504be248d76ecf592d32bc0';
-    const amount = '10000000000000000000000000000';
-    const blsPubKey = 'd2459db974f49ca9cbf944d4d04c2d17888aef90858b62d6aec166341a6e886e8c0c0cfae9e469c2f618f5d9b7a249130d10047899da6154288c9cde07b576acacd75fef07ba0cfeb4eaa7510704e77a9007eff5f1a5f8d099e6ea664129780c';
-    data = {
-        funcType: 1000,
-        typ: 0,
-        benefitAddress: ppos.hexStrBuf(benefitAddress),
-        nodeId: ppos.hexStrBuf(nodeId),
-        externalId: 'externalId',
-        nodeName: 'Me',
-        website: 'www.platon.network',
-        details: 'staking',
-        amount: ppos.bigNumBuf(amount),
-        rewardPer: 500, //传500就是5%的奖励作为委托奖励
-        programVersion: undefined, // rpc 获取
-        programVersionSign: undefined, // rpc 获取
-        blsPubKey: ppos.hexStrBuf(blsPubKey),
-        blsProof: undefined, // rpc 获取
-    }
-    let pv = await ppos.rpc('admin_getProgramVersion');
-    let blsProof = await ppos.rpc('admin_getSchnorrNIZKProve');
-    data.programVersion = pv.Version;
-    data.programVersionSign = pv.Sign;
-    data.blsProof = ppos.hexStrBuf(blsProof);
-    reply = await ppos.send(data);
-    console.log('createStaking params object reply: ', JSON.stringify(reply, null, 2));
+    // // 例子1：发起质押
+    // // 此例子执行条件苛刻，没有进行主网测试，
+    // // 以防造成不可恢复的结果，所以将其进行注释。此段代码产生的后果请自行承担。
 
-    // 传参以数组形式发送交易： 1000. createStaking() : 发起质押
-    data = [
-        1000,
-        0,
-        ppos.hexStrBuf(benefitAddress),
-        ppos.hexStrBuf(nodeId),
-        'externalId',
-        'Me',
-        'www.platon.network',
-        'staking',
-        ppos.bigNumBuf(amount),
-        500,
-        pv.Version,
-        pv.Sign,
-        ppos.hexStrBuf(blsPubKey),
-        ppos.hexStrBuf(blsProof)
-    ];
-    // 由于上面已调用过，交易会上链，但是业务会失败
-    reply = await ppos.send(data);
-    console.log('createStaking params array reply: ', reply);
+    // // 传参以对象形式发送交易： 1000. createStaking() : 发起质押
+    // const benefitAddress = 'lax1umevux40n6ljlclm4pmrh2ad7f0rld06hkzx3u';
+    // const nodeId = '80f1fcee54de74dbf7587450f31c31c0e057bedd4faaa2a10c179d52c900ca01f0fb255a630c49d83b39f970d175c42b12a341a37504be248d76ecf592d32bc0';
+    // const amount = '10000000000000000000000000000';
+    // const blsPubKey = 'd2459db974f49ca9cbf944d4d04c2d17888aef90858b62d6aec166341a6e886e8c0c0cfae9e469c2f618f5d9b7a249130d10047899da6154288c9cde07b576acacd75fef07ba0cfeb4eaa7510704e77a9007eff5f1a5f8d099e6ea664129780c';
+    // data = {
+    //     funcType: 1000,
+    //     typ: 0,
+    //     benefitAddress: ppos.hexToBuffer(benefitAddress),
+    //     nodeId: ppos.hexToBuffer(nodeId),
+    //     externalId: 'externalId',
+    //     nodeName: 'Me',
+    //     website: 'www.platon.network',
+    //     details: 'staking',
+    //     amount: ppos.bigNumBuf(amount),
+    //     rewardPer: 500, //传500就是5%的奖励作为委托奖励
+    //     programVersion: undefined, // rpc 获取
+    //     programVersionSign: undefined, // rpc 获取
+    //     blsPubKey: ppos.hexToBuffer(blsPubKey),
+    //     blsProof: undefined, // rpc 获取
+    // }
+    // // 两种data的构建方式，效果相同
+    // // data = [
+    // //     1000,
+    // //     0,
+    // //     ppos.hexToBuffer(benefitAddress),
+    // //     ppos.hexToBuffer(nodeId),
+    // //     'externalId',
+    // //     'Me',
+    // //     'www.platon.network',
+    // //     'staking',
+    // //     ppos.bigNumBuf(amount),
+    // //     500,
+    // //     pv.Version,
+    // //     pv.Sign,
+    // //     ppos.hexToBuffer(blsPubKey),
+    // //     ppos.hexToBuffer(blsProof)
+    // // ];
+    // let pv = await ppos.rpc('admin_getProgramVersion');
+    // let blsProof = await ppos.rpc('admin_getSchnorrNIZKProve');
+    // data.programVersion = pv.Version;
+    // data.programVersionSign = pv.Sign;
+    // data.blsProof = ppos.hexToBuffer(blsProof);
+    // reply = await ppos.estimateGasGaspriceThenSend(params, {from: address}, privateKey);
+    // console.log('createStaking params object reply: ', JSON.stringify(reply, null, 2));
 
+    // 例子2：查询所有实时的候选人列表
     // 传参以对象形式调用： 1102. getCandidateList() : 查询所有实时的候选人列表
     data = {
         funcType: 1102,
     }
+    // 两种data的构建方式，效果相同
+    // data = [1102];
     reply = await ppos.call(data);
     console.log('getCandidateList params object reply: ', reply);
 
-    // 传参以数组形式调用： 1102. getCandidateList() : 查询所有实时的候选人列表
-    data = [1102];
-    reply = await ppos.call(data);
-    console.log('getCandidateList params array reply: ', reply);
-
-    // 重新实例化一个ppos1对象出来调用
-    const ppos1 = new web3.PPOS({
-        provider: 'http://127.0.0.1:6789',
-        privateKey: '9f9b18c72f8e5154a9c59af2a35f73d1bdad37b049387fc6cea2bac89804293b',
-        chainId: 101,
-    })
-    reply = await ppos1.call(data);
+    // 例子3：委托
+    // 节点rileyge的nodeId
+    let nodeId = "0x218b20ee9cd80ea631c771996262a1d4b74b6db5c14321d55f42810a812b128c8c1e3bca0877e19e4ca12db6875d1922f11cfaeb9b2ec78da5157e523c7db8d3";
+    let amount = web3.utils.toVon("1");
+    let coin_type = 0;
+    try {
+        data = {
+            funcType: 1004,
+            typ: coin_type,
+            nodeId: Web3.PPOS.hexToBuffer(nodeId),
+            amount: web3.utils.toBN(amount)
+        }
+        reply = await ppos.estimateGasGaspriceThenSend(data, {from: address}, privateKey);        
+        console.log(reply);
+    } catch (error) {
+        console.log(error);
+    }
 })()
 ```
 
-日志信息输出如下。为了节省篇幅，有删减
+运行此程序会显示出所有节点信息列表及抵押事件相关信息。为了节省篇幅，此处就不展示日志了。
 
-```
-createStaking params object reply:  {
-  "blockHash": "0xdddd6b12919b69169b63d17fece52e8632fe3d8b48166c8b4ef8fdee39a1f35c",
-  "blockNumber": "0xb",
-  "contractAddress": null,
-  "cumulativeGasUsed": "0x14f34",
-  "from": "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35",
-  "gasUsed": "0x14f34",
-  "logs": [
-    {
-      "address": "lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzlh5ge3",
-      "topics": [
-        "0xd63087bea9f1800eed943829fc1d61e7869764805baa3259078c1caf3d4f5a48"
-      ],
-      "data": "0xe3a27b22436f6465223a302c2244617461223a22222c224572724d7367223a226f6b227d",
-      "blockNumber": "0xb",
-      "transactionHash": "0x4bee71e351076a81482e2576e469a8dfaa76da9b6cc848265c10968d6de67364",
-      "transactionIndex": "0x0",
-      "blockHash": "0xdddd6b12919b69169b63d17fece52e8632fe3d8b48166c8b4ef8fdee39a1f35c",
-      "logIndex": "0x0",
-      "removed": false,
-      "dataStr": {
-        "Code": 0,
-        "Data": "",
-        "ErrMsg": "ok"
-      }
-    }
-  ],
-  "logsBloom": "",
-  "root": "0x3b7a41cea97f90196039586a3068f6a64c09aa7597898440c3c241a095e37984",
-  "to": "lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzlh5ge3",
-  "transactionHash": "0x4bee71e351076a81482e2576e469a8dfaa76da9b6cc848265c10968d6de67364",
-  "transactionIndex": "0x0"
-}
-
-createStaking params array reply:  { blockHash:
-   '0x43351e4a9f1b7173552094bacfd5b6f84f18a6c7c0c02d8a10506e3a61041117',
-  blockNumber: '0x10',
-  contractAddress: null,
-  cumulativeGasUsed: '0x14f34',
-  from: 'lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35',
-  gasUsed: '0x14f34',
-  logs:
-   [ { address: 'lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzlh5ge3',
-       topics: [Array],
-       data:
-        '0xf846b8447b22436f6465223a3330313130312c2244617461223a22222c224572724d7367223a22546869732063616e64696461746520697320616c7265616479206578697374227d',
-       blockNumber: '0x10',
-       transactionHash:
-        '0xe5cbc728d6e284464c30ce6f0bbee5fb2b30351a591424f3a0edd37cc1bbdc05',
-       transactionIndex: '0x0',
-       blockHash:
-        '0x43351e4a9f1b7173552094bacfd5b6f84f18a6c7c0c02d8a10506e3a61041117',
-       logIndex: '0x0',
-       removed: false,
-       dataStr: [Object] } ],
-  logsBloom:'',
-  root:
-   '0x45ffeda340b68a0d54c5556a51f925b0787307eab1fb120ed141fd8ba81183d4',
-  to: 'lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzlh5ge3',
-  transactionHash:
-   '0xe5cbc728d6e284464c30ce6f0bbee5fb2b30351a591424f3a0edd37cc1bbdc05',
-  transactionIndex: '0x0' }
-
-getCandidateList params object reply:  { 
-  Code: 0,
-  Data:
-   [ { candidate1 info... },
-     { candidate2 info... },
-     { candidate3 info... },
-     { candidate4 info... } 
-   ],
-  ErrMsg: 'ok' }
-
-getCandidateList params array reply:  { 
-  Code: 0,
-  Data:
-   [ { candidate1 info... },
-     { candidate2 info... },
-     { candidate3 info... },
-     { candidate4 info... } 
-   ],
-  ErrMsg: 'ok' }
-```
+内置合约与Samurai钱包协同使用的相关用法，请参照Samurai钱包的开发教程。
 
 ### API 调用详细说明
 
-#### `updateSetting(setting)`
-更新 ppos 对象的配置参数。如果你只需要发送call调用，那么只需要传入 provider 即可。如果你在实例化 web3 的时候已经传入了 provider。那么会ppos的provider默认就是你实例化web3传进来的provider。当然你也可以随时更新provider。
+PPOS包里面主要包含5主要函数及一个辅助函数，用法与之前版本的PPOS包用法相似度非常高。
 
-如果你要发送send交易，那么除了provider，还必须要传入发送交易所需要的私钥以及链id。当然，发送交易需要设置的gas, gasPrice, retry, interval这四个参数详细请见`async send(params, [other])`说明。
-
-对传入的参数，你可以选择部分更新，比如你对一个ppos对象，发送某个交易时想使用私钥A，那么你在调用`send(params, [other])`之前执行 `ppos.updateSetting({privateKey: youPrivateKeyA})`更新私钥即可。一旦更新之后，将会覆盖当前配置，后面调用发送交易接口，将默认以最后一次更新的配置。
-
-入参说明：
-* setting Object
-  * provider String 链接
-  * privateKey String 私钥
-  * chainId String 链id
-  * gas String 燃料最大消耗，请输入十六进制字符串，比如 '0xf4240'
-  * gasPrice String 燃料价格，请输入十六进制字符串，比如 '0x746a528800'
-  * retry Number 查询交易收据对象次数。
-  * interval Number 查询交易收据对象的间隔，单位为ms。
-
-无出参。
-
-调用示例
-```JavaScript
-// 同时更新 privateKey，chainId
-ppos.updateSetting({
-    privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-    chainId: 101,
-})
-
-// 只更新 privateKey
-ppos.updateSetting({
-    privateKey: '9f9b18c72f8e5154a9c59af2a35f73d1bdad37b049387fc6cea2bac89804293b'
-})
-```
 
 ***
 
-#### `getSetting()`
-查询你配置的参数
-
-无入参
-
-出参
-* setting Object
-  * provider String 链接
-  * privateKey String 私钥
-  * chainId String 链id
-  * gas String 燃料最大消耗
-  * gasPrice String 燃料价格
-  * retry Number 查询交易收据对象次数。
-  * interval Number 查询交易收据对象的间隔，单位为ms。
-
-调用示例
-```JavaScript
-let setting = ppos.getSetting();
-```
-
-***
-
-#### `async rpc(method, [params])`
-发起 rpc 请求。一个辅助函数，因为在调用ppos发送交易的过程中，有些参数需要通过rpc来获取，所以特意封装了一个rpc供调用。注意此接口为async函数，需要加await返回调用结果，否则返回一个Promise对象。
-
-入参说明：
-* method String 方法名
-* params Array 调用rpc接口需要的参数，如果调用此rpc端口不需要参数，则此参数可以省略。
-  
-
-出参
-* reply rpc调用返回的结果
-
-调用示例
-```JavaScript
-// 获取程序版本
-let reply = await ppos.rpc('admin_getProgramVersion'); 
-
-// 获取所有账号
-let reply = await ppos.rpc('platon_accounts')
-
-// 获取一个账号的金额
-let reply = await ppos.rpc('platon_getBalance', ["lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35","latest"])
-```
-
-***
-
-#### `bigNumBuf(intStr)`
-将一个字符串的十进制大整数转为一个RLP编码能接受的buffer对象。一个辅助函数。因为JavaScript的正数范围只能最大表示为2^53，为了RLP能对大整数进行编码，需要将字符串的十进制大整数转换为相应的Buffer。注意，此接口暂时只能对十进制的大整数转为Buffer，如果是十六进制的字符串，您需要先将他转为十进制的字符串。
-
-入参说明：
-* intStr String 字符串十进制大整数。
-  
-
-出参
-* buffer Buffer 一个缓存区。
-
-调用示例
-```JavaScript
-let buffer = ppos.bigNumBuf('1000000000000000000000000000000000000000000'); 
-```
-
-***
-
-#### `hexStrBuf(hexStr)`
+#### `hexToBuffer(hexStr)`
 将一个十六进制的字符串转为一个RLP编码能接受的buffer对象。一个辅助函数。在ppos发送交易的过程中，我们很多参数需要作为bytes传送而不是string，比如 `nodeId 64bytes 被质押的节点Id(也叫候选人的节点Id)`。而写代码时候的nodeId只能以字符串的形式表现。需要将他转为一个 64 bytes 的 Buffer。
 
 注意：如果你传进去的字符串以 0x 或者 0X 开头，系统会默认为你是表示一个十六进制字符串不对开头的这两个字母进行编码。如果你确实要对 0x 或者 0X 编码，那你必须在字符串前面再加前缀 0x。比如，你要对全字符串 0x31c0e0 (4 bytes) 进行编码，那么必须传入 0x0x31c0e0 。
@@ -3820,7 +3670,7 @@ let buffer = ppos.bigNumBuf('1000000000000000000000000000000000000000000');
 调用示例
 ```JavaScript
 const nodeId = '80f1fcee54de74dbf7587450f31c31c0e057bedd4faaa2a10c179d52c900ca01f0fb255a630c49d83b39f970d175c42b12a341a37504be248d76ecf592d32bc0';
-let buffer = ppos.hexStrBuf(nodeId); 
+let buffer = ppos.hexToBuffer(nodeId); 
 ```
 
 ***
@@ -3849,32 +3699,86 @@ let buffer = ppos.hexStrBuf(nodeId);
 |funcType|uint16(2bytes)|代表方法类型码(1103)|
 |addr|common.address(20bytes)|委托人的账户地址|
 
-调用示例
-```JavaScript
-var utils = require("web3-utils")
-let params, reply;
+调用示例请参照简要使用例子2：查询所有实时的候选人列表。
 
-let address = utils.decodeBech32Address("lax", "lax1umevux40n6ljlclm4pmrh2ad7f0rld06hkzx3u")
-// 以传进入对象进行调用(对于key不要求顺序)
-params = {
-    funcType: 1103,
-    addr: ppos.hexStrBuf(address)
-}
-reply = await ppos.call(params);
-
-// 以传入数组对象进行调用
-params = [1103, ppos.hexStrBuf(address)];
-reply = await ppos.call(params);
-```
 
 ***
 
-#### `async send(params, [other])`
+#### `async buildTransaction(params, [other])`
+
+此方法用于创建一个内置合约的原始事件（没有进行签名），以使开发者进行更具各性化定制。
+
+此函数的返回结果可以使用`web3.platon.estimateGas(rawTx)`进行gas的估计，也可以使用`web3.platon.accounts.signTransaction(rawTx)`进行签名。
+
+注意此接口为async函数，需要加await返回调用结果，否则返回一个Promise对象。
+
+入参说明：
+
+* params Object|Array 调用参数。
+* other Object 其他参数
+  * gas String 燃油限制，默认 '0xf4240'。
+  * gasPrice String 燃油价格，默认 '0x746a528800'。
+  * from String 事件的from地址，在使用Samurai钱包时from值会自动设定，如果指定了privateKey参数，且没有设定from地址时，会自动将from设定为privateKey对应的地址。其他情况下必须手动设定。
+  * nonce Number nonce值，在使用Samurai或privateKey已经设定后，nonce可以自动设定，但设定需要进行一次请求（速度较慢），当然也可以手动设定。
+
+出参
+
+* rawTx 未经签名的事件
+
+
+以调用 `发起委托`这个接口，入参顺序从上到下，入参如下所示：
+
+| 参数     | 类型           | 说明                                                         |
+| -------- | -------------- | ------------------------------------------------------------ |
+| funcType | uint16(2bytes) | 代表方法类型码(1004)                                         |
+| typ      | uint16(2bytes) | 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额 |
+| nodeId   | 64bytes        | 被质押的节点的NodeId                                         |
+| amount   | big.Int(bytes) | 委托的金额(按照最小单位算，1LAT = 10^18 von)                 |
+
+调用示例：注：此示例在功能上与“简要使用例子3：委托”相同，但使用了自定义的形式。
+
+```javascript
+(async () => {
+    const Web3 = require('web3');
+    const web3 = new Web3(new Web3.providers.HttpProvider('https://openapi.alaya.network/rpc'));
+    const ppos = web3.ppos; // 后面例子我都以 ppos 为对象。就不写成 web3.ppos 了。
+    ppos.setChainId(201018); //如果使用Samurai不需要此步骤。由于很多网络开放接口的问题，chainId无法自动设置，帮加入此功能
+    const privateKey = '0x your pk here';
+    const address = web3.platon.accounts.privateKeyToAccount(privateKey).address.mainnet;
+
+    let data, reply;    
+    let nodeId = "0x218b20ee9cd80ea631c771996262a1d4b74b6db5c14321d55f42810a812b128c8c1e3bca0877e19e4ca12db6875d1922f11cfaeb9b2ec78da5157e523c7db8d3";
+    let amount = web3.utils.toVon("1");
+    let coin_type = 0;
+    try {
+        data = {
+            funcType: 1004,
+            typ: coin_type,
+            nodeId: Web3.PPOS.hexToBuffer(nodeId),
+            amount: web3.utils.toBN(amount)
+        }
+        let rawTx = await ppos.buildTransaction(data, {from: address});
+        rawTx.gas = await web3.platon.estimateGas(rawTx);
+        rawTx.gasPrice = web3.utils.toVon("1", "gvon");
+        let signedTX = await web3.platon.accounts.signTransaction(rawTx, privateKey);
+        // 发送交易
+        reply = web3.platon.sendSignedTransaction(signedTX.rawTransaction);      
+        console.log(reply);
+    } catch (error) {
+        console.log(error);
+    }
+})()
+```
+
+-------
+
+#### `async send(params, [other], [privateKey])`
+
 发送一个 ppos 的send发送交易调用。上链。所以你需要自行区分是否是查询或者是发送交易。入参可以选择对象或者数组。传入规则请看上述`async call(params)`调用。
 
-由于是一个交易，将会涉及到调用交易需要的一些参数，比如gas，gasPrice。当交易发送出去之后，为了确认交易是否上链，需要不断的通过交易哈希去轮询链上的结果。这就有个轮询次数 retry 与每次轮询之间的间隔 interval。
+由于是一个交易，将会涉及到调用交易需要的一些参数，比如gas，gasPrice。这些参数可以使用other指定。
 
-对于上面提到的 gas, gasPrice, retry, interval 这四个参数，如果other入参有指定，则使用other指定的。如果other入参未指定，则使用调用函数时候`updateSetting(setting)`指定的参数，否则使用默认的数值。
+对于上面提到的 gas, gasPrice, from, nonce这四个参数，如果other入参有指定，则使用other指定的。如果other入参未指定，则使用调用函数时候`updateSetting(setting)`指定的参数，否则使用默认的数值。
 
 注意此接口为async函数，需要加await返回调用结果，否则返回一个Promise对象。
 
@@ -3883,8 +3787,9 @@ reply = await ppos.call(params);
 * other Object 其他参数
   * gas String 燃油限制，默认 '0xf4240'。
   * gasPrice String 燃油价格，默认 '0x746a528800'。
-  * retry Number 查询交易收据对象次数，默认 600 次。
-  * interval Number 查询交易收据对象的间隔，单位为ms。默认 100 ms。
+  * from String 事件的from地址，在使用Samurai钱包时from值会自动设定，如果指定了privateKey参数，且没有设定from地址时，会自动将from设定为privateKey对应的地址。其他情况下必须手动设定。
+  * nonce Number nonce值，在使用Samurai或privateKey已经设定后，nonce可以自动设定，但设定需要进行一次请求（速度较慢），当然也可以手动设定。
+* privateKey string 账号私钥。在使用Samurai时不需要设定，其他时间需要设定。
 
 出参
 * reply Object 调用成功！send调用方法返回指定交易的收据对象
@@ -3900,7 +3805,6 @@ reply = await ppos.call(params);
   * gasUsed- Number: 该交易的gas总量
   * logs - Array: 该交易产生的日志对象数组
 
-* errMsg String 调用失败！如果发送交易返回之后没有回执，则返回错误信息`no hash`。如果发送交易之后有回执，但是在规定的时间内没有查到收据对象，则返回 `getTransactionReceipt txHash ${hash} interval ${interval}ms by ${retry} retry failed`
 
 以调用 `发起委托`这个接口，入参顺序从上到下，入参如下所示：
 
@@ -3911,33 +3815,24 @@ reply = await ppos.call(params);
 |nodeId|64bytes|被质押的节点的NodeId|
 |amount|big.Int(bytes)|委托的金额(按照最小单位算，1LAT = 10^18 von)|
 
+调用示例：请参照简要使用例子3：委托。
 
-调用示例
-```JavaScript
-const nodeId = "f71e1bc638456363a66c4769284290ef3ccff03aba4a22fb60ffaed60b77f614bfd173532c3575abe254c366df6f4d6248b929cb9398aaac00cbcc959f7b2b7c";
-let params, others, reply;
+-----
 
-// 以传进入对象进行调用(对于key不要求顺序)
-params = {
-    funcType: 1004,
-    typ: 0,
-    nodeId: ppos.hexStrBuf(nodeId),
-    amount: ppos.bigNumBuf("10000000000000000000000")
-}
-reply = await ppos.send(params);
+#### `async estimateGasThenSend(params, [other], [privateKey])`
 
-// 以传入数组对象进行调用
-params = [1004, 0, ppos.hexStrBuf(nodeId), ppos.bigNumBuf("10000000000000000000000")];
-reply = await ppos.send(params);
+该方法使用形式与`async send(params, [other], [privateKey])`高度一致。不同之处为此函数会自动发送一次estimateGas请求，并自动设置gas值。而且如果发送参数有问题，导致发送的请求无法顺利完成，此函数会在estimateGas时就发出异常。而不会像send函数那样直接发送，导致不必要的gas消耗。
 
-// 我不想默认的轮询
-other = {
-    retry: 300, // 只轮询300次
-    interval: 200 // 每次轮询间隔200ms
-}
-params = [1004, 0, ppos.hexStrBuf(nodeId), ppos.bigNumBuf("10000000000000000000000")];
-reply = await ppos.send(params, other);
-```
+此函数参数及返回值的详细说明请参照`async send(params, [other], [privateKey])`。
+
+------
+
+#### `async estimateGasGaspriceThenSend(params, [other], [privateKey])`
+
+该方法使用形式与`async send(params, [other], [privateKey])`高度一致。不同之处为此函数会自动发送一次estimateGas及getGasprice请求，并自动设置gas、gasPrice值（在实际开发时更推荐使用三方API来确定gasPrice）。而且如果发送参数有问题，导致发送的请求无法顺利完成，此函数会在estimateGas时就发出异常。而不会像send函数那样直接发送，导致不必要的gas消耗。
+
+此函数参数及返回值的详细说明请参照`async send(params, [other], [privateKey])`。
+
 
 ### 内置合约入参详细说明
 
