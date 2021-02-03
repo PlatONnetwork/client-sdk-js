@@ -1,9 +1,9 @@
 var RLP = require('rlp');
-var EU = require('ethereumjs-util');
-var BN = require('bn.js');
-var Common = require('ethereumjs-common');
-var EthereumTx = require('ethereumjs-tx');
-var axios = require('axios');
+// var EU = require('ethereumjs-util');
+// var BN = require('bn.js');
+// var Common = require('ethereumjs-common');
+// var EthereumTx = require('ethereumjs-tx');
+// var axios = require('axios');
 var utils = require('web3-utils');
 
 const main_net_hrp = "atp";
@@ -51,17 +51,6 @@ const paramsOrder = {
     '5100': ['address', 'nodeIDs'],
 }
 
-function decodeBlockLogs(block) {
-    let logs = block.logs;
-    if (Array.isArray(logs)) {
-        for (let log of logs) {
-            try {
-                log.dataStr = JSON.parse(RLP.decode(log.data).toString());
-            } catch (error) { }
-        }
-    }
-}
-
 function objToParams(params) {
     if (!Array.isArray(params)) {
         let pars = [params.funcType]
@@ -74,11 +63,6 @@ function objToParams(params) {
     return params;
 }
 
-// 休眠，单位ms
-async function sleep(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-}
-
 // 将ppos传进来的参数转为 data 字段
 function paramsToData(params) {
     let arr = [];
@@ -89,43 +73,12 @@ function paramsToData(params) {
     return rlpData;
 }
 
-// 根据函数类型，选择对应的 to 地址。
-function funcTypeToAddress(funcType) {
-    if (funcType >= 1000 && funcType < 2000) return '0x1000000000000000000000000000000000000002';
-    if (funcType >= 2000 && funcType < 3000) return '0x1000000000000000000000000000000000000005';
-    if (funcType >= 3000 && funcType < 4000) return '0x1000000000000000000000000000000000000004';
-    if (funcType >= 4000 && funcType < 5000) return '0x1000000000000000000000000000000000000001';
-    if (funcType >= 5000 && funcType < 6000) return '0x1000000000000000000000000000000000000006';
-}
-
 function funcTypeToBech32(hrp, funcType) {
     if (funcType >= 1000 && funcType < 2000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000002');
     if (funcType >= 2000 && funcType < 3000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000005');
     if (funcType >= 3000 && funcType < 4000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000004');
     if (funcType >= 4000 && funcType < 5000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000001');
     if (funcType >= 5000 && funcType < 6000) return utils.toBech32Address(hrp, '0x1000000000000000000000000000000000000006');
-}
-
-// 使用私钥对交易进行签名
-function signTx(privateKey, chainId, rawTx) {
-    privateKey = privateKey.toLowerCase().startsWith('0x') ? privateKey.substring(2) : privateKey;
-    const customCommon = Common.default.forCustomChain(
-        'mainnet',
-        {
-            name: 'my-network',
-            networkId: 1,
-            chainId: chainId,
-        },
-        'petersburg'
-    );
-
-    let tx = new EthereumTx.Transaction(rawTx, { common: customCommon });
-    tx.sign(Buffer.from(privateKey, 'hex'));
-    let rawTransaction = tx.serialize().toString('hex');
-    if (!rawTransaction.startsWith('0x')) {
-        rawTransaction = '0x' + rawTransaction;
-    }
-    return rawTransaction;
 }
 
 function pposHexToObj(hexStr) {
@@ -142,134 +95,143 @@ function pposHexToObj(hexStr) {
     return str;
 }
 
-function PPOS(setting) {
-    if (setting.provider) {
-        this.provider = setting.provider;
-        this.client = axios.create({ baseURL: setting.provider });
+var PPOS = function PPOS(chainId) {
+    this.setChainId = function (chainId) {
+        this.hrp = main_net_hrp;
+        if (chainId === undefined) {
+            if (this._platon !== undefined) {
+                let chainIdHex = this._platon.currentProvider.chainId;
+                if (chainIdHex != undefined)
+                    chainId = utils.hexToNumber(chainIdHex);
+            }
+        }
+        if (chainId === undefined || chainId !== main_net_chainid) {
+            hrp = test_net_hrp
+        }
     }
-    if (setting.chainId) this.chainId = setting.chainId;
-    if (setting.privateKey) this.privateKey = setting.privateKey.toLowerCase().startsWith('0x') ? setting.privateKey.substring(2) : setting.privateKey;
-    if (setting.gas) this.gas = setting.gas;
-    if (setting.gasPrice) this.gasPrice = setting.gasPrice;
+    this.setPlatonInstance = function (platon, chainId) {
+        this._platon = platon;
+        this.setChainId(chainId);
+    }
+    this.setChainId(chainId);
 }
 
-PPOS.prototype.updateSetting = function (setting) {
-    if (setting.provider) { this.provider = setting.provider; this.client = axios.create({ baseURL: setting.provider }); }
-    if (setting.chainId) this.chainId = setting.chainId;
-    if (setting.privateKey) this.privateKey = setting.privateKey.toLowerCase().startsWith('0x') ? setting.privateKey.substring(2) : setting.privateKey;
-    if (setting.gas) this.gas = setting.gas;
-    if (setting.gasPrice) this.gasPrice = setting.gasPrice;
-    if (setting.retry) this.retry = setting.retry;
-    if (setting.interval) this.interval = setting.interval;
-};
-
-PPOS.prototype.getSetting = function () {
-    return {
-        provider: this.provider,
-        chainId: this.chainId,
-        privateKey: this.privateKey,
-        gas: this.gas,
-        gasPrice: this.gasPrice,
-        retry: this.retry,
-        interval: this.interval
-    };
-};
-
-PPOS.prototype.bigNumBuf = function (intStr, radix, byteLen) {
-    radix = radix || 10;
-    let num = new BN(intStr, radix);
-    byteLen = byteLen || Math.ceil(num.byteLength() / 8) * 8; // 好像宽度没用...
-    return num.toTwos(byteLen).toBuffer();
-};
-
-PPOS.prototype.hexStrBuf = function (hexStr) {
-    hexStr = hexStr.startsWith('0x') || hexStr.startsWith('0X') ? hexStr.substring(2) : hexStr;
-    return Buffer.from(hexStr, 'hex');
-};
-
-PPOS.prototype.rpc = async function (method, params) {
-    try {
-        params = params || [];
-        const data = { "jsonrpc": "2.0", "method": method, "params": params, "id": new Date().getTime() }
-        let replay = await this.client.post("", data);
-        if (replay.status === 200) {
-            if(undefined === replay.data.result && undefined != replay.data.error) {
-                return Promise.reject(replay.data.error);
-            } else {
-                return Promise.resolve(replay.data.result);
-            }
-        } else {
-            return Promise.reject("request error");
-        }
-    } catch (error) {
-        return Promise.reject(error)
-    }
-};
-
+/**
+ * call方式调用内置合约
+ * @param params 内置合约调用参数
+ * @returns {Promise<string>} 返回结果
+ */
 PPOS.prototype.call = async function (params) {
     try {
         let rawTx = {};
         params = objToParams(params);
         rawTx.data = paramsToData(params);
-        var hrp = main_net_hrp;
-        if (this.chainId === undefined || this.chainId !== main_net_chainid){
-            hrp = test_net_hrp
-        }
-        rawTx.to = funcTypeToBech32(hrp, params[0]);
-        let data = await this.rpc("platon_call", [rawTx, "latest"]);
+        rawTx.to = funcTypeToBech32(this.hrp, params[0]);
+        let data = await this._platon.call(rawTx);
         return Promise.resolve(pposHexToObj(data));
     } catch (error) {
         return Promise.reject(error);
     }
 };
-
-PPOS.prototype.send = async function (params, other) {
-    if (this.privateKey === undefined || this.chainId === undefined) return Promise.reject("Please call updateSetting to set privateKey or chainId");
+/**
+ * send方式调用内置合约
+ * @param params 合约调用参数
+ * @param other 其他参数，json形式，可以设置gas和gasPrice
+ * @returns {Promise<*>} 结果
+ */
+PPOS.prototype.send = async function (params, other, privateKey) {
     try {
-        let privateKey = this.privateKey;
-        let chainId = this.chainId;
-        var hrp = main_net_hrp;
-        if (this.chainId === undefined || chainId !== main_net_chainid){
-            hrp = test_net_hrp
-        }
-
-        let address = EU.bufferToHex(EU.privateToAddress('0x' + privateKey));
-        var bech32Address = utils.toBech32Address(hrp, address)
-        let nonce = await this.rpc("platon_getTransactionCount", [bech32Address, 'latest']);
-
-        let rawTx = {};
-        params = objToParams(params);
-        rawTx.data = paramsToData(params);
-        
-        rawTx.from = address;
-        rawTx.to = funcTypeToAddress(params[0]);
-        rawTx.gas = (other && other.gas) || this.gas || '0xf4240';
-        rawTx.gasPrice = (other && other.gasPrice) || this.gasPrice || '0x746a528800';
-        rawTx.nonce = nonce;
-
-        let rawTransaction = signTx(privateKey, chainId, rawTx);
-
-        let hash = await this.rpc("platon_sendRawTransaction", [rawTransaction]);
-        if (!hash) return Promise.reject('no hash');
-
-        let retry = (other && other.retry) || this.retry || 600;
-        let interval = (other && other.interval) || this.interval || 100;
-        const errMsg = `getTransactionReceipt txHash ${hash} interval ${interval}ms by ${retry} retry failed`;
-        while (retry) {
-            const receipt = await this.rpc('platon_getTransactionReceipt', [hash]);
-            if (receipt) {
-                decodeBlockLogs(receipt);
-                return Promise.resolve(receipt);
+        let rawTx = await this.buildTransaction(params, other);
+        if (privateKey === undefined) {
+            // for Samurai
+            return this._platon.sendTransaction(rawTx);
+        } else {
+            if ((rawTx.from === undefined) && (privateKey !== undefined)) {
+                let pk = this.hrp === main_net_hrp ?
+                    this._platon.accounts.privateKeyToAccount(privateKey).address.mainnet :
+                    this._platon.accounts.privateKeyToAccount(privateKey).address.testnet;
+                rawTx.from = pk;
             }
-            await sleep(interval);
-            retry -= 1;
+            if (rawTx.from === undefined || rawTx.from === null)
+                return Promise.reject("from can not be null");
+            let signTx = await this._platon.accounts.signTransaction(rawTx, privateKey);
+            // 发送交易
+            return this._platon.sendSignedTransaction(signTx.rawTransaction);
         }
-        return Promise.reject(errMsg);
     } catch (error) {
         return Promise.reject(error);
     }
 };
-
-PPOS.prototype.signTx = signTx;
+/**
+ * 构建未签名的Transaction
+ * @param params 调用参数
+ * @param other 其他参数，json形式，可以设置gas和gasPrice
+ * @returns {Promise<{}>} 结果
+ */
+PPOS.prototype.buildTransaction = async function (params, other) {
+    try {
+        let address = (other && other.from) ||
+            (this._platon && this.this._platon.currentProvider && this._platon.currentProvider.selectedAddress);
+        let nonce = (other && other.nonce) ||
+            (address && await this._platon.getTransactionCount(address));
+        let rawTx = {};
+        params = objToParams(params);
+        rawTx.data = paramsToData(params);
+        rawTx.from = address;
+        rawTx.to = funcTypeToBech32(this.hrp, params[0]);
+        rawTx.gas = (other && other.gas) || this.gas || '0xf4240';
+        rawTx.gasPrice = (other && other.gasPrice) || this.gasPrice || '0x746a528800';
+        rawTx.nonce = utils.numberToHex(nonce);
+        if (this.hrp === main_net_hrp) rawTx.chainId = main_net_chainid;
+        return Promise.resolve(rawTx);
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+PPOS.prototype.estimateGasThenSend = async function (params, other, privateKey) {
+    try {
+        let rawTx = await this.buildTransaction(params, other);
+        let gas = this._platon.estimateGas(rawTx);
+        rawTx.gas = gas;
+        if (privateKey === undefined) {
+            // for Samurai
+            return this._platon.sendTransaction(rawTx);
+        } else {
+            let signTx = await this._platon.accounts.signTransaction(rawTx, privateKey);
+            // 发送交易
+            return this._platon.sendSignedTransaction(signTx.rawTransaction);
+        }
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+PPOS.prototype.estimateGasGaspriceThenSend = async function (params, other, privateKey) {
+    try {
+        let rawTx = await this.buildTransaction(params, other);
+        let gasPrice = await this._platon.getGasPrice();
+        let gas = await this._platon.estimateGas(rawTx);
+        rawTx.gas = gas;
+        rawTx.gasPrice = gasPrice;
+        if (privateKey === undefined) {
+            // for Samurai
+            return this._platon.sendTransaction(rawTx);
+        } else {
+            let signTx = await this._platon.accounts.signTransaction(rawTx, privateKey);
+            // 发送交易
+            return this._platon.sendSignedTransaction(signTx.rawTransaction);
+        }
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+/**
+ * 将16进制字符串转换为Buffer
+ * @param {string} hexStr 16进制字符串，可以以‘0x’开头。
+ * @returns {Buffer} Buffer
+ */
+PPOS.hexToBuffer = function (hexStr) {
+    hexStr = hexStr.startsWith('0x') || hexStr.startsWith('0X') ? hexStr.substring(2) : hexStr;
+    return Buffer.from(hexStr, 'hex');
+};
 
 module.exports = PPOS;
