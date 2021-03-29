@@ -20,6 +20,8 @@
         }
     ],
     "scripts": {
+        "build-pw3": "browserify PW3.js -o dist/web3a.js",
+        "build-pw3-min": "browserify PW3.js | terser -o dist/web3a.min.js",
         "postinstall": "lerna bootstrap",
         "build": "gulp",
         "build-all": "gulp all",
@@ -94,7 +96,6 @@
     "devDependencies": {
         "@babel/core": "^7.6.4",
         "@babel/preset-env": "^7.6.3",
-        "regenerator-runtime": "^0.13.3",
         "@types/bignumber.js": "^4.0.2",
         "@types/bn.js": "^4.11.5",
         "@types/node": "^12.6.1",
@@ -137,8 +138,10 @@
         "mochawesome": "^4.1.0",
         "nyc": "^14.1.1",
         "puppeteer": "^1.20.0",
+        "regenerator-runtime": "^0.13.3",
         "sandboxed-module": "^2.0.3",
         "surge": "^0.21.3",
+        "terser": "^5.5.1",
         "typescript": "next",
         "underscore": "^1.9.1",
         "vinyl-source-stream": "^2.0.0",
