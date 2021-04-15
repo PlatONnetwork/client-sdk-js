@@ -8,14 +8,14 @@
 
 然后你就可以通过 npm 包管理工具或者 yarn 包管理工具将client-sdk-js引入到项目工程中，通过如下步骤：
 
-- npm: `npm i PlatONnetwork/client-sdk-js`
-- yarn: `yarn add PlatONnetwork/client-sdk-js`
+- npm: `npm i PlatONnetwork/client-sdk-js#mainnet-web3p`
+- yarn: `yarn add PlatONnetwork/client-sdk-js#mainnet-web3p`
 
 然后需要创建web3的实例，设置一个provider。可参考如下代码：
 
 ```js
 // in node.js
-var Web3 = require('web3');
+var Web3 = require('web3p');
 
 var web3 = new Web3('http://127.0.0.1:6789');
 console.log(web3);
@@ -50,7 +50,7 @@ web3.version
 
 ```js
 web3.version;
-> "0.13.0"
+> "1.0.0"
 ```
 
 ***
@@ -113,7 +113,7 @@ web3.platon.setProvider(myProvider)
 示例代码：
 
 ```js
-var Web3 = require('web3');
+var Web3 = require('web3p');
 var web3 = new Web3('http://localhost:8545');
 // 或者
 var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
@@ -148,7 +148,7 @@ web3.platon.providers
 示例代码：
 
 ```js
-var Web3 = require('web3');
+var Web3 = require('web3p');
 // 使用指定的服务提供器（例如在Mist中）或实例化一个新的websocket提供器
 var web3 = new Web3(Web3.givenProvider || 'ws://remotenode.com:8546');
 // 或者
@@ -2127,7 +2127,7 @@ var personal = new Personal(Personal.givenProvider || 'ws://some.local-or-remote
 
 // 也可以使用web3包
 
-var Web3 = require('web3');
+var Web3 = require('web3p');
 var web3 = new Web3(Web3.givenProvider || 'ws://some.local-or-remote.node:8546');
 
 // -> web3.platon.personal
@@ -3532,7 +3532,7 @@ web3.utils.padLeft('Hello', 20, 'x');
 
 ```JavaScript
 (async () => {
-    const Web3 = require('web3');
+    const Web3 = require('web3p');
     const web3 = new Web3('http://192.168.120.164:6789');
     const ppos = web3.ppos; // 后面例子我都以 ppos 为对象。就不写成 web3.ppos 了。
 
