@@ -16,7 +16,7 @@
         "big-integer": "^1.6.48",
         "ethers": "4.0.0-beta.3",
         "rlp": "^2.2.4",
-        "underscore": "1.9.1",
+        "underscore": "1.12.1",
         "web3-utils": "1.2.4"
     },
     "devDependencies": {
