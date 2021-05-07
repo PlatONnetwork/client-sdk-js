@@ -13,7 +13,7 @@
     },
     "main": "src/index.js",
     "dependencies": {
-        "underscore": "1.9.1",
+        "underscore": "1.12.1",
         "web3-core-helpers": "1.2.4",
         "web3-core-promievent": "1.2.4",
         "web3-core-subscriptions": "1.2.4",
