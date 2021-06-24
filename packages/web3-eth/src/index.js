@@ -460,12 +460,6 @@ var Eth = function Eth() {
             outputFormatter: formatter.outputLogFormatter
         }),
         new Method({
-            name: 'getChainId',
-            call: 'platon_chainId',
-            params: 0,
-            outputFormatter: utils.hexToNumber
-        }),
-        new Method({
             name: 'requestAccounts',
             call: 'platon_requestAccounts',
             params: 0
