@@ -8,17 +8,16 @@ var chai = require("chai");
 var assert = chai.assert;
 var abi = require("../packages/web3-eth-abi/src");
 var utils = require("../packages/web3-utils/src");
+var Accounts = require("../packages/web3-eth-accounts/src");
 
 const provider = "http://127.0.0.1:6789"; // 请更新成自己的 http 节点
 web3 = new Web3(provider);
-const chainId = 100; // 请更新成自己的节点id
-const privateKey = "0x29345764fe154f68d788072f11b5124e16f2cb770713e946511a507f4d51043e"; // 请更新成自己的私钥(必须有十六进制前缀0x)
-const from = web3.platon.accounts.privateKeyToAccount(privateKey).address.mainnet;  // 请更新成上面私钥对应的地址
+const chainId = 201030; // 请更新成自己的节点id
+const privateKey = "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557"; // 请更新成自己的私钥(必须有十六进制前缀0x)
 const contractAddress = ""
 const waitTime = 10000; // 发送一个交易愿意等待的时间，单位ms
 const binFilePath = './test/wasm/eventTopic.wasm';
 const abiFilePath = './test/wasm/eventTopic.abi.json';
-net_type = "lat"
 
 let gas = undefined;
 let gasPrice = undefined;
@@ -48,11 +47,17 @@ const getEventInfo = async (contract, eventName, eventFilter, fromBlockNum) => {
     return eventInfo
 }
 
+let from = ""
 describe("wasm event unit test (you must update config before run this test)", function () {
     before(async function () {
         web3 = new Web3(provider);
         gasPrice = web3.utils.numberToHex(await web3.platon.getGasPrice());
         gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit - 1));
+        
+        var hrp = await web3.platon.getAddressHrp()
+        var ethAccounts = new Accounts(web3, hrp);
+        from = ethAccounts.privateKeyToAccount(privateKey).address;  // 请更新成上面私钥对应的地址
+        var net_type = hrp
 
         let abi = JSON.parse((await fs.readFile(abiFilePath)).toString());
          // 默认一个address，如果要是部署合约，可以替换掉

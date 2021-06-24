@@ -5,7 +5,7 @@ var Web3 = require("../packages/web3");
 
 var platon = new Platon();
 
-var setValue = "0x47D33b27Bb249a2DBab4C0612BF9CaF4C1950855";
+var setValue = "0x47d33b27bb249a2dbab4c0612bf9caf4c1950855";
 
 describe("web3.platon", function() {
     describe("defaultAccount", function() {

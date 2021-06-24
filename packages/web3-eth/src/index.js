@@ -338,6 +338,11 @@ var Eth = function Eth() {
             //outputFormatter: utils.toChecksumAddress
         }),
         new Method({
+            name: 'getAddressHrp',
+            call: 'platon_getAddressHrp',
+            params: 0
+        }),
+        new Method({
             name: 'getBlockNumber',
             call: 'platon_blockNumber',
             params: 0,
@@ -453,12 +458,6 @@ var Eth = function Eth() {
             params: 1,
             inputFormatter: [formatter.inputLogFormatter],
             outputFormatter: formatter.outputLogFormatter
-        }),
-        new Method({
-            name: 'getChainId',
-            call: 'platon_chainId',
-            params: 0,
-            outputFormatter: utils.hexToNumber
         }),
         new Method({
             name: 'requestAccounts',
