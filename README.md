@@ -159,7 +159,7 @@ var web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('
 
 #### web3.givenProvider
 
-When using web3.js in an Ethereum compatible browser, it will set with the current native provider by that browser. Will return the given provider by the (browser) environment, otherwise null.
+When using web3.js in an PlatON compatible browser, it will set with the current native provider by that browser. Will return the given provider by the (browser) environment, otherwise null.
 
 Method:
 
@@ -222,8 +222,8 @@ Example:
 var contract = new web3.platon.Contract(abi, address);
 
 var batch = new web3.BatchRequest();
-batch.add(web3.platon.getBalance.request('atx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq89qwkc', 'latest', callback));
-batch.add(contract.methods.balance(address).call.request({from: 'atx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq89qwkc'}, callback2));
+batch.add(web3.platon.getBalance.request('lax1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqmscn5j', 'latest', callback));
+batch.add(contract.methods.balance(address).call.request({from: 'lax1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqmscn5j'}, callback2));
 batch.execute();
 ```
 
@@ -259,7 +259,7 @@ web3.platon.defaultAccount = 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws';
 ```
 > Note:
 >
-> **All addresses must be quoted, as above: 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws'.**
+> **All addresses must be quoted, as above: 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6'.**
 ***
 #### web3.platon.defaultBlock
 
@@ -305,7 +305,7 @@ web3.platon.defaultBlock = 231;
 
 #### web3.platon.getProtocolVersion
 
-Returns the platon protocol version of the node.
+Returns the PlatON protocol version of the node.
 
 Method:
 
@@ -749,7 +749,7 @@ var receipt = web3.platon.getTransactionReceipt('0x9fc76417374aa880d4449a1f7f31e
   "transactionIndex": 0,
   "blockHash": "0xef95f2f1ed3ca60b048b4bf67cde2195961e0bba6f70bcbea9a2c4e133e34b46",
   "blockNumber": 3,
-  "contractAddress": "atx1fyeszufxwxk62p46djncj86rd553skpph926ws",
+  "contractAddress": "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6",
   "cumulativeGasUsed": 314159,
   "gasUsed": 30234,
   "logs": [{
@@ -783,7 +783,7 @@ Returns:
 Example:
 
 ```js
-web3.platon.getTransactionCount("atx1fyeszufxwxk62p46djncj86rd553skpph926ws")
+web3.platon.getTransactionCount("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
 .then(console.log);
 > 1
 ```
@@ -839,8 +839,8 @@ web3.platon.sendTransaction({
 
 // using the promise
 web3.platon.sendTransaction({
-    from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x',
-    to: 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws',
+    from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv',
+    to: 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6',
     value: '1000000000000000'
 })
 .then(function(receipt){
@@ -850,8 +850,8 @@ web3.platon.sendTransaction({
 
 // using the event emitter
 web3.platon.sendTransaction({
-    from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x',
-    to: 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws',
+    from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv',
+    to: 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6',
     value: '1000000000000000'
 })
 .on('transactionHash', function(hash){
@@ -895,7 +895,7 @@ const transaction_demo = async function () {
     web3 = new Web3("http://127.0.0.1:6789");
     var privateKey="0xb416b341437c420a45cb6ba5ca883655eec169360d36866124d23682c03766ba";
     // 主网地址
-    let from = web3.platon.accounts.privateKeyToAccount(privateKey).address.mainnet;
+    let from = web3.platon.accounts.privateKeyToAccount(privateKey).address;
     let nonce = web3.utils.numberToHex(await web3.platon.getTransactionCount(from));
     let tx = {
         from:from,
@@ -939,12 +939,12 @@ Returns:
 Example:
 
 ```js
-web3.platon.sign("Hello world", "atx1fyeszufxwxk62p46djncj86rd553skpph926ws")
+web3.platon.sign("Hello world", "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
 .then(console.log);
 > "0x30755ed65396facf86c53e6217c52b4daebe72aa4941d89635409de4c9c7f9466d4e9aaec7977f05e923889b33c0d0dd27d7226b6e6f56ce737465c5cfd04be400"
 
 // the below is the same
-web3.platon.sign(web3.utils.utf8ToHex("Hello world"), "atx1fyeszufxwxk62p46djncj86rd553skpph926ws")
+web3.platon.sign(web3.utils.utf8ToHex("Hello world"), "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
 .then(console.log);
 > "0x30755ed65396facf86c53e6217c52b4daebe72aa4941d89635409de4c9c7f9466d4e9aaec7977f05e923889b33c0d0dd27d7226b6e6f56ce737465c5cfd04be400"
 ```
@@ -1024,7 +1024,7 @@ Example:
 
 ```js
 web3.platon.estimateGas({
-    to: "atx1fyeszufxwxk62p46djncj86rd553skpph926ws",
+    to: "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6",
     data: "0xc6888fa10000000000000000000000000000000000000000000000000000000000000003"
 })
 .then(console.log);
@@ -1070,7 +1070,7 @@ Example:
 
 ```js
 web3.platon.getPastLogs({
-    address: "atx1fyeszufxwxk62p46djncj86rd553skpph926ws",
+    address: "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6",
     topics: ["0x033456732123ffff2342342dd12342434324234234fd234fd23fd4f23d4234"]
 })
 .then(console.log);
@@ -1083,7 +1083,7 @@ web3.platon.getPastLogs({
     transactionHash: '0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385',
     blockHash: '0xfd43ade1c09fade1c0d57a7af66ab4ead7c2c2eb7b11a91ffdd57a7af66ab4ead7',
     blockNumber: 1234,
-    address: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'
+    address: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'
 },{...}]
 ```
 
@@ -1421,7 +1421,7 @@ Parameter:
    * `gas` - `Number`: The maximum gas provided for a transaction (gas limit).
    * `data` - `String`: The byte code of the contract. Used when the contract gets deployed.
    * `vmType` - `Number`: The contract type. 0 means solidity contract, 1 means WASM contract. The default is the solidity contract. (New field)
-   * `net_type ` - `String`: The network type. `atp` represents the primary network, `atx` represents the test network. The default is to the test network.  (New field)
+   * `net_type ` - `String`: The network type. `lat` represents the primary network, `lax` represents the test network. The default is to the test network.  (New field)
 
 Returns:
 
@@ -1430,8 +1430,8 @@ Returns:
 Example:
 
 ```js
-var myContract = new web3.platon.Contract([...], 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x', {
-    from: 'atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr', // default from address
+var myContract = new web3.platon.Contract([...], 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv', {
+    from: 'lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf', // default from address
     gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
 });
 ```
@@ -1464,12 +1464,12 @@ myContract.options;
 > {
     address: 'atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr',
     jsonInterface: [...],
-    from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x',
+    from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv',
     gasPrice: '10000000000000',
     gas: 1000000
 }
 
-myContract.options.from = 'atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr'; // default from address
+myContract.options.from = 'lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf'; // default from address
 myContract.options.gasPrice = '20000000000000'; // default gas price in wei
 myContract.options.gas = 5000000; // provide as fallback always 5M gas
 ```
@@ -1494,10 +1494,10 @@ Example:
 
 ```js
 myContract.options.address;
-> 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'
+> 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'
 
 // set a new address
-myContract.options.address = 'atx...';
+myContract.options.address = 'lax...';
 ```
 
 ***
@@ -1624,11 +1624,9 @@ myContract.deploy({
 ***
 
 #### methods
-
 Creates a transaction object for that method, which then can be called, send, estimated.
 
 If it is a WASM contract, you can refer to [WASM contract parameter passing reference](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
-
 Method:
 
 ```
@@ -1661,18 +1659,18 @@ Example:
 
 ```js
 // calling a method
-myContract.methods.myMethod(123).call({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'}, function(error, result){
+myContract.methods.myMethod(123).call({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'}, function(error, result){
     ...
 });
 
 // or sending and using a promise
-myContract.methods.myMethod(123).send({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'})
+myContract.methods.myMethod(123).send({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'})
 .then(function(receipt){
     // receipt can also be a new contract instance, when coming from a "contract.deploy({...}).send()"
 });
 
 // or sending and using the events
-myContract.methods.myMethod(123).send({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'})
+myContract.methods.myMethod(123).send({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'})
 .on('transactionHash', function(hash){
     ...
 })
@@ -1712,12 +1710,12 @@ Example:
 
 ```js
 // using the callback
-myContract.methods.myMethod(123).call({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'}, function(error, result){
+myContract.methods.myMethod(123).call({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'}, function(error, result){
     ...
 });
 
 // using the promise
-myContract.methods.myMethod(123).call({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'})
+myContract.methods.myMethod(123).call({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'})
 .then(function(result){
     ...
 });
@@ -1805,19 +1803,19 @@ Example:
 
 ```js
 // using the callback
-myContract.methods.myMethod(123).send({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'}, function(error, transactionHash){
+myContract.methods.myMethod(123).send({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'}, function(error, transactionHash){
     ...
 });
 
 // using the promise
-myContract.methods.myMethod(123).send({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'})
+myContract.methods.myMethod(123).send({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'})
 .then(function(receipt){
     // receipt can also be a new contract instance, when coming from a "contract.deploy({...}).send()"
 });
 
 
 // using the event emitter
-myContract.methods.myMethod(123).send({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'})
+myContract.methods.myMethod(123).send({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'})
 .on('transactionHash', function(hash){
     ...
 })
@@ -1832,7 +1830,7 @@ myContract.methods.myMethod(123).send({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7
         "transactionIndex": 0,
         "blockHash": "0xef95f2f1ed3ca60b048b4bf67cde2195961e0bba6f70bcbea9a2c4e133e34b46",
         "blockNumber": 3,
-        "contractAddress": "atx1fyeszufxwxk62p46djncj86rd553skpph926ws",
+        "contractAddress": "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6",
         "cumulativeGasUsed": 314159,
         "gasUsed": 30234,
         "events": {
@@ -1853,7 +1851,7 @@ myContract.methods.myMethod(123).send({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7
                 transactionHash: '0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385',
                 blockHash: '0xfd43ade1c09fade1c0d57a7af66ab4ead7c2c2eb7b11a91ffdd57a7af66ab4ead7',
                 blockNumber: 1234,
-                address: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'
+                address: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'
             },
             "MyOtherEvent": {
                 ...
@@ -1900,7 +1898,7 @@ myContract.methods.myMethod(123).estimateGas({gas: 5000000}, function(error, gas
 });
 
 // using the promise
-myContract.methods.myMethod(123).estimateGas({from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'})
+myContract.methods.myMethod(123).estimateGas({from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'})
 .then(function(gasAmount){
     ...
 })
@@ -1949,7 +1947,6 @@ myContract.events.MyEvent([options][, callback])
 ```
 
 Parameter:
-
 * `options` - `Object` (optional): The options used for deployment：
    - `filter` - `Object` (optional): Let you filter events by indexed parameters, e.g. {filter: {myNumber: [12,13]}} means all events where “myNumber” is 12 or 13.
    - `fromBlock` - `Number` (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "latest", "earlist", "pending", and "genesis" can also be used.
@@ -2012,7 +2009,7 @@ myContract.events.MyEvent({
     transactionHash: '0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385',
     blockHash: '0xfd43ade1c09fade1c0d57a7af66ab4ead7c2c2eb7b11a91ffdd57a7af66ab4ead7',
     blockNumber: 1234,
-    address: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'
+    address: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'
 }
 ```
 
@@ -2083,7 +2080,7 @@ myContract.getPastEvents('MyEvent', {
     transactionHash: '0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385',
     blockHash: '0xfd43ade1c09fade1c0d57a7af66ab4ead7c2c2eb7b11a91ffdd57a7af66ab4ead7',
     blockNumber: 1234,
-    address: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x'
+    address: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv'
 },{
     ...
 }]
@@ -2228,14 +2225,14 @@ Example:
 ```js
 web3.platon.personal.newAccount('!@superpassword')
 .then(console.log);
-> 'atx1uqug0zq7rcxddndleq4ux2ft3tv6dqljazusp4'
+> 'lax1uqug0zq7rcxddndleq4ux2ft3tv6dqljphydrl'
 ```
 
 ***
 
 #### web3.platon.personal.sign
 
-The sign method calculates an Ethereum specific signature with:
+The sign method calculates an PlatON specific signature with:
 
 Notes: Sending your account password over an unsecured HTTP RPC connection is highly unsecure.
 
@@ -2259,12 +2256,12 @@ Returns:
 Example:
 
 ```js
-web3.platon.personal.sign("Hello world", "atx1fyeszufxwxk62p46djncj86rd553skpph926ws", "test password!")
+web3.platon.personal.sign("Hello world", "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6", "test password!")
 .then(console.log);
 > "0x30755ed65396facf86c53e6217c52b4daebe72aa4941d89635409de4c9c7f9466d4e9aaec7977f05e923889b33c0d0dd27d7226b6e6f56ce737465c5cfd04be400"
 
 // the below is the same
-web3.platon.personal.sign(web3.utils.utf8ToHex("Hello world"), "atx1fyeszufxwxk62p46djncj86rd553skpph926ws", "test password!")
+web3.platon.personal.sign(web3.utils.utf8ToHex("Hello world"), "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6", "test password!")
 .then(console.log);
 > "0x30755ed65396facf86c53e6217c52b4daebe72aa4941d89635409de4c9c7f9466d4e9aaec7977f05e923889b33c0d0dd27d7226b6e6f56ce737465c5cfd04be400"
 ```
@@ -2295,7 +2292,7 @@ Example:
 
 ```js
 web3.platon.personal.ecRecover("Hello world", "0x30755ed65396facf86c53e6217c52b4daebe72aa4941d89635409de4c9c7f9466d4e9aaec7977f05e923889b33c0d0dd27d7226b6e6f56ce737465c5cfd04be400").then(console.log);
-> "atx1fyeszufxwxk62p46djncj86rd553skpph926ws"
+> "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6"
 ```
 
 ***
@@ -2879,19 +2876,18 @@ web3.utils.soliditySha3({type: 'uint256', value: '234'})); // same as above
 web3.utils.soliditySha3({t: 'uint', v: new BN('234')})); // same as above
 > "0x61c831beab28d67d1bb40b5ae1a11e2757fa842f031a2d0bc94a7867bc5d26c2"
 
-
-web3.utils.soliditySha3('atx1fyeszufxwxk62p46djncj86rd553skpph926ws');
+web3.utils.soliditySha3('lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6');
 > "0x4e8ebbefa452077428f93c9520d3edd60594ff452a29ac7d2ccc11d47f3ab95b"
 
-web3.utils.soliditySha3({t: 'bytes', v: 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws'});
+web3.utils.soliditySha3({t: 'bytes', v: 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6'});
 > "0x4e8ebbefa452077428f93c9520d3edd60594ff452a29ac7d2ccc11d47f3ab95b" // same result as above
 
 
-web3.utils.soliditySha3({t: 'address', v: 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws'});
+web3.utils.soliditySha3({t: 'address', v: 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6'});
 > "0x4e8ebbefa452077428f93c9520d3edd60594ff452a29ac7d2ccc11d47f3ab95b" //same as above, but will do a checksum check, if it's multi case
 
 
-web3.utils.soliditySha3({t: 'bytes32', v: 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws'});
+web3.utils.soliditySha3({t: 'bytes32', v: 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6'});
 > "0x3c69a194aaf415ba5d6afca734660d0a3d45acdc05d54cd1ca89a8988e7625b4" // different result as above
 
 
@@ -3036,7 +3032,7 @@ web3.utils.isBech32Address(bech32Address)
 
  Parameter: 
 
-`bech32Address` - String:  The address string to be checked in bech32 format; atx represents the test network address, and atp represents the main network address. 
+`bech32Address` - String:  The address string to be checked in bech32 format; lax represents the test network address, and lat represents the main network address. 
 
 Returns:
 
@@ -3062,7 +3058,7 @@ web3.utils.isBech32Address('atx1zg69v7yszg69v7yszg69v7yszg69v7y3kdfylf');
 
 #### web3.utils.toBech32Address
 
- Convert a valid Ethereum address to a bech32 format address of the designated network.  
+ Convert a valid PlatON address to a bech32 format address of the designated network.  
 
 Method:
 
@@ -3072,9 +3068,9 @@ web3.utils.toBech32Address(hrp, address)
 
 Parameters:
 
-`hrp` - String:  Specify the network parameters, atx indicates the test network address, and atp indicates the main network address.
+`hrp` - String:  Specify the network parameters, lax indicates the test network address, and lat indicates the main network address.
 
-`address` - String:  Ethereum address format string. 
+`address` - String:  PlatON address format string. 
 
 Returns:
 
@@ -3094,21 +3090,23 @@ web3.utils.toBech32Address('atp', '0x1234567890123456789012345678901234567891');
 
 #### web3.utils.decodeBech32Address
 
- Resolve the bech32 format address of the specified network into a valid Ethereum address. 
+ Resolve the bech32 format address of the specified network into a valid PlatON address. 
 
 Method:
 
 ```js
-web3.utils.decodeBech32Address(bech32Address)
+web3.utils.decodeBech32Address(hrp, bech32Address)
 ```
 
 Parameters:
+
+`hrp` - String:  Specify the network parameters, lax indicates the test network address, and lat indicates the main network address.
 
 `bech32Address` - String:   Address string in bech32 format. 
 
 Returns:
 
-`String`:  The resolution correctly returns a valid Ethereum address, otherwise it returns null. 
+`String`:  The resolution correctly returns a valid PlatON address, otherwise it returns null. 
 
 Sample code: 
 
@@ -3124,7 +3122,7 @@ web3.utils.decodeBech32Address('atp1zg69v7yszg69v7yszg69v7yszg69v7y3kdfylf');
 
 #### web3.utils.toChecksumAddress
 
-Will convert an upper or lowercase Ethereum address to a checksum address.
+Will convert an upper or lowercase PlatON address to a checksum address.
 
 Method:
 
@@ -3448,8 +3446,7 @@ web3.utils.hexToBytes(0x000000ea);
 ***
 
 #### web3.utils.toVon
-
-Converts any atp value value into von.
+Converts any lat value value into von.
 
 * von
 * kvon
@@ -3486,7 +3483,7 @@ web3.utils.toVon(number [, unit])
 Parameter:
 
 *  `number` - `String|Number|BN`: The value. 
-*  `unit` - String，(optional, defaults to "atp"): The ether to convert from. 
+*  `unit` - String，(optional, defaults to "lat"): The ether to convert from. 
 
 
 Returns:
@@ -3504,7 +3501,7 @@ web3.utils.toVon('1', 'atp');
 
 #### web3.utils.fromVon
 
-Converts any von value into a atp value.
+Converts any von value into a lat value.
 
 Method:
 
@@ -3517,7 +3514,7 @@ Converts any von value into a atp value.
 Parameter:
 
 `number` - `String|Number|BN`: The value in von.
-`unit` - `String`，(optional, defaults to "atp"): The ether to convert to. Possible units are:
+`unit` - `String`，(optional, defaults to "lat"): The ether to convert to. Possible units are:
 
 * von
 * kvon
@@ -3602,13 +3599,13 @@ Of course, in order to satisfy multiple ppos that can be instantiated arbitraril
     // Since the provider has been passed in when instantiating web3, it is not necessary to pass in the provider.
     ppos.updateSetting({
         privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-        chainId: 201018,
+        chainId: 104,
     })
 
     let data, reply;
 
     // Passing parameters to send transactions in the form of objects: 1000. createStaking (): initiate a pledge.
-    const benefitAddress = 'atx1umevux40n6ljlclm4pmrh2ad7f0rld06tr6mnk';
+    const benefitAddress = 'lax1umevux40n6ljlclm4pmrh2ad7f0rld06hkzx3u';
     const nodeId = '80f1fcee54de74dbf7587450f31c31c0e057bedd4faaa2a10c179d52c900ca01f0fb255a630c49d83b39f970d175c42b12a341a37504be248d76ecf592d32bc0';
     const amount = '10000000000000000000000000000';
     const blsPubKey = 'd2459db974f49ca9cbf944d4d04c2d17888aef90858b62d6aec166341a6e886e8c0c0cfae9e469c2f618f5d9b7a249130d10047899da6154288c9cde07b576acacd75fef07ba0cfeb4eaa7510704e77a9007eff5f1a5f8d099e6ea664129780c';
@@ -3691,7 +3688,7 @@ createStaking params object reply:  {
   "gasUsed": "0x14f34",
   "logs": [
     {
-      "address": "atx1w9x7ye4qalarnl9v59zzhyn7tug9864rll39n7",
+      "address": "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35",
       "topics": [
         "0xd63087bea9f1800eed943829fc1d61e7869764805baa3259078c1caf3d4f5a48"
       ],
@@ -3857,7 +3854,7 @@ let reply = await ppos.rpc('admin_getProgramVersion');
 let reply = await ppos.rpc('platon_accounts')
 
 // Get the amount of the specified account.
-let reply = await ppos.rpc('platon_getBalance', ["atx1w9x7ye4qalarnl9v59zzhyn7tug9864rll39n7","latest"])
+let reply = await ppos.rpc('platon_getBalance', ["lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35","latest"])
 ```
 
 ***
@@ -3942,12 +3939,12 @@ let params, reply;
 // Called by passing in an object (the order is not required for the key)
 params = {
     funcType: 1103,
-    addr: ppos.hexStrBuf("atx1w9x7ye4qalarnl9v59zzhyn7tug9864rll39n7")
+    addr: ppos.hexStrBuf("lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35")
 }
 reply = await ppos.call(params);
 
 // Calling as an array object.
-params = [1103, ppos.hexStrBuf("atx1w9x7ye4qalarnl9v59zzhyn7tug9864rll39n7")];
+params = [1103, ppos.hexStrBuf("lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35")];
 reply = await ppos.call(params);
 ```
 
@@ -4078,7 +4075,6 @@ Parameters:
 |typ|uint16(2bytes)| Indicates whether to use the account free amount or the account's locked amount as a pledge, 0: free amount; 1: locked amount |
 |amount|*big.Int(bytes)| Increased von |
 
-
 #### Cancellation Of Pledge
 
 Send the transaction to cancel the pledge.
@@ -4111,7 +4107,6 @@ Completed by sending a transaction(All reductions are cancelled).
 |stakingBlockNum|uint64(8bytes)| A unique identifier representing a pledge of a node |
 |nodeId|64bytes| NodeId of the pledged node |
 |amount|*big.Int(bytes) | Amount of reduction entrustment (calculated by the smallest unit, `1LAT = 10 ** 18 von`) |
-
 
 #### Query Validators
 
@@ -4229,9 +4224,7 @@ Returns: List
 |NodeId|64bytes| Node ID of the validator |
 |StakingBlockNum|uint64(8bytes)| Block height when pledge is initiated |
 
-
 #### Query Delegated Informations
-
 Query the current single delegate information, using the call method.
 
 Parameters:
@@ -4321,7 +4314,6 @@ Parameters:
 |newVersion|uint32(4bytes)| updated version |
 |endVotingRounds|uint64|Number of voting consensus rounds. Note: Assume that the number of the consensus round when the transaction that submitted the proposal is packaged into the block is `round1`. The` blockNumber` of the proposal voting deadline is `round1 + endVotingRounds`. The consensus round produced block 250, ppos was announced 20 blocks ahead of time, `250`, and` 20` are all configurable), of which `0 <endVotingRounds <= 4840` (about 2 weeks, the actual discussion can be calculated according to the configuration), And is an integer)|
 
-
 #### Submit Cancellation Proposal
 
 Submit cancellation proposal by sending transaction.
@@ -4336,13 +4328,11 @@ Parameters:
 |endVotingRounds|uint64| Number of voting consensus rounds. Refer to the description of submitting an upgrade proposal. At the same time, the value of this parameter in this interface cannot be greater than the value in the corresponding upgrade proposal.|
 |tobeCanceledProposalID|common.hash(32bytes)| Upgrade proposal ID to be canceled |
 
-
 #### Vote On Proposal
 
 Vote on a proposal by sending a transaction.
 
 Parameters:
-
 | Field| Type | Remark |
 |---|---|---|
 |funcType|uint16(2bytes)|Method type code(2003)|
