@@ -106,16 +106,12 @@ var isAddress = function (address) {
  * @return {Boolean}
 */
 var isBech32Address = function (address) {
-    var hrp = "lat";
+    if(address.length != 42)
+    {
+        return false;
+    }
+    var hrp = address.substr(0,3);
     var ret = segwit_addr.decode(hrp, address);
-    if (ret === null) {
-        hrp = "lax";
-        ret = segwit_addr.decode(hrp, address);
-    }
-    else {
-        return true;
-    }
-
     if (ret === null) {
         return false;
     }
@@ -135,19 +131,19 @@ var toBech32Address = function (hrp, address) {
         return segwit_addr.EncodeAddress(hrp, address);
     }
 
-    return ''
+    return '';
 };
 
 /**
  * Resolve the bech32 address
  *
  * @method decodeBech32Address
- * @param {String} hrp
  * @param {String} bech32Address
  * @return {String} formatted address
  */
-var decodeBech32Address = function (hrp, bech32Address) {
+var decodeBech32Address = function (bech32Address) {
     if (isBech32Address(bech32Address)) {
+        var hrp = bech32Address.substr(0,3);
         address = segwit_addr.DecodeAddress(hrp, bech32Address);
         if (address !== null) {
             return "0x" + address

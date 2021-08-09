@@ -77,7 +77,7 @@ var Contract = function Contract(jsonInterface, address, options) {
     } else {
         this.options = options
         if(this.options.net_type === undefined || this.options.net_type === null){
-            this.options.net_type = "lax"
+            this.options.net_type = "lat"
         }
         abi.setNetType(this.options.net_type)
     }
@@ -155,100 +155,103 @@ var Contract = function Contract(jsonInterface, address, options) {
         // console.log(JSON.stringify(jsonInterface));
     }
 
-    // set address
-    Object.defineProperty(this.options, 'address', {
-        set: function (value) {
-            if (value) {
-                //_this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
-                _this._address = formatters.inputAddressFormatter(value);
-            }
-        },
-        get: function () {
-            return _this._address;
-        },
-        enumerable: true
-    });
-
-    // add method and event signatures, when the jsonInterface gets set
-    Object.defineProperty(this.options, 'jsonInterface', {
-        set: function (value) {
-            _this.methods = {};
-            _this.events = {};
-
-            _this._jsonInterface = value.map(function (method) {
-                var func,
-                    funcName;
-
-                // make constant and payable backwards compatible
-                method.constant = (method.stateMutability === "view" || method.stateMutability === "pure" || method.constant);
-                method.payable = (method.stateMutability === "payable" || method.payable);
-
-
-                if (method.name && method.type !== "struct") {
-                    funcName = utils._jsonInterfaceMethodToString(method);
+    if (_.isUndefined(this.options.isDefineOnce)) {
+        this.options.isDefineOnce = true; 
+        // set address
+        Object.defineProperty(this.options, 'address', {
+            set: function (value) {
+                if (value) {
+                    //_this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
+                    _this._address = formatters.inputAddressFormatter(value);
                 }
+            },
+            get: function () {
+                return _this._address;
+            },
+            enumerable: true
+        });
+
+        // add method and event signatures, when the jsonInterface gets set
+        Object.defineProperty(this.options, 'jsonInterface', {
+            set: function (value) {
+                _this.methods = {};
+                _this.events = {};
+
+                _this._jsonInterface = value.map(function (method) {
+                    var func,
+                        funcName;
+
+                    // make constant and payable backwards compatible
+                    method.constant = (method.stateMutability === "view" || method.stateMutability === "pure" || method.constant);
+                    method.payable = (method.stateMutability === "payable" || method.payable);
 
 
-                // function
-                if (method.type === 'function') {
-                    method.signature = abi.encodeFunctionSignature(funcName);
-                    func = _this._createTxObject.bind({
-                        method: method,
-                        parent: _this
-                    });
-
-
-                    // add method only if not one already exists
-                    if (!_this.methods[method.name]) {
-                        _this.methods[method.name] = func;
-                    } else {
-                        var cascadeFunc = _this._createTxObject.bind({
-                            method: method,
-                            parent: _this,
-                            nextMethod: _this.methods[method.name]
-                        });
-                        _this.methods[method.name] = cascadeFunc;
+                    if (method.name && method.type !== "struct") {
+                        funcName = utils._jsonInterfaceMethodToString(method);
                     }
 
-                    // definitely add the method based on its signature
-                    _this.methods[method.signature] = func;
 
-                    // add method by name
-                    _this.methods[funcName] = func;
-
-
-                    // event
-                } else if (method.type === 'event') {
-                    method.signature = abi.encodeEventSignature(funcName);
-                    var event = _this._on.bind(_this, method.signature);
-
-                    // add method only if not already exists
-                    if (!_this.events[method.name] || _this.events[method.name].name === 'bound ')
-                        _this.events[method.name] = event;
-
-                    // definitely add the method based on its signature
-                    _this.events[method.signature] = event;
-
-                    // add event by name
-                    _this.events[funcName] = event;
-                } else if (method.type === 'type') {
-                    // 对 wasm 的结构体处理
-                }
+                    // function
+                    if (method.type === 'function') {
+                        method.signature = abi.encodeFunctionSignature(funcName);
+                        func = _this._createTxObject.bind({
+                            method: method,
+                            parent: _this
+                        });
 
 
-                return method;
-            });
+                        // add method only if not one already exists
+                        if (!_this.methods[method.name]) {
+                            _this.methods[method.name] = func;
+                        } else {
+                            var cascadeFunc = _this._createTxObject.bind({
+                                method: method,
+                                parent: _this,
+                                nextMethod: _this.methods[method.name]
+                            });
+                            _this.methods[method.name] = cascadeFunc;
+                        }
 
-            // add allEvents
-            _this.events.allEvents = _this._on.bind(_this, 'allevents');
+                        // definitely add the method based on its signature
+                        _this.methods[method.signature] = func;
 
-            return _this._jsonInterface;
-        },
-        get: function () {
-            return _this._jsonInterface;
-        },
-        enumerable: true
-    });
+                        // add method by name
+                        _this.methods[funcName] = func;
+
+
+                        // event
+                    } else if (method.type === 'event') {
+                        method.signature = abi.encodeEventSignature(funcName);
+                        var event = _this._on.bind(_this, method.signature);
+
+                        // add method only if not already exists
+                        if (!_this.events[method.name] || _this.events[method.name].name === 'bound ')
+                            _this.events[method.name] = event;
+
+                        // definitely add the method based on its signature
+                        _this.events[method.signature] = event;
+
+                        // add event by name
+                        _this.events[funcName] = event;
+                    } else if (method.type === 'type') {
+                        // 对 wasm 的结构体处理
+                    }
+
+
+                    return method;
+                });
+
+                // add allEvents
+                _this.events.allEvents = _this._on.bind(_this, 'allevents');
+
+                return _this._jsonInterface;
+            },
+            get: function () {
+                return _this._jsonInterface;
+            },
+            enumerable: true
+        });
+    }
 
     // get default account from the Class
     var defaultAccount = this.constructor.defaultAccount;
@@ -457,16 +460,39 @@ Contract.prototype._encodeEventABI = function (event, options) {
 
         // create topics based on filter
     } else {
-
         result.topics = [];
-
         // add event signature
         if (event && !event.anonymous && event.name !== 'ALLEVENTS') {
-            result.topics.push(event.signature);
+            if (this.options.vmType === 1) {
+                // wasm
+                var bytes = Buffer.from(event.name)
+                var len = bytes.length
+                var hex = ["0x"]
+                if (len > 32) {
+                    result.topics.push(utils.sha3(bytes))
+                } else {
+                    // 字节数组转成十六进制字符串
+                    var i = 0
+                    // 补0
+                    for (i = 0; i < 32-len ; i++) {
+                        hex.push("00")
+                    }
+                    for (i = 0; i < len ; i++) {
+                        var current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
+                        hex.push((current >>> 4).toString(16));
+                        hex.push((current & 0xF).toString(16));
+                    }
+                    hex = hex.join("");
+                    result.topics.push(hex)
+                }
+             } else {
+                // evm
+                result.topics.push(event.signature);
+            }  
         }
-
         // add event topics (indexed arguments)
         if (event.name !== 'ALLEVENTS') {
+            const vmType = this.options.vmType
             var indexedTopics = event.inputs.filter(function (i) {
                 return i.indexed === true;
             }).map(function (i) {
@@ -477,13 +503,20 @@ Contract.prototype._encodeEventABI = function (event, options) {
 
                 // TODO: https://github.com/ethereum/web3.js/issues/344
                 // TODO: deal properly with components
-
-                if (_.isArray(value)) {
-                    return value.map(function (v) {
-                        return abi.encodeParameter(i.type, v);
-                    });
-                }
-                return abi.encodeParameter(i.type, value);
+            
+                if (vmType === 0) {
+                    if (_.isArray(value)) {
+                        return value.map(function (v) {
+                            // return abi.encodeParameter(i.type, v);
+                            return abi.encodeParameter(i, v);
+                        });
+                    }
+                    return abi.encodeParameter(i.type, value);
+                } else {
+                    var encodeData = abi.encodeEventParameters(i.type, value);
+                    // console.log("\nencodeData:", encodeData)
+                    return encodeData
+                }                
             });
 
             result.topics = result.topics.concat(indexedTopics);
@@ -836,6 +869,65 @@ Contract.prototype._on = function () {
 };
 
 /**
+ * new filter from contracts
+ *
+ * @method newFilter
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the rpc id
+ */
+Contract.prototype.newFilter = function () {
+    var subOptions = this._generateEventOptions.apply(this, arguments);
+
+    var newFilter = new Method({
+        name: 'newFilter',
+        call: 'platon_newFilter',
+        params: 1,
+        inputFormatter: [formatters.inputLogFormatter],
+    });
+    
+    newFilter.setRequestManager(this._requestManager);
+    var call = newFilter.buildCall();
+
+    newFilter = null;
+
+    // return call(subOptions.params, subOptions.callback);
+    return call(subOptions.params, subOptions.callback);
+}
+
+/**
+ * Get filter Logs from contracts
+ *
+ * @method getFilterLogs
+ * @param {String} rpcId
+ * @param {Function} callback
+ * @return {Object} the promievent
+ */
+Contract.prototype.getFilterLogs = function () {
+
+    var getFilterLogs = new Method({
+        name: 'getFilterLogs',
+        call: 'platon_getFilterLogs',
+        params: 1,
+    })
+
+    getFilterLogs.setRequestManager(this._requestManager);
+    var call = getFilterLogs.buildCall();
+
+    getFilterLogs = null;
+
+    if(arguments.length==1) {
+        return call(arguments[0]);
+    } else if (arguments.length==2){
+        // callback function
+        return call(arguments[0],arguments[1]);
+    } else {
+        throw new Error('getFilterLogs:Error parameters'); 
+    }    
+};
+
+/**
  * Get past events from contracts
  *
  * @method getPastEvents
@@ -845,6 +937,7 @@ Contract.prototype._on = function () {
  * @return {Object} the promievent
  */
 Contract.prototype.getPastEvents = function () {
+    
     var subOptions = this._generateEventOptions.apply(this, arguments);
 
     var getPastLogs = new Method({

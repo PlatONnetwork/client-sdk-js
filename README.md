@@ -255,7 +255,7 @@ web3.platon.defaultAccount;
 > undefined
 
 // set the default account
-web3.platon.defaultAccount = 'lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6';
+web3.platon.defaultAccount = 'atx1fyeszufxwxk62p46djncj86rd553skpph926ws';
 ```
 > Note:
 >
@@ -402,7 +402,7 @@ Example:
 
 ```js
 web3.platon.getAccounts().then(console.log);
-> ["lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6", "lax1kg7y7wfwzqsyxppyxcdvhkkkwlf64ccl8x93ut"]
+> ["atx1fyeszufxwxk62p46djncj86rd553skpph926ws", "atx1kg7y7wfwzqsyxppyxcdvhkkkwlf64cclmnav7p"]
 ```
 
 ***
@@ -453,7 +453,7 @@ Returns:
 Example:
 
 ```js
-web3.platon.getBalance("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
+web3.platon.getBalance("atx1fyeszufxwxk62p46djncj86rd553skpph926ws")
 .then(console.log);
 > "1000000000000"
 ```
@@ -484,7 +484,7 @@ Returns:
 Example:
 
 ```js
-web3.platon.getStorageAt("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6", 0)
+web3.platon.getStorageAt("atx1fyeszufxwxk62p46djncj86rd553skpph926ws", 0)
 .then(console.log);
 > "0x033456732123ffff2342342dd12342434324234234fd234fd23fd4f23d4234"
 ```
@@ -514,7 +514,7 @@ Returns:
 Example:
 
 ```js
-web3.platon.getCode("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
+web3.platon.getCode("atx1fyeszufxwxk62p46djncj86rd553skpph926ws")
 .then(console.log);
 > "0x600160008035811a818181146012578301005b601b6001356025565b8060005260206000f25b600060078202905091905056"
 ```
@@ -575,7 +575,7 @@ web3.platon.getBlock(3150)
     "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "transactionsRoot": "0x3a1b03875115b79539e5bd33fb00d8f7b7cd61929d5a3c574f507b8acf415bee",
     "stateRoot": "0xf1133199d44695dfa8fd1bcfe424d82854b5cebef75bddd7e40ea94cda515bcb",
-    "miner": "lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6",
+    "miner": "atx1fyeszufxwxk62p46djncj86rd553skpph926ws",
     "difficulty": '21345678965432',
     "totalDifficulty": '324567845321',
     "size": 616,
@@ -614,7 +614,7 @@ Returns:
 Example:
 
 ```js
-web3.platon.getBlockTransactionCount("lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6")
+web3.platon.getBlockTransactionCount("atx1fyeszufxwxk62p46djncj86rd553skpph926ws")
 .then(console.log);
 > 1
 ```
@@ -663,8 +663,8 @@ web3.platon.getTransaction('0x9fc76417374aa880d4449a1f7f31ec597f00b1f6f3dd2d66f4
     "blockHash": "0xef95f2f1ed3ca60b048b4bf67cde2195961e0bba6f70bcbea9a2c4e133e34b46",
     "blockNumber": 3,
     "transactionIndex": 0,
-    "from": "lax14984xa8uuhkmer32s6tuz5e3valxa0ct68a0c5",
-    "to": "lax1v227ux60dht9q3mk97fyanfk0st740u0x25f88",
+    "from": "atx14984xa8uuhkmer32s6tuz5e3valxa0ctxj9j67",
+    "to": "atx1v227ux60dht9q3mk97fyanfk0st740u06lv59d",
     "value": '123450000000000000',
     "gas": 314159,
     "gasPrice": '2000000000000',
@@ -831,7 +831,7 @@ var code = "603d80600c6000396000f3007c010000000000000000000000000000000000000000
 
 // using the callback
 web3.platon.sendTransaction({
-    from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv',
+    from: 'atx1mc9jj4nf487e840j3k0vshjq7n9kj7aw9qvc0x',
     data: code // deploying a contracrt
 }, function(error, hash){
     ...
@@ -975,10 +975,10 @@ Example:
 
 ```js
 web3.platon.signTransaction({
-    from: "lax1avq5lrytgxxmddzhwnpjdg8xf3ufznwqrjn60v",
+    from: "atx1avq5lrytgxxmddzhwnpjdg8xf3ufznwql8t8dx",
     gasPrice: "20000000000",
     gas: "21000",
-    to: 'lax1x56n2df4x56n2df4x56n2df4x56n2df44dm33c',
+    to: 'atx1x56n2df4x56n2df4x56n2df4x56n2df4fcrvnj',
     value: "1000000000000000000",
     data: ""
 }).then(console.log);
@@ -988,7 +988,7 @@ web3.platon.signTransaction({
         nonce: '0x0',
         gasPrice: '0x4a817c800',
         gas: '0x5208',
-        to: 'lax1x56n2df4x56n2df4x56n2df4x56n2df44dm33c',
+        to: 'atx1x56n2df4x56n2df4x56n2df4x56n2df4fcrvnj',
         value: '0xde0b6b3a7640000',
         input: '0x',
         v: '0x25',
@@ -1126,8 +1126,8 @@ Example:
 
 ```js
 var subscription = web3.platon.subscribe('logs', {
-    address: 'lax..',
-    topics: ['lax...']
+    address: 'atx..',
+    topics: ['atx...']
 }, function(error, result){
     if (!error)
         console.log(log);
@@ -1378,8 +1378,8 @@ Example:
 
 ```js
 var subscription = web3.platon.subscribe('logs', {
-    address: 'lax..',
-    topics: ['lax...']
+    address: 'atx..',
+    topics: ['atx...']
 }, function(error, result){
     if (!error)
         console.log(result);
@@ -1462,7 +1462,7 @@ Example:
 ```js
 myContract.options;
 > {
-    address: 'lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf',
+    address: 'atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr',
     jsonInterface: [...],
     from: 'lax1mc9jj4nf487e840j3k0vshjq7n9kj7awe459dv',
     gasPrice: '10000000000000',
@@ -1571,7 +1571,7 @@ myContract.deploy({
     arguments: [123, 'My String']
 })
 .send({
-    from: 'lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf',
+    from: 'atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr',
     gas: 1500000,
     gasPrice: '30000000000000'
 }, function(error, transactionHash){ ... })
@@ -1593,7 +1593,7 @@ myContract.deploy({
     arguments: [123, 'My String']
 })
 .send({
-    from: 'lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf',
+    from: 'atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr',
     gas: 1500000,
     gasPrice: '30000000000000'
 })
@@ -1624,11 +1624,9 @@ myContract.deploy({
 ***
 
 #### methods
-
 Creates a transaction object for that method, which then can be called, send, estimated.
 
 If it is a WASM contract, you can refer to [WASM contract parameter passing reference](https://github.com/PlatONnetwork/client-sdk-js/blob/feature/wasm/test/1_platon_wasm.js)。
-
 Method:
 
 ```
@@ -1949,7 +1947,6 @@ myContract.events.MyEvent([options][, callback])
 ```
 
 Parameter:
-
 * `options` - `Object` (optional): The options used for deployment：
    - `filter` - `Object` (optional): Let you filter events by indexed parameters, e.g. {filter: {myNumber: [12,13]}} means all events where “myNumber” is 12 or 13.
    - `fromBlock` - `Number` (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "latest", "earlist", "pending", and "genesis" can also be used.
@@ -2326,10 +2323,10 @@ Example:
 
 ```js
 web3.platon.signTransaction({
-    from: "lax1avq5lrytgxxmddzhwnpjdg8xf3ufznwqrjn60v",
+    from: "atx1avq5lrytgxxmddzhwnpjdg8xf3ufznwql8t8dx",
     gasPrice: "20000000000",
     gas: "21000",
-    to: 'lax1x56n2df4x56n2df4x56n2df4x56n2df44dm33c',
+    to: 'atx1x56n2df4x56n2df4x56n2df4x56n2df4fcrvnj',
     value: "1000000000000000000",
     data: ""
 }, 'MyPassword!').then(console.log);
@@ -2339,7 +2336,7 @@ web3.platon.signTransaction({
         nonce: '0x0',
         gasPrice: '0x4a817c800',
         gas: '0x5208',
-        to: 'lax1x56n2df4x56n2df4x56n2df4x56n2df44dm33c',
+        to: 'atx1x56n2df4x56n2df4x56n2df4x56n2df4fcrvnj',
         value: '0xde0b6b3a7640000',
         input: '0x',
         v: '0x25',
@@ -2879,7 +2876,6 @@ web3.utils.soliditySha3({type: 'uint256', value: '234'})); // same as above
 web3.utils.soliditySha3({t: 'uint', v: new BN('234')})); // same as above
 > "0x61c831beab28d67d1bb40b5ae1a11e2757fa842f031a2d0bc94a7867bc5d26c2"
 
-
 web3.utils.soliditySha3('lax1fyeszufxwxk62p46djncj86rd553skpptsj8v6');
 > "0x4e8ebbefa452077428f93c9520d3edd60594ff452a29ac7d2ccc11d47f3ab95b"
 
@@ -3045,16 +3041,16 @@ Returns:
  Sample code: 
 
 ```js
-web3.utils.isBech32Address('lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf');
+web3.utils.isBech32Address('atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr');
 > true
 
-web3.utils.isBech32Address('lat1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf');
+web3.utils.isBech32Address('atp1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr');
 > false
 
-web3.utils.isBech32Address('lat1zg69v7yszg69v7yszg69v7yszg69v7y30mluqx');
+web3.utils.isBech32Address('atp1zg69v7yszg69v7yszg69v7yszg69v7y3kdfylf');
 > true
 
-web3.utils.isBech32Address('lax1zg69v7yszg69v7yszg69v7yszg69v7y30mluqx');
+web3.utils.isBech32Address('atx1zg69v7yszg69v7yszg69v7yszg69v7y3kdfylf');
 > false
 ```
 
@@ -3083,11 +3079,11 @@ Returns:
  Sample code: 
 
 ```js
-web3.utils.toBech32Address('lax', '0x1234567890123456789012345678901234567891');
-> 'lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf'
+web3.utils.toBech32Address('atx', '0x1234567890123456789012345678901234567891');
+> 'atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr'
 
-web3.utils.toBech32Address('lat', '0x1234567890123456789012345678901234567891');
-> 'lat1zg69v7yszg69v7yszg69v7yszg69v7y30mluqx'
+web3.utils.toBech32Address('atp', '0x1234567890123456789012345678901234567891');
+> 'atp1zg69v7yszg69v7yszg69v7yszg69v7y3kdfylf'
 ```
 
 ------
@@ -3115,10 +3111,10 @@ Returns:
 Sample code: 
 
 ```js
-web3.utils.decodeBech32Address('lax', 'lax1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf');
+web3.utils.decodeBech32Address('atx1zg69v7yszg69v7yszg69v7yszg69v7y3ut4wvr');
 > '0x1234567890123456789012345678901234567891'
 
-web3.utils.decodeBech32Address('lat', 'lat1zg69v7yszg69v7yszg69v7yszg69v7y30mluqx');
+web3.utils.decodeBech32Address('atp1zg69v7yszg69v7yszg69v7yszg69v7y3kdfylf');
 > '0x1234567890123456789012345678901234567891'
 ```
 
@@ -3450,33 +3446,32 @@ web3.utils.hexToBytes(0x000000ea);
 ***
 
 #### web3.utils.toVon
-
 Converts any lat value value into von.
 
 * von
 * kvon
 * mvon
 * gvon
-* microlat
-* millilat
-* lat
-* klat
-* mlat
-* glat
-* tlat
+* microatp
+* milliatp
+* atp
+* katp
+* matp
+* gatp
+* tatp
 
 ```
 'von':          '1',
 'kvon':         '1000',
 'mvon':         '1000000',
 'gvon':         '1000000000',
-'microlat':     '1000000000000',
-'millilat':     '1000000000000000',
-'lat':          '1000000000000000000',
-'klat':         '1000000000000000000000',
-'mlat':         '1000000000000000000000000',
-'glat':         '1000000000000000000000000000',
-'tlat':         '1000000000000000000000000000000'
+'microatp':     '1000000000000',
+'milliatp':     '1000000000000000',
+'atp':          '1000000000000000000',
+'katp':         '1000000000000000000000',
+'matp':         '1000000000000000000000000',
+'gatp':         '1000000000000000000000000000',
+'tatp':         '1000000000000000000000000000000'
 ```
 
 Method:
@@ -3498,7 +3493,7 @@ Returns:
 Example:
 
 ```js
-web3.utils.toVon('1', 'lat');
+web3.utils.toVon('1', 'atp');
 > "1000000000000000000"
 ```
 
@@ -3514,7 +3509,7 @@ Method:
 web3.utils.fromVon(number [, unit])
 ```
 
-Converts any von value into a lat value.
+Converts any von value into a atp value.
 
 Parameter:
 
@@ -3525,13 +3520,13 @@ Parameter:
 * kvon
 * mvon
 * gvon
-* microlat
-* millilat
-* lat
-* klat
-* mlat
-* glat
-* tlat
+* microatp
+* milliatp
+* atp
+* katp
+* matp
+* gatp
+* tatp
 
 Returns:
 
@@ -3540,7 +3535,7 @@ Returns:
 Example:
 
 ```js
-web3.utils.fromVon('1', 'lat');
+web3.utils.fromVon('1', 'atp');
 > "0.000000000000000001"
 ```
 
@@ -3675,7 +3670,7 @@ Of course, in order to satisfy multiple ppos that can be instantiated arbitraril
     const ppos1 = new web3.PPOS({
         provider: 'http://127.0.0.1:6789',
         privateKey: '9f9b18c72f8e5154a9c59af2a35f73d1bdad37b049387fc6cea2bac89804293b',
-        chainId: 104,
+        chainId: 201018,
     })
     reply = await ppos1.call(data);
 })()
@@ -3689,7 +3684,7 @@ createStaking params object reply:  {
   "blockNumber": "0xb",
   "contractAddress": null,
   "cumulativeGasUsed": "0x14f34",
-  "from": "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35",
+  "from": "atx1w9x7ye4qalarnl9v59zzhyn7tug9864rll39n7",
   "gasUsed": "0x14f34",
   "logs": [
     {
@@ -3713,7 +3708,7 @@ createStaking params object reply:  {
   ],
   "logsBloom": "",
   "root": "0x3b7a41cea97f90196039586a3068f6a64c09aa7597898440c3c241a095e37984",
-  "to": "lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzlh5ge3",
+  "to": "atx1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzrzv4mm",
   "transactionHash": "0x4bee71e351076a81482e2576e469a8dfaa76da9b6cc848265c10968d6de67364",
   "transactionIndex": "0x0"
 }
@@ -3723,10 +3718,10 @@ createStaking params array reply:  { blockHash:
   blockNumber: '0x10',
   contractAddress: null,
   cumulativeGasUsed: '0x14f34',
-  from: 'lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35',
+  from: 'atx1w9x7ye4qalarnl9v59zzhyn7tug9864rll39n7',
   gasUsed: '0x14f34',
   logs:
-   [ { address: 'lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzlh5ge3',
+   [ { address: 'atx1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzrzv4mm',
        topics: [Array],
        data:
         '0xf846b8447b22436f6465223a3330313130312c2244617461223a22222c224572724d7367223a22546869732063616e64696461746520697320616c7265616479206578697374227d',
@@ -3742,7 +3737,7 @@ createStaking params array reply:  { blockHash:
   logsBloom:'',
   root:
    '0x45ffeda340b68a0d54c5556a51f925b0787307eab1fb120ed141fd8ba81183d4',
-  to: 'lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzlh5ge3',
+  to: 'atx1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzrzv4mm',
   transactionHash:
    '0xe5cbc728d6e284464c30ce6f0bbee5fb2b30351a591424f3a0edd37cc1bbdc05',
   transactionIndex: '0x0' }
@@ -3798,7 +3793,7 @@ Example:
 ```JavaScript
 ppos.updateSetting({
     privateKey: 'acc73b693b79bbb56f89f63ccc3a0c00bf1b8380111965bfe8ab22e32045600c',
-    chainId: 104,
+    chainId: 201018,
 })
 
 ppos.updateSetting({
@@ -4080,7 +4075,6 @@ Parameters:
 |typ|uint16(2bytes)| Indicates whether to use the account free amount or the account's locked amount as a pledge, 0: free amount; 1: locked amount |
 |amount|*big.Int(bytes)| Increased von |
 
-
 #### Cancellation Of Pledge
 
 Send the transaction to cancel the pledge.
@@ -4113,7 +4107,6 @@ Completed by sending a transaction(All reductions are cancelled).
 |stakingBlockNum|uint64(8bytes)| A unique identifier representing a pledge of a node |
 |nodeId|64bytes| NodeId of the pledged node |
 |amount|*big.Int(bytes) | Amount of reduction entrustment (calculated by the smallest unit, `1LAT = 10 ** 18 von`) |
-
 
 #### Query Validators
 
@@ -4231,9 +4224,7 @@ Returns: List
 |NodeId|64bytes| Node ID of the validator |
 |StakingBlockNum|uint64(8bytes)| Block height when pledge is initiated |
 
-
 #### Query Delegated Informations
-
 Query the current single delegate information, using the call method.
 
 Parameters:
@@ -4323,7 +4314,6 @@ Parameters:
 |newVersion|uint32(4bytes)| updated version |
 |endVotingRounds|uint64|Number of voting consensus rounds. Note: Assume that the number of the consensus round when the transaction that submitted the proposal is packaged into the block is `round1`. The` blockNumber` of the proposal voting deadline is `round1 + endVotingRounds`. The consensus round produced block 250, ppos was announced 20 blocks ahead of time, `250`, and` 20` are all configurable), of which `0 <endVotingRounds <= 4840` (about 2 weeks, the actual discussion can be calculated according to the configuration), And is an integer)|
 
-
 #### Submit Cancellation Proposal
 
 Submit cancellation proposal by sending transaction.
@@ -4338,13 +4328,11 @@ Parameters:
 |endVotingRounds|uint64| Number of voting consensus rounds. Refer to the description of submitting an upgrade proposal. At the same time, the value of this parameter in this interface cannot be greater than the value in the corresponding upgrade proposal.|
 |tobeCanceledProposalID|common.hash(32bytes)| Upgrade proposal ID to be canceled |
 
-
 #### Vote On Proposal
 
 Vote on a proposal by sending a transaction.
 
 Parameters:
-
 | Field| Type | Remark |
 |---|---|---|
 |funcType|uint16(2bytes)|Method type code(2003)|

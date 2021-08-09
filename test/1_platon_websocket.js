@@ -3,10 +3,11 @@ var assert = chai.assert;
 var Web3 = require("../packages/web3");
 var web3 = undefined;
 var utils = require("../packages/web3-utils/src");
+var Accounts = require("../packages/web3-eth-accounts/src");
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
     provider: "ws://127.0.0.1:5789", // 请更新成自己的 ws 节点
-    chainId: 102, // 请更新成自己的节点id
+    chainId: 201030, // 请更新成自己的节点id
     privateKey: "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
     gas: undefined,
@@ -32,7 +33,10 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
         let gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit / 10));
         cfg.gasPrice = gasPrice;
         cfg.gas = gas;
-        cfg.address = web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address.testnet;
+
+        var hrp = await web3.platon.getAddressHrp()
+        var ethAccounts = new Accounts(web3, hrp);
+        cfg.address = ethAccounts.privateKeyToAccount(cfg.privateKey).address;
 
         web3.platon.subscribe('pendingTransactions', function () { }).on("data", function () {
             console.log("subscribe pendingTransactions come");
@@ -147,8 +151,9 @@ describe("web3.platon by websocket(you must update cfg variable before run this 
         let contract = new web3.platon.Contract(JSON.parse(cfg.myToken.abiStr), cfg.myToken.txReceipt.contractAddress, null);
         let from = cfg.address;
         let to = cfg.myToken.txReceipt.contractAddress;
-        //let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
-        let toAccount = "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35";
+        let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
+        var hrp = await web3.platon.getAddressHrp()
+        toAccount = utils.toBech32Address(hrp, toAccount);
         let transferBalance = "1000";
     
         let data = contract.methods["transfer"].apply(contract.methods, [toAccount, transferBalance]).encodeABI();

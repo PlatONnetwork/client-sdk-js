@@ -58,7 +58,7 @@ ABICoder.prototype.setVmType = function (vmType_) {
 };
 
 /**
- * 设置网络类型，testnet 是测试网（默认），mainnet是主网
+ * 设置网络类型/bech32地址前缀
  *
  * @method setNetType
  * @param {String} type
@@ -165,26 +165,11 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 arrRlp.push(bnInt);
             } else if (type === "bool") {
                 arrRlp.push(param ? 1 : 0);
-            } else if (type === "int8") {
-                // 对于所有的有符号的类型，因为RLP不支持直接编码，都必须转为 Buffer 送进去
-                buf = Buffer.alloc(1);
-                buf.writeInt8(param);
-                arrRlp.push(buf);
-            } else if (type === "int16") {
-                buf = Buffer.alloc(2);
-                buf.writeInt16BE(param);
-                arrRlp.push(buf);
-            } else if (type === "int32") {
-                let bigNum = BigInteger(param);
-                let b1 = bigNum.shiftLeft(1);
-                let b2 = bigNum.shiftRight(63);
-                bigNum = b1.xor(b2).toString();
-                arrRlp.push(parseInt(bigNum));
-            } else if (type === "int64") {
-                let bigNum = BigInteger(param);
-                let b1 = bigNum.shiftLeft(1);
-                let b2 = bigNum.shiftRight(63);
-                let bnInt = new utils.BN(b1.xor(b2).toString());
+            } else if (type.startsWith("int") && !type.endsWith("]")){
+                // 用zigzag编码进行转换
+                var paramTmp = (param << 1) ^ (param >> 63)
+                let bnInt = new utils.BN(paramTmp);
+                if (bnInt.toString() === "0") bnInt = 0;
                 arrRlp.push(bnInt);
             } else if (type === "float") {
                 buf = Buffer.alloc(4);
@@ -195,11 +180,14 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 buf.writeDoubleBE(param);
                 arrRlp.push(buf);
             } else if (type.endsWith("]")) {
-                // vector(即数组) uint16[]
+                var vecLen = type.substr(type.indexOf('[') + 1).split(']')[0];
+                // array, vector(即数组) uint8[2] uint16[2], uint16[] uint16[]....
                 let vecType = type.split("[")[0];
-                if (vecType === "uint8") {
+                if (vecType === "uint8" && vecLen === "")  {
+                    // 不定长参数类型 uint8[] uint16[]....
                     arrRlp.push(Buffer.from(param)); // uint8 直接送进去
                 } else {
+                    // 定长参数类型 uint8[2] uint16[2]....
                     let data = [];
                     // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
                     for (const p of param) {
@@ -270,13 +258,14 @@ ABICoder.prototype.encodeParameters = function (types, params) {
                 let i1 = type.indexOf('<');
                 let i2 = type.indexOf('>');
                 let kType = type.substring(i1 + 1, i2);
+                let data = [];
                 for (const p of param) {
-                    arrRlp.push(this.encodeParameters([{
+                    data.push(this.encodeParameters([{
                         type: kType,
                         name: ''
                     }], [p])[0]);
                 }
-                arrRlp = [arrRlp]; // 要以数组返回
+                arrRlp.push(data); // 要以数组返回
             } else if (type === "struct") {
                 // 确定是结构体了，那就找到结构体的描述进行递归编码
                 let structType = this.abi.find(item => item.name === name && item.type === 'struct');
@@ -288,7 +277,7 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             } else if (type === "FixedHash<20>") {
 		        var p = param;
                 if(utils.isBech32Address(param)) {
-                    p = utils.decodeBech32Address(this.netType, param).replace("0x", "");
+                    p = utils.decodeBech32Address(param).replace("0x", "");
                 }
                 arrRlp.push(Buffer.from(p, "hex"));
             } else if(type.startsWith("FixedHash")){
@@ -310,8 +299,12 @@ ABICoder.prototype.encodeParameters = function (types, params) {
             const param = params[i];
             const type = types[i].type;
             if (type === "address") {
-                params[i] = utils.decodeBech32Address(this.netType, param)
-            }
+                params[i] = utils.decodeBech32Address(param)
+            } else if (type === "address[]") {
+                for(let j=0; j < param.length; j++) {
+                    params[i][j] = utils.decodeBech32Address(param[j])
+                }
+            } 
         }
         return ethersAbiCoder.encode(
             this.mapTypes(types),
@@ -324,6 +317,232 @@ ABICoder.prototype.encodeParameters = function (types, params) {
         );
     }
 };
+
+/**
+ * Add 32 bytes of bits, more than 32 bytes return the hash value of the original data
+ *
+ * @method HandleEventIndexParam
+ *
+ * @param param string
+ * @param isNumber bool
+ *
+ * @return {String} encoded list of params
+ */
+const HandleEventIndexParam = function (param, isNumber) {
+    // 换成十六进制
+    if (isNumber == true) {
+        param = utils.toHex(param)
+    }
+
+    if (param.length > 2 && param.substr(0, 2) === "0x") {
+        param = param.substr(2);
+    }
+
+    var maxLen = 64
+    var len = param.length
+    
+    var hex = ["0x"]
+    if (len > maxLen) {
+        // 超出长度返回hash
+        return utils.sha3(utils.hexToBytes('0x'+param));  
+    } else {
+            // 字节数组转成十六进制字符串
+        var i = 0
+        // 补0
+        for (i = 0; i < maxLen-len ; i++) {
+            hex.push("0")
+        }
+        for (i = 0; i < len ; i++) {
+            hex.push(param[i])
+        }
+        hex = hex.join("");
+        return hex
+    }
+}
+
+const stringTo32Bytes = function (param) {    
+    var bytes = Buffer.from(param)
+    var len = bytes.length
+    var hex = ["0x"]
+    if (len > 32) {
+        // 超出长度返回hash
+        return utils.sha3(bytes);
+    } else {
+        // 字节数组转成十六进制字符串
+        var i = 0
+        // 补0
+        for (i = 0; i < 32-len ; i++) {
+            hex.push("00")
+        }
+        for (i = 0; i < len ; i++) {
+            var current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
+            hex.push((current >>> 4).toString(16));
+            hex.push((current & 0xF).toString(16));
+        }
+        hex = hex.join("");
+        return hex
+    }
+}
+
+/**
+ * Should be used to encode list of event params (wasm)
+ *
+ * @method encodeEventParameters
+ *
+ * @param {Array<String|Object>} types
+ * @param {Array<any>} params
+ *
+ * @return {String} encoded list of params
+ */
+ABICoder.prototype.encodeEventParameters = function (types, params) {
+    let eventData = "";
+
+    // wasm event编码规则
+    // 在这里只对 event 后面的 topics的params 进行编码
+    const param = params;
+    const type = types;
+    if (type === "string") {
+        eventData = stringTo32Bytes(param);
+    } else if (type.startsWith("uint") && !type.endsWith("]")) {
+        let bnInt = new utils.BN(param);
+        eventData = HandleEventIndexParam(bnInt.toString(), true)
+    }else if (type === "bool") {
+        eventData = HandleEventIndexParam(param ? '1' : '0', true);
+    } else if (type.startsWith("int") && !type.endsWith("]")){
+        // 用zigzag编码进行转换
+        var paramTmp = (param << 1) ^ (param >> 63)
+        let bnInt = new utils.BN(paramTmp);
+        eventData = HandleEventIndexParam(bnInt.toString(), true)
+    } else if (type.endsWith("]")) {
+        // vector(即数组) uint16[]
+        let data = [];
+        let vecType = type.split("[")[0];
+        if (vecType === "uint8" || vecType === "int8") {
+             // int8/uint8 直接送进去
+             eventData = HandleEventIndexParam(utils.bytesToHex(Buffer.from(param)), false);
+        } else {
+            // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
+            for (const p of param) {
+                data.push(this.encodeParameters([{
+                    type: vecType,
+                    name: ''
+                }], [p])[0]);
+            }
+            eventData = HandleEventIndexParam(RLP.encode(data).toString('hex'), false);
+        }
+    } else if (type.startsWith("list")) {
+        // list 跟vector一样编码 uint16[]
+        let i1 = type.indexOf('<');
+        let i2 = type.indexOf('>');
+        let lType = type.substring(i1 + 1, i2);
+        
+        let data = [];
+        if (lType === "uint8" || lType === "int8") {
+            // int8/uint8 直接送进去
+            eventData = HandleEventIndexParam(utils.bytesToHex(Buffer.from(param)), false);
+        } else {
+           // 对数组的每个元素进行编码，但要注意编码回来的是一个数组。需要第一个数
+           for (const p of param) {
+               data.push(this.encodeParameters([{
+                   type: lType,
+                   name: ''
+               }], [p])[0]);
+           }
+           eventData = HandleEventIndexParam(RLP.encode(data).toString('hex'), false);
+        }
+    } else if (type.startsWith("map")) {
+        // map<string,string>
+        let i1 = type.indexOf('<');
+        let i2 = type.indexOf(',');
+        let i3 = type.indexOf('>');
+        let kType = type.substring(i1 + 1, i2);
+        let vType = type.substring(i2 + 1, i3);
+
+        let data = [];
+        // 分别对Map的key, value进行编码，但要注意编码回来的是一个数组。需要第一个数
+        for (const p of param) {
+            let kValue = this.encodeParameters([{
+                type: kType,
+                name: ''
+            }], [p[0]])[0];
+            let vValue = this.encodeParameters([{
+                type: vType,
+                name: ''
+            }], [p[1]])[0];
+            data.push([kValue, vValue]);
+        }
+        eventData = HandleEventIndexParam(RLP.encode(data).toString('hex'), false);
+    } else if (type.startsWith("pair")) {
+        // map<string,string>
+        let i1 = type.indexOf('<');
+        let i2 = type.indexOf(',');
+        let i3 = type.indexOf('>');
+        let kType = type.substring(i1 + 1, i2);
+        let vType = type.substring(i2 + 1, i3);
+        let data = [];
+        // 分别对Pair的key, value进行编码，但要注意编码回来的是一个数组。需要第一个数
+        let kValue = this.encodeParameters([{
+            type: kType,
+            name: ''
+        }], [param[0]])[0];
+        let vValue = this.encodeParameters([{
+            type: vType,
+            name: ''
+        }], [param[1]])[0];
+
+        data.push([kValue, vValue]);
+        eventData = HandleEventIndexParam(RLP.encode(data[0]).toString('hex'), false);
+    } else if (type.startsWith("set")) {
+        // map<string,string>
+        let i1 = type.indexOf('<');
+        let i2 = type.indexOf('>');
+        let kType = type.substring(i1 + 1, i2);
+        let data = [];
+        for (const p of param) {
+            data.push(this.encodeParameters([{
+                type: kType,
+                name: ''
+            }], [p])[0]);
+        }
+        // data = [data]; // 要以数组返回
+        eventData = HandleEventIndexParam(RLP.encode(data).toString('hex'), false);
+    } else if (type === "struct") {
+        // 确定是结构体了，那就找到结构体的描述进行递归编码
+        let structType = this.abi.find(item => item.name === name && item.type === 'struct');
+        if (!structType) {
+            throw new Error(`通过名字 ${type.name} 找不到结构体`);
+        } else {
+            let data = [];
+            data.push(this.encodeParameters(structType.inputs, param));
+            eventData = HandleEventIndexParam(RLP.encode(data[0]).toString('hex'), false);
+        }
+    } else if (type === "FixedHash<20>") {
+        var p = param;
+        if(utils.isBech32Address(param)) {
+            p = utils.decodeBech32Address(param).replace("0x", "");
+        }
+        let data = [];
+        data.push(Buffer.from(p, "hex"));
+        eventData = HandleEventIndexParam(data[0].toString('hex'), false);
+    } else if(type.startsWith("FixedHash")){
+        let data = [];
+        data.push(Buffer.from(param));
+        eventData = HandleEventIndexParam(data[0].toString('hex'), false);
+    } else {
+        // 剩下往结构体靠
+        let structType = this.abi.find(item => item.name === type);
+        if (!structType) {
+            throw new Error(`通过名字 ${type} 找不到结构体`);
+        } else {
+            // 找到结构体了递归搞起来
+            let data = [];
+            data.push(this.encodeParameters(structType.inputs, param));
+            eventData = HandleEventIndexParam(RLP.encode(data[0]).toString('hex'), false);
+        }
+    }
+    return eventData;
+};
+
 
 /**
  * Map types if simplified format is used
@@ -626,13 +845,20 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         var res = ethersAbiCoder.decode(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
         var returnValue = new Result();
         returnValue.__length__ = 0;
-        netType = this.netType
+        var netType = this.netType
         outputs.forEach(function (output, i) {
             var decodedValue = res[returnValue.__length__];
             decodedValue = (decodedValue === '0x') ? null : decodedValue;
 
             if(output.type === "address")
                 returnValue[i] = utils.toBech32Address(netType, decodedValue);
+            else if(output.type === "address[]") {
+                let value = [];
+                for(let j=0; j < decodedValue.length; j++) {
+                    value[j] = utils.toBech32Address(netType, decodedValue[j]);
+                }
+                returnValue[i] = value;
+            }
             else
                 returnValue[i] = decodedValue;
 

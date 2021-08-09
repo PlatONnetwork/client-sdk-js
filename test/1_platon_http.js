@@ -3,10 +3,12 @@ var assert = chai.assert;
 var Web3 = require("../packages/web3/src");
 var web3 = undefined;
 var utils = require("../packages/web3-utils/src");
+var Accounts = require("../packages/web3-eth-accounts");
+let hrp = "";
 // 默认为undefined的不要管，程序会自动获取。
 var cfg = {
     provider: "http://127.0.0.1:6789", // 请更新成自己的 http 节点
-    chainId: 102, // 请更新成自己的节点id
+    chainId: 201030, // 请更新成自己的节点id
     privateKey: "0x983759fe9aac227c535b21d78792d79c2f399b1d43db46ae6d50a33875301557", // 请更新成自己的私钥(必须有十六进制前缀0x)
     address: undefined, // 请更新成上面私钥对应的地址
     gas: undefined,
@@ -33,13 +35,16 @@ describe("web3.platon by http(you must update cfg variable before run this test)
         let gas = web3.utils.numberToHex(parseInt((await web3.platon.getBlock("latest")).gasLimit));
         cfg.gasPrice = gasPrice;
         cfg.gas = gas;
-        cfg.address = web3.platon.accounts.privateKeyToAccount(cfg.privateKey).address.testnet;
+        hrp = await web3.platon.getAddressHrp()
+        var ethAccounts = new Accounts(web3, hrp);
+        cfg.address = ethAccounts.privateKeyToAccount(cfg.privateKey).address;
 
         web3.ppos.updateSetting({
             privateKey: cfg.privateKey,
             chainId: cfg.chainId,
             gas: gas,
-            gasPrice: gasPrice
+            gasPrice: gasPrice,
+            hrp: hrp
         })
     });
 
@@ -142,8 +147,7 @@ describe("web3.platon by http(you must update cfg variable before run this test)
         let from = cfg.address;
         let to = cfg.myToken.txReceipt.contractAddress;
 
-        //let toAccount = utils.decodeBech32Address("lax", "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35");
-        let toAccount = "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35";
+        let toAccount = utils.toBech32Address(hrp, "0x714de266a0effa39fcaca1442b927e5f1053eaa3");
         let transferBalance = "1000";
     
         let data = contract.methods["transfer"].apply(contract.methods, [toAccount, transferBalance]).encodeABI();
@@ -220,7 +224,7 @@ describe("web3.platon by http(you must update cfg variable before run this test)
     it("web3.ppos.send", async function () {
         this.timeout(10000);
         //let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
-        let toAccount = utils.decodeBech32Address("lax", "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35");
+        let toAccount = utils.decodeBech32Address("lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35");
         let params = [4000, web3.ppos.hexStrBuf(toAccount), [[1, web3.ppos.bigNumBuf('100000000000')]]];
         let ret = await web3.ppos.send(params);
         assert.isObject(ret);
@@ -228,7 +232,7 @@ describe("web3.platon by http(you must update cfg variable before run this test)
 
     it("web3.ppos.call", async function () {
         //let toAccount = "0x714dE266a0eFFA39fCaCa1442B927E5f1053Eaa3";
-        let toAccount = utils.decodeBech32Address("lax", "lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35");
+        let toAccount = utils.decodeBech32Address("lax1w9x7ye4qalarnl9v59zzhyn7tug9864rr2fc35");
         let params = [4100, web3.ppos.hexStrBuf(toAccount)];
         let ret = await web3.ppos.call(params);
         assert.isObject(ret);

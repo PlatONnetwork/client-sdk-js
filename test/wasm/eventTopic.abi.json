@@ -1,0 +1,500 @@
+[
+    {
+        "baseclass": [],
+        "fields": [
+            {
+                "name": "name",
+                "type": "string"
+            }
+        ],
+        "name": "Member",
+        "type": "struct"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "st1",
+                "type": "Member"
+            }
+        ],
+        "name": "setStruct",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "m1",
+                "type": "map<uint8,string>"
+            },
+            {
+                "name": "m2",
+                "type": "map<uint16,string>"
+            }
+        ],
+        "name": "setMap",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "f1",
+                "type": "FixedHash<10>"
+            },
+            {
+                "name": "f2",
+                "type": "FixedHash<20>"
+            },
+            {
+                "name": "f3",
+                "type": "FixedHash<30>"
+            }
+        ],
+        "name": "setFixHash",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "p1",
+                "type": "pair<uint8,string>"
+            },
+            {
+                "name": "p2",
+                "type": "pair<uint16,string>"
+            }
+        ],
+        "name": "setPair",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "s1",
+                "type": "set<uint8>"
+            },
+            {
+                "name": "s2",
+                "type": "set<uint16>"
+            },
+            {
+                "name": "s3",
+                "type": "set<uint32>"
+            }
+        ],
+        "name": "callSet",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "string"
+            },
+            {
+                "name": "topic2",
+                "type": "FixedHash<20>"
+            },
+            {
+                "name": "topic3",
+                "type": "bool"
+            }
+        ],
+        "name": "stringAndAddrAndBoolean",
+        "topic": 3,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "int8"
+            },
+            {
+                "name": "topic2",
+                "type": "int16"
+            },
+            {
+                "name": "topic3",
+                "type": "int32"
+            }
+        ],
+        "name": "intNumber",
+        "topic": 3,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "uint8"
+            },
+            {
+                "name": "topic2",
+                "type": "uint16"
+            },
+            {
+                "name": "topic3",
+                "type": "uint32"
+            }
+        ],
+        "name": "uintNumber",
+        "topic": 3,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "int8[2]"
+            },
+            {
+                "name": "topic2",
+                "type": "int16[2]"
+            }
+        ],
+        "name": "intArray",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "uint8[2]"
+            },
+            {
+                "name": "topic2",
+                "type": "uint16[2]"
+            }
+        ],
+        "name": "uintArray",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "int8[]"
+            },
+            {
+                "name": "topic2",
+                "type": "int16[]"
+            }
+        ],
+        "name": "intVector",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "uint8[]"
+            },
+            {
+                "name": "topic2",
+                "type": "uint16[]"
+            }
+        ],
+        "name": "uintVector",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "list<int8>"
+            },
+            {
+                "name": "topic2",
+                "type": "list<int16>"
+            }
+        ],
+        "name": "intList",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "list<uint8>"
+            },
+            {
+                "name": "topic2",
+                "type": "list<uint16>"
+            }
+        ],
+        "name": "uintList",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "map<uint8,string>"
+            },
+            {
+                "name": "topic2",
+                "type": "map<uint16,string>"
+            }
+        ],
+        "name": "uintMap",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "pair<uint8,string>"
+            },
+            {
+                "name": "topic2",
+                "type": "pair<uint16,string>"
+            }
+        ],
+        "name": "uintPair",
+        "topic": 2,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "set<uint8>"
+            },
+            {
+                "name": "topic2",
+                "type": "set<uint16>"
+            },
+            {
+                "name": "topic3",
+                "type": "set<uint32>"
+            }
+        ],
+        "name": "uintSet",
+        "topic": 3,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic1",
+                "type": "FixedHash<10>"
+            },
+            {
+                "name": "topic2",
+                "type": "FixedHash<20>"
+            },
+            {
+                "name": "topic3",
+                "type": "FixedHash<30>"
+            }
+        ],
+        "name": "fixHash",
+        "topic": 3,
+        "type": "Event"
+    },
+    {
+        "anonymous": false,
+        "input": [
+            {
+                "name": "topic",
+                "type": "Member"
+            }
+        ],
+        "name": "structEvent",
+        "topic": 1,
+        "type": "Event"
+    },
+    {
+        "constant": false,
+        "input": [],
+        "name": "init",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "address",
+                "type": "FixedHash<20>"
+            },
+            {
+                "name": "b",
+                "type": "bool"
+            }
+        ],
+        "name": "setStringAndAddressAndBoolean",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "i8",
+                "type": "int8"
+            },
+            {
+                "name": "i16",
+                "type": "int16"
+            },
+            {
+                "name": "i32",
+                "type": "int32"
+            }
+        ],
+        "name": "setIntNumber",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "ui8",
+                "type": "uint8"
+            },
+            {
+                "name": "ui16",
+                "type": "uint16"
+            },
+            {
+                "name": "ui32",
+                "type": "uint32"
+            }
+        ],
+        "name": "setUintNumber",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "i8Array",
+                "type": "int8[2]"
+            },
+            {
+                "name": "i16Array",
+                "type": "int16[2]"
+            }
+        ],
+        "name": "setIntArray",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "ui8Array",
+                "type": "uint8[2]"
+            },
+            {
+                "name": "ui16Array",
+                "type": "uint16[2]"
+            }
+        ],
+        "name": "setUintArray",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "i8Array",
+                "type": "int8[]"
+            },
+            {
+                "name": "i16Array",
+                "type": "int16[]"
+            }
+        ],
+        "name": "setIntVector",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "ui8Array",
+                "type": "uint8[]"
+            },
+            {
+                "name": "ui16Array",
+                "type": "uint16[]"
+            }
+        ],
+        "name": "setUintVector",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "i8Array",
+                "type": "list<int8>"
+            },
+            {
+                "name": "i16Array",
+                "type": "list<int16>"
+            }
+        ],
+        "name": "setIntList",
+        "output": "void",
+        "type": "Action"
+    },
+    {
+        "constant": false,
+        "input": [
+            {
+                "name": "ui8Array",
+                "type": "list<uint8>"
+            },
+            {
+                "name": "ui16Array",
+                "type": "list<uint16>"
+            }
+        ],
+        "name": "setUintList",
+        "output": "void",
+        "type": "Action"
+    }
+]
