@@ -5,7 +5,6 @@ var Common = require('ethereumjs-common');
 var EthereumTx = require('ethereumjs-tx');
 var axios = require('axios');
 var utils = require('web3-utils');
-const { es } = require('ethers/wordlists');
 const paramsOrder = {
     '1000': ['typ', 'benefitAddress', 'nodeId', 'externalId', 'nodeName', 'website', 'details', 'amount', 'rewardPer', 'programVersion', 'programVersionSign', 'blsPubKey', 'blsProof'],
     '1001': ['benefitAddress', 'nodeId', 'rewardPer', 'externalId', 'nodeName', 'website', 'details'],
