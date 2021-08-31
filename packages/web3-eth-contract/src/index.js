@@ -687,7 +687,6 @@ Contract.prototype._decodeMethodReturn = function (outputs, returnValues) {
     }
 
     returnValues = returnValues.length >= 2 ? returnValues.slice(2) : returnValues;
-    abi.setAbi(this._jsonInterface);
     var result = abi.decodeParameters(outputs, returnValues);
 
     if (result.__length__ === 1) {
