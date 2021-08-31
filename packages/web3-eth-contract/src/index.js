@@ -963,6 +963,7 @@ Contract.prototype.getPastEvents = function () {
  * @returns {Object} an object with functions to call the methods
  */
 Contract.prototype._createTxObject = function _createTxObject() {
+    abi.setAbi(this.parent._jsonInterface);
     var args = Array.prototype.slice.call(arguments);
     var txObject = {};
 
