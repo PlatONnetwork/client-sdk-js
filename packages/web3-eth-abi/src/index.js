@@ -115,7 +115,11 @@ ABICoder.prototype.encodeEventSignature = function (functionName) {
     }
     // keccak256(rlp(EVENT名称字符串)) 得到的[32]byte
     if (this.vmType) {
-        functionName = RLP.encode(functionName.split("(")[0]);
+        functionName = utils.toHex(functionName.split("(")[0]);
+        // functionName length contains '0x'
+        if (functionName.length - 2 <= 64) {
+            return utils.leftPad(functionName, 64);
+        }
     }
     return utils.sha3(functionName);
 };
