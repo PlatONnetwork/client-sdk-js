@@ -851,16 +851,14 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
             decodedValue = (decodedValue === '0x') ? null : decodedValue;
 
             if(output.type === "address")
-                returnValue[i] = utils.toBech32Address(netType, decodedValue);
+                decodedValue = utils.toBech32Address(netType, decodedValue);
             else if(output.type === "address[]") {
-                let value = [];
                 for(let j=0; j < decodedValue.length; j++) {
-                    value[j] = utils.toBech32Address(netType, decodedValue[j]);
+                    decodedValue[j] = utils.toBech32Address(netType, decodedValue[j]);
                 }
-                returnValue[i] = value;
             }
-            else
-                returnValue[i] = decodedValue;
+
+            returnValue[i] = decodedValue;
 
             if (_.isObject(output) && output.name) {
                 returnValue[output.name] = decodedValue;
