@@ -36,6 +36,7 @@ var uuid = require('uuid');
 var utils = require('web3-utils');
 var helpers = require('web3-core-helpers');
 var Transaction = require('ethereumjs-tx').Transaction;
+var ethereumjsUtil = require('ethereumjs-util');
 var Common = require('ethereumjs-common').default;
 
 
@@ -306,17 +307,20 @@ Accounts.prototype.hashMessage = function hashMessage(data) {
 };
 
 Accounts.prototype.sign = function sign(data, privateKey) {
-    var hash = this.hashMessage(data);
-    var signature = Account.sign(hash, privateKey);
-    var vrs = Account.decodeSignature(signature);
-    return {
-        message: data,
-        messageHash: hash,
-        v: vrs[0],
-        r: vrs[1],
-        s: vrs[2],
-        signature: signature
-    };
+  var hash = ethereumjsUtil.hashPersonalMessage(ethereumjsUtil.toBuffer(data));
+  var privateKey = new Buffer(privateKey.slice(2), 'hex');
+  var signature = ethereumjsUtil.ecsign(hash, privateKey);
+  var r = signature.r.toString('hex');
+  var s = signature.s.toString('hex');
+  var v = signature.v == 27 ? "00" : "01";
+  return {
+    message: data,
+    messageHash: '0x' + hash.toString('hex'),
+    v: '0x' + v,
+    r: '0x' + r,
+    s: '0x' + s,
+    signature: '0x' + r + s + v
+  };
 };
 
 Accounts.prototype.recover = function recover(message, signature, preFixed) {
