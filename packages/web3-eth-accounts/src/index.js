@@ -308,11 +308,11 @@ Accounts.prototype.hashMessage = function hashMessage(data) {
 
 Accounts.prototype.sign = function sign(data, privateKey) {
   var hash = ethereumjsUtil.hashPersonalMessage(ethereumjsUtil.toBuffer(data));
-  var privateKey = new Buffer(privateKey.slice(2), 'hex');
-  var signature = ethereumjsUtil.ecsign(hash, privateKey);
+  privateKey = privateKey.startsWith('0x') ? privateKey.slice(2) : privateKey;
+  var signature = ethereumjsUtil.ecsign(hash, Buffer.from(privateKey, 'hex'));
   var r = signature.r.toString('hex');
   var s = signature.s.toString('hex');
-  var v = signature.v == 27 ? "00" : "01";
+  var v = signature.v == 27 ? '00' : '01';
   return {
     message: data,
     messageHash: '0x' + hash.toString('hex'),
