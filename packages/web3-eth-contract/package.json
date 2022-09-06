@@ -14,7 +14,7 @@
     "main": "src/index.js",
     "dependencies": {
         "@types/bn.js": "^4.11.4",
-        "underscore": "1.9.1",
+        "underscore": "1.12.1",
         "rlp": "^2.2.4",
         "web3-core": "1.2.4",
         "web3-core-helpers": "1.2.4",
