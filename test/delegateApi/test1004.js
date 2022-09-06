@@ -39,7 +39,7 @@ const params2 = { // 使用减委托金额再委托
     amount: ppos?.bigNumBuf("66666600000000000000")
 }
 
-ppos?.send(params2).then((response) => {
+ppos?.send(params1).then((response) => {
     console.log('response', response);
 }).catch((err) => {
     console.log('err', err);
