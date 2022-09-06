@@ -123,3 +123,9 @@ Released with 1.0.0-beta.37 code base.
 - ``clearSubscriptions`` does no longer throw an error if no running subscriptions do exist (#3246)
 - callback type definition for ``Accounts.signTransaction`` fixed (#3280)
 - fix: export bloom functions on the index.js
+
+### Fixed
+
+- new params: PPOS function: 1004 delegate() typ:3
+- new return: PPOS Api: include(1004(delegate)/1005(withdrewDelegation)/1104(getDelegateInfo)/1106(getDelegationLockInfo))
+- fix bug: If the return value 'logs Data' has data(type:1005/1006/5000), but has not been processed before
