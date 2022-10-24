@@ -18,7 +18,7 @@
     "web3-core-helpers": "1.2.4"
   },
   "devDependencies": {
-    "definitelytyped-header-parser": "^1.0.1",
+    "@definitelytyped/header-parser": "^0.0.133",
     "dtslint": "0.4.2"
   }
 }
