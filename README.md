@@ -1,6 +1,14 @@
-## Web3.js Interface 
+<div align=center><img style="width:120px" src="https://www.platon.network/_nuxt/img/1.logo2.a347578.svg"></div>
 
-- document:  [jssdk docunment]([https://www.runoob.com](https://devdocs.platon.network/docs/en/JS_SDK))
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+> A web3.js interface for platon. 
+
+- Links：
+    - [Jssdk Document](https://devdocs.platon.network/docs/en/JS_SDK)
 
 Interact with nodes through web3 objects provided by web3.js. On the underlying implementation, it communicates with the local node through RPC calls. web3.js can connect to any PlatON node that exposes the RPC interface.
 
@@ -12,6 +20,10 @@ Then you can integrate client-sdk-js into the project through package management
 
 - npm: `npm i PlatONnetwork/client-sdk-js#master`
 - yarn: `yarn add PlatONnetwork/client-sdk-js#master`
+
+> If the installation speed is too slow, please consider the following ways to install the sdk
+- npm: `npm i @platonnetwork/web3`
+- yarn: `yarn add @platonnetwork/web3`
 
 Create a web3 instance and set up a provider. You can refer to the following code:
 
