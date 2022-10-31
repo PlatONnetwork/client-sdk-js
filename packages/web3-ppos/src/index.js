@@ -5,7 +5,7 @@ var BigInteger = require("big-integer");
 var Common = require('ethereumjs-common');
 var EthereumTx = require('ethereumjs-tx');
 var axios = require('axios');
-var utils = require('../web3-utils');
+var utils = require('@platonnetwork/web3-utils');
 const paramsOrder = {
     '1000': [ 'typ', 'benefitAddress', 'nodeId', 'externalId', 'nodeName', 'website', 'details', 'amount', 'rewardPer', 'programVersion', 'programVersionSign', 'blsPubKey', 'blsProof' ],
     '1001': [ 'benefitAddress', 'nodeId', 'rewardPer', 'externalId', 'nodeName', 'website', 'details' ],
@@ -67,7 +67,7 @@ const _bufferToBigInt = (buffer) => {
 
 function decodeBlockLogs(block, type = '') {
     let logs = block.logs;
-    if (Array.isArray(logs)) {
+    if (Array.isArray(logs) && logs.length > 0) {
         try {
             let msg = {}
             const codeList = RLP.decode(logs[ 0 ].data)
@@ -284,7 +284,7 @@ PPOS.prototype.send = async function (params, other) {
         let privateKey = this.privateKey;
         let chainId = this.chainId;
         let funcType;
-        let address = EU.bufferToHex(EU.privateToAddress('0x' + privateKey));
+        let address = EU.bufferToHex(EU.privateToAddress(Buffer.from(privateKey, 'hex')));
         var bech32Address = utils.toBech32Address(this.hrp, address)
         let nonce = await this.rpc("platon_getTransactionCount", [ bech32Address, 'latest' ]);
         let rawTx = {};
