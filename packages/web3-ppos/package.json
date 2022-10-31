@@ -1,8 +1,8 @@
 {
-  "name": "web3-ppos",
-  "version": "1.0.0",
+  "name": "@platonnetwork/web3-ppos",
+  "version": "0.16.1",
   "description": "ppos api",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,6 @@
     "big-integer": "^1.6.51",
     "ethereumjs-tx": "^2.1.2",
     "rlp": " 2.2.6",
-    "web3-utils": "1.2.4"
+    "@platonnetwork/web3-utils": "0.16.1"
   }
 }

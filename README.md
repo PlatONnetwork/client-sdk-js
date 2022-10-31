@@ -8,8 +8,9 @@ First, make sure the nodeJS environment is successfully installed locally. `WEB3
 
 Then you can integrate client-sdk-js into the project through package management tools such as npm or yarn, the steps are as follows:
 
-- npm: `npm i PlatONnetwork/client-sdk-js#master`
-- yarn: `yarn add PlatONnetwork/client-sdk-js#master`
+- npm: `npm i @platonnetwork/web3`
+- yarn: `yarn i @platonnetwork/web3`
+
 
 Create a web3 instance and set up a provider. You can refer to the following code:
 
