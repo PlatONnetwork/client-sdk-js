@@ -67,7 +67,7 @@ const _bufferToBigInt = (buffer) => {
 
 function decodeBlockLogs(block, type = '') {
     let logs = block.logs;
-    if (Array.isArray(logs)) {
+    if (Array.isArray(logs) && logs.length > 0) {
         try {
             let msg = {}
             const codeList = RLP.decode(logs[ 0 ].data)
